@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'inscription-form',
@@ -7,10 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class InscriptionFormComponent implements OnInit {
-
-  constructor() { }
+  inscriptionForm: FormGroup;
+  constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    // this.inscriptionForm = this.formBuilder.group({
+  	// 	first_name: ['', Validators.required],
+  	// 	last_name: ['', Validators.required],
+  	// 	email: ['', [Validators.required, Validators.email]],
+  	// 	zipcode: ['', [Validators.required, Validators.pattern('^[0-9]{5}(?:-[0-9]{4})?$')]]
+  	// });
   }
 
 }
