@@ -1,0 +1,41 @@
+version: '3'
+services: 
+    database:
+        image: mongo
+        restart: always
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+          # Create a new database. Please note, the
+          # /docker-entrypoint-initdb.d/init.js has to be executed
+          # in order for the database to be created
+          MONGO_INITDB_DATABASE: realestate
+        volumes:
+          # Add the db-init.js file to the Mongo DB container
+          - ./db-init.js:/docker-entrypoint-initdb.d/init.js:ro
+        ports:
+          - '27017-27019:27017-27019'
+
+    frontend:
+        container_name: preplan-frontend
+        build:
+            context: ./preplan-frontend
+            dockerfile: Dockerfile
+        volumes: 
+            - './preplan-frontend:/app'
+            - '/app/node_modules'
+        ports:  
+            - '4200:4200'
+
+    backend:
+        container_name: preplan-backend
+        build:
+            context: ./preplan-backend
+            dockerfile: Dockerfile
+        volumes: 
+            - './preplan-backend:/usr/src/app'
+            - '/usr/src/app/node_modules'
+        links: 
+            - database
+        ports:  
+            - '3000:3000'
