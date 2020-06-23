@@ -1,8 +1,3 @@
-html,
-body {
-  height: 100%;
-}
-
 body {
   display: -ms-flexbox;
   display: flex;
@@ -19,6 +14,13 @@ body {
     background-color: #FF741F ;
     color: white;
     border:none;
+}
+.btn-primary:hover{
+    background-color: #b35217;
+}
+.btn-primary:focus,
+.btn-primary.focus {
+    box-shadow: 0 0 0 .2rem rgba(139, 70, 14, 0.5)
 }
 .fas {
     color:#FF741F ;

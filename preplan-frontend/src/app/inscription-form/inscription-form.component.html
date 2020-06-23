@@ -1,37 +1,37 @@
 <div class="container">
-    <form>
+    <form >
         <div class="form-group has-error">
             <!-- First Name -->
             <label for="first_name" class="control-label">First Name *</label>
-            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="">
+            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" required>
             <p id="first_name_error" class="help-block">Invalid first name.</p>
         </div>
 
         <div class="form-group has-error">
             <!-- Last Name -->
             <label for="last_name" class="control-label">Last Name *</label>
-            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="">
+            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" required>
             <p id="last_name_error" class="help-block">Invalid last name.</p>
         </div>
 
         <div class="form-group has-error">
             <!-- Birthday -->
             <label for="birthday" class="control-label">Birthday *</label>
-            <input type="date" class="form-control" id="birthday" name="birthday" placeholder="dd/MM/yyyy">
-            <p id="birhtday_error" class="help-block">Invalid birthday.</p>
+            <input type="date" class="form-control" id="birthday" name="birthday" placeholder="dd/MM/yyyy" required>
+            <p id="birthday_error" class="help-block">Invalid birthday.</p>
         </div>
 
         <div class="form-group has-error">
             <!-- Email -->
             <label for="email" class="control-label">E-mail *</label>
-            <input type="text" class="form-control" id="email" name="email" placeholder="your@email.com">
+            <input type="text" class="form-control" id="email" name="email" placeholder="your@email.com" required>
             <p id="email_error" class="help-block">Invalid email address.</p>
         </div>
 
         <div class="form-group has-error">
             <!-- Discord -->
             <label for="discord" class="control-label">Discord Username</label>
-            <input type="text" class="form-control" id="discord" name="discord" placeholder="Username#9999">
+            <input type="text" class="form-control" id="discord" name="discord" placeholder="Username#9999" required >
             <p id="discord_error" class="help-block">Invalid Discord Username.</p>
         </div>
 
@@ -51,6 +51,5 @@
             <!-- Register Button -->
             <button type="submit" class="btn btn-primary">Register</button>
         </div>
-
     </form>
 </div>
