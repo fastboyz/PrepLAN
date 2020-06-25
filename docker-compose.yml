@@ -6,6 +6,9 @@ services:
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
+          MONGODB_USER: preplan
+          MONGODB_DATABASE: preplan
+          MONGODB_PASS: preplan
           # Create a new database. Please note, the
           # /docker-entrypoint-initdb.d/init.js has to be executed
           # in order for the database to be created
@@ -32,10 +35,10 @@ services:
         build:
             context: ./preplan-backend
             dockerfile: Dockerfile
+        depends_on:
+            - database
         volumes: 
             - './preplan-backend:/usr/src/app'
             - '/usr/src/app/node_modules'
-        links: 
-            - database
         ports:  
             - '3000:3000'

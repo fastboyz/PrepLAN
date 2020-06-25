@@ -6,17 +6,17 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose'
 import { error } from 'console';
+import { UserController } from './controllers'
 
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://preplan:preplan@localhost:27017/preplan';
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 
 const app = express();
 
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log("DB Connected"))
+  .then(() => console.log("DB Connected"), { useNewUrlParser: true })
   .catch(error => console.error(error));
 
 // view engine setup
@@ -31,8 +31,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
 
+app.use ('/api/auth', UserController);
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
