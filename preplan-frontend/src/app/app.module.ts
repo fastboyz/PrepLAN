@@ -1,25 +1,30 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { InscriptionFormComponent } from './inscription-form/inscription-form.component';
-import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
+
 import { LoginFormComponent } from './login-form/login-form.component';
-import { RegisterFormComponent } from './register-form/register-form.component';
+import { UserFormComponent } from './user/user-form/user-form.component';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
+import { UserRegistrationComponent } from './user/user-registration/user-registration.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InscriptionFormComponent,
     LoginFormComponent,
-    RegisterFormComponent
+    UserFormComponent,
+    UserProfileComponent,
+    UserRegistrationComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule, 
-    ReactiveFormsModule 
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

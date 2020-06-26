@@ -1,12 +1,4 @@
 body {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center;
-  align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #f5f5f5;
-  
   font-family: 'Roboto Condensed', sans-serif;
 }
 
@@ -17,6 +9,11 @@ body {
 }
 .btn-primary:hover{
     background-color: #b35217;
+}
+
+.btn-primary.disabled, 
+.btn-primary:disabled {
+  background-color: #DA9C77 ;
 }
 .btn-primary:focus,
 .btn-primary.focus {
