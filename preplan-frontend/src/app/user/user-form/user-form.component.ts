@@ -35,6 +35,7 @@ export class UserFormComponent implements OnInit {
       birthday: ['', { validators: [Validators.required, Validators.pattern(this.birthdayPattern)], updateOn: 'blur' }],
       phoneNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
       discord: ['', { validators: [Validators.pattern(this.discordPattern)], updateOn: 'blur' }],
+      tshirtSize: ['', { validators: [Validators.required, RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       allergy: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       certification: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       firstNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
@@ -51,7 +52,7 @@ export class UserFormComponent implements OnInit {
     this.onSubmit.emit(this.userForm);
   }
 
-  onCancelForm(){
+  onCancelForm() {
     this.onCancel.emit();
   }
 
@@ -85,7 +86,9 @@ export class UserFormComponent implements OnInit {
   get discord() {
     return this.userForm.get('discord');
   }
-
+  get tshirtSize() {
+    return this.userForm.get('tshirtSize');
+  }
   get allergy() {
     return this.userForm.get('allergy');
   }

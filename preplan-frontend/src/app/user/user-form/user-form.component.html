@@ -139,6 +139,17 @@
             </div>
 
             <div class="form-group">
+                <label for="tshirtSize">Discord Username</label>
+                <input id="tshirtSize" class="form-control" formControlName="tshirtSize" type="text">
+
+                <div *ngIf="tshirtSize.invalid && (tshirtSize.dirty || tshirtSize.touched)" class="alert alert-danger">
+                    <div *ngIf="tshirtSize.errors.required">
+                        T-shirt Size is required.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label for="allergy">Allergies</label>
                 <input id="allergy" class="form-control" formControlName="allergy" type="text">
             </div>
