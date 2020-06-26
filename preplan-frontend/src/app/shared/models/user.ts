@@ -1,6 +1,7 @@
 export class Account {
+    _id?:string;
     username: string;
-    password: string;
+    password?: string;
     email: string;
     token?: string;
 }
