@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -10,6 +10,10 @@ import { LoginFormComponent } from './login-form/login-form.component';
 import { UserFormComponent } from './user/user-form/user-form.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
 import { UserRegistrationComponent } from './user/user-registration/user-registration.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { JwtInterceptor } from './helpers/jwt.interceptor';
+import { ErrorInterceptor } from './helpers/error.interceptor';
+import { fakeBackendProvider } from './helpers/fake-backend';
 
 @NgModule({
   declarations: [
@@ -17,7 +21,8 @@ import { UserRegistrationComponent } from './user/user-registration/user-registr
     LoginFormComponent,
     UserFormComponent,
     UserProfileComponent,
-    UserRegistrationComponent
+    UserRegistrationComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +31,11 @@ import { UserRegistrationComponent } from './user/user-registration/user-registr
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    fakeBackendProvider  
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
