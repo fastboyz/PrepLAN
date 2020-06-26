@@ -2,6 +2,7 @@ export class Account {
     username: string;
     password: string;
     email: string;
+    token?: string;
 }
 
 export class User {
@@ -11,14 +12,14 @@ export class User {
     pronoun: string;
     birthday: Date;
     phoneNumber: string;
-    discord: string;
+    discord?: string;
 }
 
 export class Profile {
     user: User;
-    tshirtSize: string;
-    allergy: string;
-    certification: string;
+    tshirtSize?: string;
+    allergy?: string;
+    certification?: string;
     emergencyContact: EmergencyContact;
 }
 

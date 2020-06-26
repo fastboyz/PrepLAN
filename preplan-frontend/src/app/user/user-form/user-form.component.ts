@@ -16,9 +16,9 @@ export class UserFormComponent implements OnInit {
   userForm: FormGroup;
   namePattern = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
   emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
-  phoneNumberPattern = ""
-  discordPattern = "(.*)#\d{4}"
-  birthdayPattern = ""
+  phoneNumberPattern = "";
+  discordPattern = ""; //"^((.+?)*#\d{4})$";
+  birthdayPattern = "";
   submitted: boolean = false;
 
   constructor(private router: Router,

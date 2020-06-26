@@ -53,7 +53,8 @@ export class UserRegistrationComponent implements OnInit {
     var formDataJson = JSON.stringify(data.value);
     console.log(formDataJson);
   }
+
   cancel(){
-    this.router.navigate['/login'];
+    this.router.navigate(['login']);
   }
 }

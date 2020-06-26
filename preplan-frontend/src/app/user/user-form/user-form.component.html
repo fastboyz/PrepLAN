@@ -220,10 +220,8 @@
 
             <button type="submit" class="btn btn-lg btn-primary btn-create" [disabled]="userForm.invalid"
                 (click)="onSubmitForm()">Submit</button>
+
+            <button class="btn btn-lg btn-primary btn-create" (click)="onCancelForm()">Cancel</button>
         </div>
     </div>
 </form>
-
-<div class="submitted-message" *ngIf="formDir.submitted">
-    <p>You've submitted your hero!</p>
-</div>
