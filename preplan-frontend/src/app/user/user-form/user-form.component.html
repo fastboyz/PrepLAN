@@ -86,7 +86,7 @@
 
             <div class="form-group">
                 <label for="pronoun">Preferred Pronoun</label>
-                <select id="pronoun" class="form-control" formControlName="pronoun" (change)="changePronoun($event)">
+                <select id="pronoun" class="form-control" formControlName="pronoun">
                     <option value="" disabled> Choose Your Preffered Pronoun </option>
                     <option *ngFor="let pro of pronounOptions" [ngValue]="pro">{{pro}}</option>
                 </select>
@@ -142,7 +142,7 @@
 
             <div class="form-group">
                 <label for="tshirtSize">T-Shirt Size</label>
-                <select id="tshirtSize" class="form-control" formControlName="tshirtSize" (change)="changeTshirtSize($event)">
+                <select id="tshirtSize" class="form-control" formControlName="tshirtSize">
                     <option value="" disabled> Choose your T-Shirt Size </option>
                     <option *ngFor="let size of tshirtSizeOptions" [ngValue]="size">{{size}}</option>
                 </select>
