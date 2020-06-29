@@ -10,9 +10,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-form.component.scss']
 })
 export class UserFormComponent implements OnInit {
-  @Input() formData;
+  @Input() formData: FormData;
   @Output() onSubmit = new EventEmitter();
   @Output() onCancel = new EventEmitter();
+
   userForm: FormGroup;
   namePattern = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
   emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
@@ -20,6 +21,9 @@ export class UserFormComponent implements OnInit {
   discordPattern = ""; //"^((.+?)*#\d{4})$";
   birthdayPattern = "";
   submitted: boolean = false;
+
+  tshirtSizeOptions: any = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+  pronounOptions: any = ['He/Him', 'She/Her', 'They/Them'];
 
   constructor(private router: Router,
     private formBuilder: FormBuilder) { }
@@ -43,13 +47,35 @@ export class UserFormComponent implements OnInit {
       emergencyNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
       relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
+
+    // this.userService.loadUser().pipe(tap (user=> this.form.patchValue(user)));
+    if (this.formData) {
+      this.userForm.patchValue({
+        "username": "tiwuty",
+        "password": "Pa$$w0rd!",
+        "email": "kape@mailinator.com",
+        "firstName": "Bree",
+        "lastName": "Wright",
+        "pronoun": "He/Him",
+        "birthday": "1995-04-12",
+        "phoneNumber": "+1 (154) 763-3652",
+        "discord": "",
+        "tshirtSize": "M",
+        "allergy": "Est non dolor volupt",
+        "certification": "Nisi ullam qui enim ",
+        "firstNameEmergency": "Claudia",
+        "lastNameEmergency": "Freeman",
+        "emergencyNumber": "+1 (358) 776-4047",
+        "relationshipEmergency": "Ratione architecto n"
+      });
+    }
   }
 
   onSubmitForm() {
     this.submitted = true;
     if (this.userForm.invalid) return;
     console.log(this.userForm.value);
-    this.onSubmit.emit(this.userForm);
+    this.onSubmit.emit(this.userForm.value as FormData);
   }
 
   onCancelForm() {

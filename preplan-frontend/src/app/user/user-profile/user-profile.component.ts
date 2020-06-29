@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Profile } from 'src/app/shared/models/user';
 
 @Component({
   selector: 'user-profile',
@@ -6,17 +7,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-  formData: any;
+  public formData: FormData;
   constructor() { }
 
   ngOnInit(): void {
+    this.formData = new FormData();
   }
 
-  editUser(event: Event){
+  editUser(event: Event) {
 
   }
 
-  cancel(){
+  cancel() {
 
   }
 }

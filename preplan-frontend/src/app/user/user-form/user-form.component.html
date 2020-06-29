@@ -84,10 +84,12 @@
                 </div>
             </div>
 
-            <!-- TODO: Change to dropdown with : He/Him, She/Her, They/Them -->
             <div class="form-group">
                 <label for="pronoun">Preferred Pronoun</label>
-                <input id="pronoun" class="form-control" formControlName="pronoun" type="text" required>
+                <select id="pronoun" class="form-control" formControlName="pronoun" (change)="changePronoun($event)">
+                    <option value="" disabled> Choose Your Preffered Pronoun </option>
+                    <option *ngFor="let pro of pronounOptions" [ngValue]="pro">{{pro}}</option>
+                </select>
                 <div *ngIf="pronoun.invalid && (pronoun.dirty || pronoun.touched)" class="alert alert-danger">
                     <div *ngIf="pronoun.errors.required">
                         Pronoun is required.
@@ -139,9 +141,11 @@
             </div>
 
             <div class="form-group">
-                <label for="tshirtSize">Discord Username</label>
-                <input id="tshirtSize" class="form-control" formControlName="tshirtSize" type="text">
-
+                <label for="tshirtSize">T-Shirt Size</label>
+                <select id="tshirtSize" class="form-control" formControlName="tshirtSize" (change)="changeTshirtSize($event)">
+                    <option value="" disabled> Choose your T-Shirt Size </option>
+                    <option *ngFor="let size of tshirtSizeOptions" [ngValue]="size">{{size}}</option>
+                </select>
                 <div *ngIf="tshirtSize.invalid && (tshirtSize.dirty || tshirtSize.touched)" class="alert alert-danger">
                     <div *ngIf="tshirtSize.errors.required">
                         T-shirt Size is required.

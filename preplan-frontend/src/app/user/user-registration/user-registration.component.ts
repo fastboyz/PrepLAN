@@ -9,14 +9,15 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./user-registration.component.scss']
 })
 export class UserRegistrationComponent implements OnInit {
-  formData: FormGroup;
+  formData: FormData;
   constructor(private router:Router) { }
 
   ngOnInit(): void {
+    this.formData = null;
   }
 
-  addUser(data: FormGroup){
-    var userAccount:Account = { 
+  addUser(data: FormData){
+    /*var userAccount:Account = { 
       username: data.get("username").value, 
       password: data.get("password").value, 
       email: data.get("email").value
@@ -48,10 +49,11 @@ export class UserRegistrationComponent implements OnInit {
     }
 
     var profileJson = JSON.stringify(profile);
-    console.log(profileJson);
+    console.log(profileJson);*/
 
-    var formDataJson = JSON.stringify(data.value);
+    var formDataJson = JSON.stringify(data);
     console.log(formDataJson);
+    this.router.navigate(['login']);
   }
 
   cancel(){
