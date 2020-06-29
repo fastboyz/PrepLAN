@@ -57,6 +57,28 @@ export class UserFormComponent implements OnInit {
       emergencyNumber: ['', { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
       relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
     })
+
+    // this.userService.loadUser().pipe(tap (user=> this.form.patchValue(user)));
+    if (this.formData) {
+      this.userForm.patchValue({
+        "username": "tiwuty",
+        "password": "Pa$$w0rd!",
+        "email": "kape@mailinator.com",
+        "firstName": "Bree",
+        "lastName": "Wright",
+        "pronoun": "He/Him",
+        "birthday": "1995-04-12",
+        "phoneNumber": "+1 (154) 763-3652",
+        "discord": "",
+        "tshirtSize": "M",
+        "allergy": "Est non dolor volupt",
+        "certification": "Nisi ullam qui enim ",
+        "firstNameEmergency": "Claudia",
+        "lastNameEmergency": "Freeman",
+        "emergencyNumber": "+1 (358) 776-4047",
+        "relationshipEmergency": "Ratione architecto n"
+      });
+    }
   }
 
   onSubmitForm() {
