@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Profile } from 'src/app/shared/models/user';
 
 @Component({
-  selector: 'user-profile',
+  selector: 'profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss']
 })

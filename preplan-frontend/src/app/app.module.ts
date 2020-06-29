@@ -14,6 +14,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { fakeBackendProvider } from './helpers/fake-backend';
+import { DashboardSidebarComponent } from './dashboard-sidebar/dashboard-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { fakeBackendProvider } from './helpers/fake-backend';
     UserFormComponent,
     UserProfileComponent,
     UserRegistrationComponent,
-    DashboardComponent
+    DashboardComponent,
+    DashboardSidebarComponent
   ],
   imports: [
     BrowserModule,
