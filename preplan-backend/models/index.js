@@ -1,12 +1,12 @@
 import { EmergencyContact } from './emergencyContact'
-import { User } from './user';
-import { VolunteerProfile } from './volunteerProfile'
-import { UserProfile } from './userProfile'
+import { Account } from './account';
+import { Profile } from './profile'
+import { User } from './user'
 
 
 export {
+    Account,
+    Profile,
     User,
-    UserProfile,
-    VolunteerProfile,
     EmergencyContact
 };

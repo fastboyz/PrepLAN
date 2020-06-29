@@ -7,26 +7,22 @@ const EmergencyContact = mongoose.model(
         firstName: {
             type: String,
             required: true,
-            unique: false,
             trim: true
         },
 
         lastName: {
             type: String,
             required: true,
-            unique: false,
             trim: true
         },
         phoneNumber: {
             type: String,
             required: true,
-            unique: false,
             trim: true
         },
         relationship: {
             type: String,
             required: true,
-            unique: false,
             trim: true
         },
     })

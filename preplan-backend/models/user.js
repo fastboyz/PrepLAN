@@ -1,27 +1,48 @@
 import mongoose from 'mongoose';
 
-const userSchema = mongoose.Schema({
+const User = mongoose.model(
+    "User",
+    new mongoose.Schema({
+        account: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Account"
+        },
+        firstName: {
+            type: String,
+            required: true,
+            trim: true
+        },
 
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
-    },
+        lastName: {
+            type: String,
+            required: true,
+            trim: true
+        },
 
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
-    },
+        birthday: {
+            type: Date,
+            required: true,
+        },
 
-    password: {
-        type: String,
-        required: true,
-        minlength: 6
-    }
-});
+        phoneNumber: {
+            type: String,
+            required: true,
+            trim: true
+        },
 
-const User = mongoose.model('User', userSchema);
+        discord: {
+            type: String,
+            required: false,
+            unique: true,
+            trim: true
+        },
+
+        pronoun: {
+            type: String,
+            required: true,
+            trim: true
+        }
+    })
+);
+
 export { User };

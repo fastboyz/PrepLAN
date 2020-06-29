@@ -6,7 +6,7 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose'
 import { error } from 'console';
-import { UserController } from './controllers'
+import { AccountController } from './controllers'
 
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://preplan:preplan@localhost:27017/preplan';
@@ -31,16 +31,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
 
-app.use ('/api/auth', UserController);
+app.use('/api/auth', AccountController);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -50,4 +50,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-export {app}
+export { app }

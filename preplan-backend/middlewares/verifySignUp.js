@@ -1,8 +1,8 @@
-import { User } from '../models';
+import { Account } from '../models';
 
 checkUserNameOrEmailDuplicate = (req, res, next) => {
     // Username
-    User.findOne({
+    Account.findOne({
         username: req.body.username
     }).exec((err, user) => {
         if (err) {
@@ -16,7 +16,7 @@ checkUserNameOrEmailDuplicate = (req, res, next) => {
         }
 
         // Email
-        User.findOne({
+        Account.findOne({
             email: req.body.email
         }).exec((err, user) => {
             if (err) {

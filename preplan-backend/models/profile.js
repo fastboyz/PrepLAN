@@ -1,34 +1,29 @@
 import mongoose from 'mongoose';
 
-const VolunteerProfile = mongoose.model(
-    'VolunteerProfile',
+const Profile = mongoose.model(
+    'Profile',
     new mongoose.Schema({
-        userProfile: {
+        user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "UserProfile"
+            ref: "User"
         },
-    
+
         tshirtSize: {
             type: String,
             required: true,
-            unique: true,
             trim: true
         },
-    
+
         allergy: {
             type: String,
-            required: false,
-            unique: true,
             trim: true
         },
-    
+
         certification: {
             type: String,
-            required: false,
-            unique: true,
             trim: true
         },
-        
+
         emergencyContact: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "EmergencyContact"
@@ -36,4 +31,4 @@ const VolunteerProfile = mongoose.model(
     })
 );
 
-export {VolunteerProfile}
+export { Profile }
