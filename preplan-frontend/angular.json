@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "preplan-frontend"
+    }
+  },
+  "defaultProject": "preplan-frontend",
+  "cli": {
+    "analytics": false
+  }
 }
