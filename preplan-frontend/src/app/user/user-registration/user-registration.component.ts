@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Account, User, Profile, EmergencyContact } from 'src/app/shared/models/user';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'user-registration',
@@ -9,8 +10,10 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./user-registration.component.scss']
 })
 export class UserRegistrationComponent implements OnInit {
+  error: string;
   formData: FormData;
-  constructor(private router:Router) { }
+  constructor(private router:Router,
+    private authService: AuthService) { }
 
   ngOnInit(): void {
     this.formData = null;
@@ -53,7 +56,19 @@ export class UserRegistrationComponent implements OnInit {
 
     var formDataJson = JSON.stringify(data);
     console.log(formDataJson);
-    this.router.navigate(['login']);
+
+    this.authService.signup(formDataJson)
+    .pipe().subscribe(
+      data =>{
+        alert(data);
+        console.log(data);
+        this.router.navigate(['login']);
+      }, 
+      error => {
+        this.error = error;
+      }
+    )
+    
   }
 
   cancel(){
