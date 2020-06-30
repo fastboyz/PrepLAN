@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { SECRET } from '../config';
 import { Account } from '../models';
 
-verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
 
     if (!token) {

@@ -6,7 +6,7 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose'
 import { error } from 'console';
-import { AccountController } from './controllers'
+import { AccountController, UserController } from './controllers'
 
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://preplan:preplan@localhost:27017/preplan';
@@ -32,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
 app.use('/api/auth', AccountController);
+app.use('/api/users', UserController);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { Account, User, EmergencyContact, Profile } from '../models';
+import { SECRET } from '../config'
 
 const router = Router();
 
@@ -63,7 +64,39 @@ router.post('/signup', (req, res) => {
     });
 });
 
-router.post('/signin')
+router.post('/signin', (req, res) => {
+    Account.findOne({
+        username: req.body.username
+    }).exec((err, account) => {
+        if(err) {
+            res.status(500).send({message: err});
+            return;
+        }
+
+        let passwordIsValid = bcrypt.compareSync(
+            req.body.password,
+            account.password
+        );
+
+        if(!account && !passwordIsValid) {
+            return res.status(401).send({
+                token: null,
+                message: "Invalid Credentials"
+            });
+        }
+
+        var token = jwt.sign({id: account.id}, SECRET, {
+            expiresIn: 28800
+        });
+
+        res.status(200).send({
+            id: account.id,
+            username: account.username,
+            email: account.email,
+            token: token
+        });
+    });
+})
 
 const AccountController = router;
 export { AccountController }

@@ -6,13 +6,10 @@ services:
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
-          MONGODB_USER: preplan
-          MONGODB_DATABASE: preplan
-          MONGODB_PASS: preplan
           # Create a new database. Please note, the
           # /docker-entrypoint-initdb.d/init.js has to be executed
           # in order for the database to be created
-          MONGO_INITDB_DATABASE: realestate
+          MONGO_INITDB_DATABASE: admin
         volumes:
           # Add the db-init.js file to the Mongo DB container
           - ./db-init.js:/docker-entrypoint-initdb.d/init.js:ro

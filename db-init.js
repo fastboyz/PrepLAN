@@ -1,9 +1,8 @@
+const { use } = require("./preplan-backend/routes");
+
+db = db.getSiblingDB('preplan');
 db.createUser({
     user: "preplan",
-    pwd: "secretPassword",
+    pwd: "preplan",
     roles: [ { role: "dbOwner", db: "preplan" } ]
-  })
-  
-  db.users.insert({
-    name: "user"
-  })
+  });
