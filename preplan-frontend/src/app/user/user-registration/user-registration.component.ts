@@ -57,8 +57,7 @@ export class UserRegistrationComponent implements OnInit {
     var formDataJson = JSON.stringify(data);
     console.log(formDataJson);
 
-    this.authService.signup(formDataJson)
-    .pipe().subscribe(
+    this.authService.signup(data).subscribe(
       data =>{
         alert(data);
         console.log(data);
@@ -66,6 +65,7 @@ export class UserRegistrationComponent implements OnInit {
       }, 
       error => {
         this.error = error;
+        console.log(error);
       }
     )
     

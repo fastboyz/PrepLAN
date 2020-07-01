@@ -34,7 +34,7 @@ export class AuthService {
         this.currentUserSubject.next(null);
     }
 
-    signup(userRegistration: string){
+    signup(userRegistration: FormData){
         return this.http.post<any>(`${environment.apiUrl}/api/auth/signup`, userRegistration)
         .pipe(map(response => {
             return response
