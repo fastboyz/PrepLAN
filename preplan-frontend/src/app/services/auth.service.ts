@@ -40,4 +40,10 @@ export class AuthService {
             return response
         }));
     }
+
+    getToken(){
+        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        var token = currentUser.get('token');
+        return token;
+    }
 }

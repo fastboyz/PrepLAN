@@ -3,6 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { Account } from '../../shared/models/user'
 import { RegistrationFormValidators } from '../../shared/validators/registrationFormValidators'
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'user-form',
@@ -26,6 +27,7 @@ export class UserFormComponent implements OnInit {
   pronounOptions: any = ['He/Him', 'She/Her', 'They/Them'];
 
   constructor(private router: Router,
+    private userService: UserService,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -48,27 +50,27 @@ export class UserFormComponent implements OnInit {
       relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
 
-    // this.userService.loadUser().pipe(tap (user=> this.form.patchValue(user)));
-    if (this.formData) {
-      this.userForm.patchValue({
-        "username": "tiwuty",
-        "password": "Pa$$w0rd!",
-        "email": "kape@mailinator.com",
-        "firstName": "Bree",
-        "lastName": "Wright",
-        "pronoun": "He/Him",
-        "birthday": "1995-04-12",
-        "phoneNumber": "+1 (154) 763-3652",
-        "discord": "",
-        "tshirtSize": "M",
-        "allergy": "Est non dolor volupt",
-        "certification": "Nisi ullam qui enim ",
-        "firstNameEmergency": "Claudia",
-        "lastNameEmergency": "Freeman",
-        "emergencyNumber": "+1 (358) 776-4047",
-        "relationshipEmergency": "Ratione architecto n"
-      });
-    }
+    this.userService.getProfile().subscribe(user=> {this.userForm.patchValue(user)});
+    // if (this.formData) {
+    //   this.userForm.patchValue({
+    //     "username": "tiwuty",
+    //     "password": "Pa$$w0rd!",
+    //     "email": "kape@mailinator.com",
+    //     "firstName": "Bree",
+    //     "lastName": "Wright",
+    //     "pronoun": "He/Him",
+    //     "birthday": "1995-04-12",
+    //     "phoneNumber": "+1 (154) 763-3652",
+    //     "discord": "",
+    //     "tshirtSize": "M",
+    //     "allergy": "Est non dolor volupt",
+    //     "certification": "Nisi ullam qui enim ",
+    //     "firstNameEmergency": "Claudia",
+    //     "lastNameEmergency": "Freeman",
+    //     "emergencyNumber": "+1 (358) 776-4047",
+    //     "relationshipEmergency": "Ratione architecto n"
+    //   });
+    // }
   }
 
   onSubmitForm() {

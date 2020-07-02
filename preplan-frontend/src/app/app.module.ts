@@ -15,6 +15,7 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { fakeBackendProvider } from './helpers/fake-backend';
 import { DashboardSidebarComponent } from './dashboard-sidebar/dashboard-sidebar.component';
+import { EventManagerComponent } from './event-manager/event-manager.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { DashboardSidebarComponent } from './dashboard-sidebar/dashboard-sidebar
     UserProfileComponent,
     UserRegistrationComponent,
     DashboardComponent,
-    DashboardSidebarComponent
+    DashboardSidebarComponent,
+    EventManagerComponent
   ],
   imports: [
     BrowserModule,

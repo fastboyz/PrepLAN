@@ -30,6 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
+// app.use(cors())
 
 app.use('/api/auth', AccountController);
 app.use('/api/users', UserController);
