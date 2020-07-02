@@ -4,6 +4,7 @@ import { Account } from '../../shared/models/user'
 import { RegistrationFormValidators } from '../../shared/validators/registrationFormValidators'
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'user-form',
@@ -28,9 +29,18 @@ export class UserFormComponent implements OnInit {
 
   constructor(private router: Router,
     private userService: UserService,
+    private authService: AuthService,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+
+
+    if (this.authService.currentUserValue) {
+      this.userService.getProfile(this.authService.currentUserValue.id).subscribe(user => {
+        this.userForm.patchValue(user)
+      });
+    }
+
     this.userForm = this.formBuilder.group({
       username: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       password: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
@@ -49,28 +59,6 @@ export class UserFormComponent implements OnInit {
       emergencyNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
       relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
-
-    this.userService.getProfile().subscribe(user=> {this.userForm.patchValue(user)});
-    // if (this.formData) {
-    //   this.userForm.patchValue({
-    //     "username": "tiwuty",
-    //     "password": "Pa$$w0rd!",
-    //     "email": "kape@mailinator.com",
-    //     "firstName": "Bree",
-    //     "lastName": "Wright",
-    //     "pronoun": "He/Him",
-    //     "birthday": "1995-04-12",
-    //     "phoneNumber": "+1 (154) 763-3652",
-    //     "discord": "",
-    //     "tshirtSize": "M",
-    //     "allergy": "Est non dolor volupt",
-    //     "certification": "Nisi ullam qui enim ",
-    //     "firstNameEmergency": "Claudia",
-    //     "lastNameEmergency": "Freeman",
-    //     "emergencyNumber": "+1 (358) 776-4047",
-    //     "relationshipEmergency": "Ratione architecto n"
-    //   });
-    // }
   }
 
   onSubmitForm() {

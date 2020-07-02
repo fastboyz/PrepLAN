@@ -7,7 +7,7 @@ import { SECRET } from '../config'
 const router = Router();
 
 router.post('/signup', (req, res) => {
-    console.log("Resquest Body: " + req.body);
+    console.log("Resquest Body: " + req.body.birthday);
     const account = new Account({
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 8),

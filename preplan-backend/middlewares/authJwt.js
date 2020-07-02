@@ -18,6 +18,16 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-const authJwt = { verifyToken };
+const getId = (req) => {
+    let token = req.headers["x-access-token"];
+    return jwt.verify(token, SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).send({ message: "Unauthorized!" });
+        }
+       return decoded.id;
+    });
+}
+
+const authJwt = { verifyToken, getId };
 
 export { authJwt }

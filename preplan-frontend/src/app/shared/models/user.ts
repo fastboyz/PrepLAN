@@ -1,5 +1,5 @@
 export class Account {
-    _id?:string;
+    id?: string;
     username: string;
     password?: string;
     email: string;
@@ -29,4 +29,23 @@ export class EmergencyContact {
     lastName: string;
     relationship: string;
     phoneNumber: string;
+}
+
+export class CombinedUser {
+    username: string;
+    password: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    pronoun: string;
+    birthday: string;
+    phoneNumber: string;
+    discord: string;
+    tshirtSize: string;
+    allergy: string;
+    certification: string;
+    firstNameEmergency: string;
+    lastNameEmergency: string;
+    emergencyNumber: string;
+    relationshipEmergency: string;
 }

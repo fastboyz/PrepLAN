@@ -6,6 +6,7 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose'
 import { error } from 'console';
+import cors from 'cors';
 import { AccountController, UserController } from './controllers'
 
 
@@ -30,7 +31,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
-// app.use(cors())
+app.use(cors())
 
 app.use('/api/auth', AccountController);
 app.use('/api/users', UserController);

@@ -34,14 +34,14 @@ export class AuthService {
         this.currentUserSubject.next(null);
     }
 
-    signup(userRegistration: FormData){
+    signup(userRegistration: FormData) {
         return this.http.post<any>(`${environment.apiUrl}/api/auth/signup`, userRegistration)
-        .pipe(map(response => {
-            return response
-        }));
+            .pipe(map(response => {
+                return response
+            }));
     }
 
-    getToken(){
+    getToken() {
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         var token = currentUser.get('token');
         return token;

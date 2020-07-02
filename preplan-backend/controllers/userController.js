@@ -6,17 +6,18 @@ import { authJwt } from '../middlewares'
 
 const router = Router();
 
-router.get('/profile', [authJwt.verifyToken], (req, res) => {
+router.get('/profile/:id', [authJwt.verifyToken], (req, res) => {
+    let id = req.params.id
     User.findOne({
-        account: req.body.id
+        account: id
     }).populate("account", "-__v")
         .exec((err, user) => {
             if (err) {
                 res.status(500).send({ message: err });
             }
             let accountBD = user.account;
-            const accountPicked = (({ _id, email, username }) => ({ _id, email, username }))(accountBD);
-            const pickedUser = (({ _id, firstName, lastName, birthday, phoneNumber, discord, pronoun }) => ({ _id, firstName, lastName, birthday, phoneNumber, discord, pronoun }))(user);
+            const accountPicked = (({ _id, email, username, password }) => ({ id, email, username, password }))(accountBD);
+            const pickedUser = (({ _id, firstName, lastName, birthday, phoneNumber, discord, pronoun }) => ({ id, firstName, lastName, birthday, phoneNumber, discord, pronoun }))(user);
             pickedUser['account'] = accountPicked;
             Profile.findOne({
                 user: user.id
@@ -25,8 +26,8 @@ router.get('/profile', [authJwt.verifyToken], (req, res) => {
                     if (err) {
                         res.status(500).send({ message: err });
                     }
-                    const picked = (({ _id, tshirtSize, allergy, certification, emergencyContact }) => ({ _id, tshirtSize, allergy, certification, emergencyContact }))(profile);
-                    picked['canEdit'] = true;
+                    const picked = (({ _id, tshirtSize, allergy, certification, emergencyContact }) => ({ id, tshirtSize, allergy, certification, emergencyContact }))(profile);
+                    picked['canEdit'] = id === authJwt.getId(req);
                     picked['user'] = pickedUser;
                     console.log();
                     res.status(200).json(picked);
