@@ -3,10 +3,10 @@
         <h3>PrepLan</h3>
     </div>
     <ul class="list-unstyled">
-        <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-        <ul class="collapse list-unstyled" id="pageSubmenu">
+        <span href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Coordinator Panel</span>
+        <ul class="list-unstyled" id="pageSubmenu">
             <li>
-                <a>Event Manager</a>
+                <a routerLink='event-manager'>Event Manager</a>
             </li>
             <li>
                 <a>Applications</a>
@@ -22,10 +22,7 @@
             <a routerLink='profile'>Profile</a>
         </li>
         <li>
-            <a>Events</a>
-        </li>
-        <li>
-            <a>Team</a>
+            <a routerLink='event-list' >Event List</a>
         </li>
         <li>
             <a (click)="logOut()">Log out</a>

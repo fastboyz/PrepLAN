@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'sidebar',
@@ -19,6 +19,7 @@ export class DashboardSidebarComponent implements OnInit {
   redirectHome(){
     this.router.navigate(['/']);
   }
+  
   logOut(){
     this.authService.logout();
     this.router.navigate(['/']);

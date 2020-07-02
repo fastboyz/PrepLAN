@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 
@@ -10,12 +11,17 @@ import { LoginFormComponent } from './login-form/login-form.component';
 import { UserFormComponent } from './user/user-form/user-form.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
 import { UserRegistrationComponent } from './user/user-registration/user-registration.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { fakeBackendProvider } from './helpers/fake-backend';
-import { DashboardSidebarComponent } from './dashboard-sidebar/dashboard-sidebar.component';
 import { EventManagerComponent } from './event-manager/event-manager.component';
+import { DashboardEventListComponent } from './dashboard/dashboard-volunteer/dashboard-event-list/dashboard-event-list.component';
+import { DashboardEventTileComponent } from './dashboard/dashboard-volunteer/dashboard-event-tile/dashboard-event-tile.component';
+import { DashboardSidebarComponent } from './dashboard/dashboard-sidebar/dashboard-sidebar.component';
+import { DashboardEventDetailComponent } from './dashboard/dashboard-volunteer/dashboard-event-detail/dashboard-event-detail.component';
+
+
 
 @NgModule({
   declarations: [
@@ -24,16 +30,20 @@ import { EventManagerComponent } from './event-manager/event-manager.component';
     UserFormComponent,
     UserProfileComponent,
     UserRegistrationComponent,
-    DashboardComponent,
+    DashboardHomeComponent,
     DashboardSidebarComponent,
-    EventManagerComponent
+    EventManagerComponent,
+    DashboardEventListComponent,
+    DashboardEventTileComponent,
+    DashboardEventDetailComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule, 
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
