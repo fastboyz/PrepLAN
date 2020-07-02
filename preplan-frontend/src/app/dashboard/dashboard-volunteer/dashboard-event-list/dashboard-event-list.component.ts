@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-dashboard-event-list',
+  selector: 'event-list',
   templateUrl: './dashboard-event-list.component.html',
   styleUrls: ['./dashboard-event-list.component.scss']
 })

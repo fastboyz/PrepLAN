@@ -15,11 +15,11 @@ import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-hom
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { fakeBackendProvider } from './helpers/fake-backend';
-import { EventManagerComponent } from './event-manager/event-manager.component';
 import { DashboardEventListComponent } from './dashboard/dashboard-volunteer/dashboard-event-list/dashboard-event-list.component';
 import { DashboardEventTileComponent } from './dashboard/dashboard-volunteer/dashboard-event-tile/dashboard-event-tile.component';
 import { DashboardSidebarComponent } from './dashboard/dashboard-sidebar/dashboard-sidebar.component';
 import { DashboardEventDetailComponent } from './dashboard/dashboard-volunteer/dashboard-event-detail/dashboard-event-detail.component';
+import { DashboardEventManagerComponent } from './dashboard/dashboard-organizer/dashboard-event-manager/dashboard-event-manager.component';
 
 
 
@@ -32,10 +32,10 @@ import { DashboardEventDetailComponent } from './dashboard/dashboard-volunteer/d
     UserRegistrationComponent,
     DashboardHomeComponent,
     DashboardSidebarComponent,
-    EventManagerComponent,
     DashboardEventListComponent,
     DashboardEventTileComponent,
-    DashboardEventDetailComponent
+    DashboardEventDetailComponent,
+    DashboardEventManagerComponent
   ],
   imports: [
     BrowserModule,
