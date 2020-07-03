@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { SECRET } from '../config';
-import { Account } from '../models';
+import { Account, Role } from '../models';
 
 const verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
@@ -18,16 +18,50 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-const getId = (req) => {
-    let token = req.headers["x-access-token"];
-    return jwt.verify(token, SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).send({ message: "Unauthorized!" });
+const isAdmin = (req, res, next) => {
+    Account.findById(req.accountId).exec((err, account) => {
+        if(err) {
+            res.status(500).send({message: err});
+            return;
         }
-       return decoded.id;
+        Role.findById(account.role).exec((err, role) => {
+            if(err) {
+                res.status(500).send({message: err});
+                return;
+            }
+
+            if(role.name === 'admin') {
+                next();
+                return;
+            }
+            res.status(403).send({ message: "Unauthorized" });
+            return;
+        })
     });
 }
 
-const authJwt = { verifyToken, getId };
+const isOrganizer = (req, res, next) => {
+    Account.findById(req.accountId).exec((err, account) => {
+        if(err) {
+            res.status(500).send({message: err});
+            return;
+        }
+        Role.findById(account.role).exec((err, role) => {
+            if(err) {
+                res.status(500).send({message: err});
+                return;
+            }
+
+            if(role.name === 'organizer' || role.name === 'admin') {
+                next();
+                return;
+            }
+            res.status(403).send({ message: "Unauthorized" });
+            return;
+        })
+    });
+}
+
+const authJwt = { verifyToken, isAdmin, isOrganizer};
 
 export { authJwt }

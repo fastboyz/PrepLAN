@@ -1,8 +1,6 @@
 import { Router } from 'express';
-import { User, Profile, Account } from '../models';
+import { User, Profile } from '../models';
 import { authJwt } from '../middlewares'
-
-
 
 const router = Router();
 
@@ -27,9 +25,8 @@ router.get('/profile/:id', [authJwt.verifyToken], (req, res) => {
                         res.status(500).send({ message: err });
                     }
                     const picked = (({ _id, tshirtSize, allergy, certification, emergencyContact }) => ({ id, tshirtSize, allergy, certification, emergencyContact }))(profile);
-                    picked['canEdit'] = id === authJwt.getId(req);
+                    picked['canEdit'] = id ===  req.accountId;
                     picked['user'] = pickedUser;
-                    console.log();
                     res.status(200).json(picked);
                 })
         });

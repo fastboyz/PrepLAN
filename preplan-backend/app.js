@@ -5,9 +5,9 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose'
-import { error } from 'console';
 import cors from 'cors';
-import { AccountController, UserController } from './controllers'
+import { AccountController, UserController, EventController } from './controllers'
+import { dbConfig } from './config';
 
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://preplan:preplan@localhost:27017/preplan';
@@ -17,7 +17,10 @@ const indexRouter = require('./routes/index');
 const app = express();
 
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log("DB Connected"), { useNewUrlParser: true })
+  .then(() => {
+    console.log("DB Connected");
+    dbConfig.initDB();
+  }, { useNewUrlParser: true })
   .catch(error => console.error(error));
 
 // view engine setup
@@ -35,6 +38,7 @@ app.use(cors())
 
 app.use('/api/auth', AccountController);
 app.use('/api/users', UserController);
+app.use('/api/dashboard', EventController);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
@@ -52,5 +56,6 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 export { app }

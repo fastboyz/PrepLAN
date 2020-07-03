@@ -1,20 +1,20 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { Account, User, EmergencyContact, Profile } from '../models';
+import { Account, User, EmergencyContact, Profile, Role } from '../models';
 import { SECRET } from '../config'
 
 const router = Router();
 
 router.post('/signup', (req, res) => {
-    console.log("Resquest Body: " + req.body.birthday);
     const account = new Account({
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 8),
         username: req.body.username
     }).save((err, acc) => {
         if (err) {
-            res.status(400).send(err);
+            res.status(500).send({message: err});
+            return;
         } else {
             const user = new User({
                 account: acc._id,
@@ -27,7 +27,8 @@ router.post('/signup', (req, res) => {
             }).save((err, usr) => {
                 if (err) {
                     acc.deleteOne();
-                    res.status(400).send(err);
+                    res.status(500).send(err);
+                    return;
                 } else {
                     const emergencyContact = new EmergencyContact({
                         firstName: req.body.firstNameEmergency,
@@ -38,7 +39,8 @@ router.post('/signup', (req, res) => {
                         if (err) {
                             acc.deleteOne();
                             usr.deleteOne()
-                            res.status(400).send(err);
+                            res.status(500).send({message: err});
+                            return;
                         } else {
                             const profile = new Profile({
                                 user: usr._id,
@@ -51,9 +53,37 @@ router.post('/signup', (req, res) => {
                                     acc.deleteOne();
                                     usr.deleteOne()
                                     contact.deleteOne();
-                                    res.status(400).send(err);
+                                    res.status(500).send({message: err});
+                                    return;
                                 } else {
-                                    res.send({ message: "User was registered successfully!" });
+                                    if (req.body.role) {
+                                        Role.findOne({
+                                            name: req.body.role
+                                        }).exec((err, role) => {
+                                            if (err) {
+                                                acc.deleteOne();
+                                                usr.deleteOne()
+                                                contact.deleteOne();
+                                                prof.deleteOne();
+                                                res.status(500).send({message: err});
+                                                return;
+                                            } else {
+                                                acc.role = role._id;
+                                                acc.save(err => {
+                                                    if (err) {
+                                                        acc.deleteOne();
+                                                        usr.deleteOne()
+                                                        contact.deleteOne();
+                                                        prof.deleteOne();
+                                                        res.status(500).send({message: err});
+                                                        return;
+                                                    }
+                                                    res.send({ message: "User was registered successfully!" });
+                                                });
+                                            }
+                                        });
+                                    }
+
                                 }
                             });
                         }
@@ -69,8 +99,8 @@ router.post('/signin', (req, res) => {
     Account.findOne({
         username: req.body.username
     }).exec((err, account) => {
-        if(err) {
-            res.status(500).send({message: err});
+        if (err) {
+            res.status(500).send({ message: err });
             return;
         }
 
@@ -79,14 +109,14 @@ router.post('/signin', (req, res) => {
             account.password
         );
 
-        if(!account && !passwordIsValid) {
+        if (!account && !passwordIsValid) {
             return res.status(401).send({
                 token: null,
                 message: "Invalid Credentials"
             });
         }
 
-        var token = jwt.sign({id: account.id}, SECRET, {
+        var token = jwt.sign({ id: account.id }, SECRET, {
             expiresIn: 28800
         });
 
@@ -94,6 +124,7 @@ router.post('/signin', (req, res) => {
             id: account.id,
             username: account.username,
             email: account.email,
+            role: account.role,
             token: token
         });
     });

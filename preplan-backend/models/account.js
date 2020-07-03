@@ -20,6 +20,11 @@ const accountSchema = mongoose.Schema({
         type: String,
         required: true,
         minlength: 6
+    },
+
+    role: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Role",
     }
 });
 
