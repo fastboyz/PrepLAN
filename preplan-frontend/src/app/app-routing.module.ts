@@ -6,7 +6,7 @@ import { UserRegistrationComponent } from './user/user-registration/user-registr
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { AuthGuard } from './helpers/auth.guard';
 import { DashboardEventListComponent } from './dashboard/dashboard-volunteer/dashboard-event-list/dashboard-event-list.component';
-import { DashboardEventManagerComponent } from './dashboard/dashboard-organizer/dashboard-event-manager/dashboard-event-manager.component';
+import { CoordinatorPanelComponent } from './dashboard/dashboard-organizer/coordinator-panel/coordinator-panel.component';
 
 const routes: Routes = [
   {path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] },
@@ -15,7 +15,7 @@ const routes: Routes = [
   {path: 'register', component: UserRegistrationComponent },
   {path: 'profile', component: UserProfileComponent},
   {path: 'event-list', component: DashboardEventListComponent},
-  {path: 'event-manager', component: DashboardEventManagerComponent},
+  {path: 'coordinator-panel', component: CoordinatorPanelComponent},
   {path: '**', redirectTo: ''}
 ];
 

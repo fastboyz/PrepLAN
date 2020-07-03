@@ -2,30 +2,22 @@
     <div class="sidebar-header" (click)="redirectHome()">
         <h3>PrepLan</h3>
     </div>
-    <ul class="list-unstyled">
-        <span href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Coordinator Panel</span>
-        <ul class="list-unstyled" id="pageSubmenu">
+    <div class="sidebar-content">
+        <ul class="list-unstyled">
             <li>
-                <a routerLink='event-manager'>Event Manager</a>
+                <a routerLink='coordinator-panel'>Coordinator Panel</a>
             </li>
             <li>
-                <a>Applications</a>
+                <a routerLink='profile'>Profile</a>
             </li>
             <li>
-                <a>Schedule Generator</a>
-            </li>
-            <li>
-                <a>Schedule</a>
+                <a routerLink='event-list'>Event List</a>
             </li>
         </ul>
-        <li>
-            <a routerLink='profile'>Profile</a>
-        </li>
-        <li>
-            <a routerLink='event-list' >Event List</a>
-        </li>
-        <li>
-            <a (click)="logOut()">Log out</a>
-        </li>
-    </ul>
+        <ul class="list-unstyled">
+            <li class="logout-sidebar-button">
+                <a (click)="logOut()">Log out</a>
+            </li>
+        </ul>
+    </div>
 </nav>

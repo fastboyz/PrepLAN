@@ -19,7 +19,9 @@ import { DashboardEventListComponent } from './dashboard/dashboard-volunteer/das
 import { DashboardEventTileComponent } from './dashboard/dashboard-volunteer/dashboard-event-tile/dashboard-event-tile.component';
 import { DashboardSidebarComponent } from './dashboard/dashboard-sidebar/dashboard-sidebar.component';
 import { DashboardEventDetailComponent } from './dashboard/dashboard-volunteer/dashboard-event-detail/dashboard-event-detail.component';
-import { DashboardEventManagerComponent } from './dashboard/dashboard-organizer/dashboard-event-manager/dashboard-event-manager.component';
+import { CoordinatorPanelComponent } from './dashboard/dashboard-organizer/coordinator-panel/coordinator-panel.component';
+import { EventManagerComponent } from './dashboard/dashboard-organizer/event-manager/event-manager.component';
+import { EventVolunteerListComponent } from './dashboard/dashboard-organizer/event-volunteer-list/event-volunteer-list.component';
 
 
 
@@ -35,7 +37,9 @@ import { DashboardEventManagerComponent } from './dashboard/dashboard-organizer/
     DashboardEventListComponent,
     DashboardEventTileComponent,
     DashboardEventDetailComponent,
-    DashboardEventManagerComponent
+    CoordinatorPanelComponent,
+    EventManagerComponent,
+    EventVolunteerListComponent,
   ],
   imports: [
     BrowserModule,

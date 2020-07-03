@@ -1,3 +1,6 @@
+$primary: #FF741F;
+@import "../node_modules/bootstrap/scss/bootstrap";
+
 body {
   font-family: 'Roboto Condensed', sans-serif;
   background-color: #333;
@@ -14,27 +17,27 @@ body {
   right: 0;
 }
 
-.btn-primary {
-    background-color: #FF741F ;
-    color: white;
-    border:none;
-}
-.btn-primary:hover{
-    background-color: #b35217;
-}
 
-.btn-primary.disabled, 
-.btn-primary:disabled {
-  background-color: #DA9C77 ;
-}
-.btn-primary:focus,
-.btn-primary.focus {
-    box-shadow: 0 0 0 .2rem rgba(139, 70, 14, 0.5)
-}
-.fas {
-    color:#FF741F ;
-}
+// .btn-primary {
+//     background-color: #FF741F ;
+//     color: white;
+//     border:none;
+// }
+// .btn-primary:hover{
+//     background-color: #b35217;
+// }
 
+// .btn-primary.disabled, 
+// .btn-primary:disabled {
+//   background-color: #DA9C77 ;
+// }
+// .btn-primary:focus,
+// .btn-primary.focus {
+//     box-shadow: 0 0 0 .2rem rgba(139, 70, 14, 0.5)
+// }
+// .fas {
+//     color:#FF741F ;
+// }
 
 @media (max-width: 768px) {
     .content{

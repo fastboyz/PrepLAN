@@ -27,14 +27,25 @@
     padding: 10px;
 }
 
-.sidebar ul li a {
+.sidebar ul li a{
     padding: 10px;
     font-size: 1.1em;
     display: block;
+    color: #fff;
+}
+.sidebar ul li {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    background-color: #444;
+    margin-top:2rem;
+    margin-bottom: 2rem;
+    margin-right: 1rem;
 }
 .sidebar ul li a:hover {
     color: #333;
     background: #ff741f;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
 }
 
 .sidebar ul li.active > a,
@@ -47,6 +58,13 @@ ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
     background: #282828;
+}
+
+.logout-sidebar-button{
+    position: absolute;
+    display: inline-block;
+    bottom: 0;
+    width: 90%;
 }
 
 @media (max-width: 768px) {
