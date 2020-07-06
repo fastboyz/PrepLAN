@@ -1,9 +1,22 @@
 <button class="btn btn-primary">Create new Edition</button>
-<button class="btn btn-primary">Create new Event</button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#create-event-modal">Create new Event</button>
 
 <div class="">
     <ul class="list-unstyled">
         <event-tile></event-tile>
         <event-tile></event-tile>
     </ul>
+</div>
+
+<div class="modal fade" id="create-event-modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Create New Event</h5>
+                </div>
+                <div class="modal-body">
+                    <create-event-form></create-event-form>
+                </div>
+            </div>
+    </div>
 </div>

@@ -22,6 +22,7 @@ import { DashboardEventDetailComponent } from './dashboard/dashboard-volunteer/d
 import { CoordinatorPanelComponent } from './dashboard/dashboard-organizer/coordinator-panel/coordinator-panel.component';
 import { EventManagerComponent } from './dashboard/dashboard-organizer/event-manager/event-manager.component';
 import { EventVolunteerListComponent } from './dashboard/dashboard-organizer/event-volunteer-list/event-volunteer-list.component';
+import { CreateEventFormComponent } from './dashboard/dashboard-organizer/event-manager/create-event-form/create-event-form.component';
 
 
 
@@ -40,6 +41,7 @@ import { EventVolunteerListComponent } from './dashboard/dashboard-organizer/eve
     CoordinatorPanelComponent,
     EventManagerComponent,
     EventVolunteerListComponent,
+    CreateEventFormComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,112 @@
+<div>
+    <form [formGroup]="eventForm" #formDir="ngForm">
+        <div [hidden]="formDir.submitted">
+            <div class="cross-validation"
+                [class.cross-validation-error]="eventForm.errors?.identityRevealed && (eventForm.touched || eventForm.dirty)">
+
+                <div class="form-group">
+                    <label for="eventTitle">Event Title</label>
+                    <input id="eventTitle" class="form-control" formControlName="eventTitle" required>
+
+                    <div *ngIf="eventTitle.invalid && (eventTitle.dirty || eventTitle.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="eventTitle.errors.required">
+                            Event title is required.
+                        </div>
+                        <div *ngIf="eventTitle.errors.minlength">
+                            Event title must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="eventTitle.errors.shouldNotHaveSpaces">
+                            Event Title cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Description</label>
+                    <textarea id="eventDescription" class="form-control" formControlName="eventDescription"
+                        required></textarea>
+                    <div *ngIf="eventDescription.invalid && (eventDescription.dirty || eventDescription.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="eventDescription.errors.required">
+                            Event description is required.
+                        </div>
+                        <div *ngIf="eventDescription.errors.minlength">
+                            Event description must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="eventDescription.errors.shouldNotHaveSpaces">
+                            Event description cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form [formGroup]="editionForm" #formDir="ngForm">
+        <div [hidden]="formDir.submitted">
+            <div class="cross-validation"
+                [class.cross-validation-error]="editionForm.errors?.identityRevealed && (editionForm.touched || editionForm.dirty)">
+
+                <div class="form-group">
+                    <label for="editionName">Edition Name</label>
+                    <input id="editionName" class="form-control" formControlName="editionName" required>
+
+                    <div *ngIf="editionName.invalid && (editionName.dirty || editionName.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="editionName.errors.required">
+                            Event Name is required.
+                        </div>
+                        <div *ngIf="editionName.errors.minlength">
+                            Event Name must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editionName.errors.shouldNotHaveSpaces">
+                            Event Name cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editionStartDate">Edition Start Date</label>
+                    <input id="editionStartDate" class="form-control" formControlName="editionStartDate" type="datetime"
+                        required>
+
+                    <div *ngIf="editionStartDate.invalid && (editionStartDate.dirty || editionStartDate.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="editionStartDate.errors.required">
+                            Event Start Date is required.
+                        </div>
+                        <div *ngIf="editionStartDate.errors.minlength">
+                            Event Start Date must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editionStartDate.errors.shouldNotHaveSpaces">
+                            Event Start Date cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editionEndDate">Edition End Date</label>
+                    <input id="editionEndDate" class="form-control" formControlName="editionEndDate" type="datetime"
+                        required>
+
+                    <div *ngIf="editionEndDate.invalid && (editionEndDate.dirty || editionEndDate.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="editionEndDate.errors.required">
+                            Event End Date is required.
+                        </div>
+                        <div *ngIf="editionEndDate.errors.minlength">
+                            Event End Date must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editionEndDate.errors.shouldNotHaveSpaces">
+                            Event End Date cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+    <div>
+        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button class="btn btn-primary" (click)="createEvent($event)">Create</button>
+    </div>
+</div>

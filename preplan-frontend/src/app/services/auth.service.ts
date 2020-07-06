@@ -9,6 +9,7 @@ import { Account } from '../shared/models/user';
 export class AuthService {
     private currentUserSubject: BehaviorSubject<Account>;
     public currentUser: Observable<Account>;
+    private token:string;
 
     constructor(private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<Account>(JSON.parse(localStorage.getItem('currentUser')));
@@ -42,8 +43,10 @@ export class AuthService {
     }
 
     getToken() {
-        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        var token = currentUser.get('token');
-        return token;
+        if(!this.token){
+            var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            this.token = currentUser['token'];
+        }
+        return this.token;
     }
 }
