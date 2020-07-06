@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Edition } from '../shared/models/event';
+import { Edition, Event } from '../shared/models/event';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
@@ -31,5 +31,9 @@ export class EventService {
                 "x-access-token": this.authService.getToken()
             }
         });
+    }
+
+    getAllEvents(): Event[]{
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-<button class="btn btn-primary">Create new Edition</button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#create-edition-modal">Create new Edition</button>
 <button class="btn btn-primary" data-toggle="modal" data-target="#create-event-modal">Create new Event</button>
 
 <div class="">
@@ -13,9 +13,28 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>Create New Event</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times" style="color: #fff"></i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <create-event-form></create-event-form>
+                </div>
+            </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create-edition-modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Create New Edition</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times" style="color: #fff"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <create-edition-form></create-edition-form>
                 </div>
             </div>
     </div>
