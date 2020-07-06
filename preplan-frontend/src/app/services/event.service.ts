@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
-export class UserService {
+export class EventService {
     constructor(private http: HttpClient,
         private authService: AuthService) { }
 
