@@ -4,6 +4,7 @@ export class Account {
     password?: string;
     email: string;
     token?: string;
+    role: string;
 }
 
 export class User {

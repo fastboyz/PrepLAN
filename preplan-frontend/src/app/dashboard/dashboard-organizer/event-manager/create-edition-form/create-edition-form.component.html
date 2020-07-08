@@ -18,56 +18,56 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="editionName">Edition Name</label>
-                    <input id="editionName" class="form-control" formControlName="editionName" required>
+                    <label for="editName">Edition Name</label>
+                    <input id="editName" class="form-control" formControlName="editName" required>
 
-                    <div *ngIf="editionName.invalid && (editionName.dirty || editionName.touched)"
+                    <div *ngIf="editName.invalid && (editName.dirty || editName.touched)"
                         class="alert alert-danger">
-                        <div *ngIf="editionName.errors.required">
+                        <div *ngIf="editName.errors.required">
                             Event Name is required.
                         </div>
-                        <div *ngIf="editionName.errors.minlength">
+                        <div *ngIf="editName.errors.minlength">
                             Event Name must be at least 6 characters long.
                         </div>
-                        <div *ngIf="editionName.errors.shouldNotHaveSpaces">
+                        <div *ngIf="editName.errors.shouldNotHaveSpaces">
                             Event Name cannot contain invalid characters.
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="editionStartDate">Edition Start Date</label>
-                    <input id="editionStartDate" class="form-control" formControlName="editionStartDate" type="datetime"
+                    <label for="editStartDate">Edition Start Date</label>
+                    <input id="editStartDate" class="form-control" formControlName="editStartDate" type="datetime-local"
                         required>
 
-                    <div *ngIf="editionStartDate.invalid && (editionStartDate.dirty || editionStartDate.touched)"
+                    <div *ngIf="editStartDate.invalid && (editStartDate.dirty || editStartDate.touched)"
                         class="alert alert-danger">
-                        <div *ngIf="editionStartDate.errors.required">
+                        <div *ngIf="editStartDate.errors.required">
                             Event Start Date is required.
                         </div>
-                        <div *ngIf="editionStartDate.errors.minlength">
+                        <div *ngIf="editStartDate.errors.minlength">
                             Event Start Date must be at least 6 characters long.
                         </div>
-                        <div *ngIf="editionStartDate.errors.shouldNotHaveSpaces">
+                        <div *ngIf="editStartDate.errors.shouldNotHaveSpaces">
                             Event Start Date cannot contain invalid characters.
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="editionEndDate">Edition End Date</label>
-                    <input id="editionEndDate" class="form-control" formControlName="editionEndDate" type="datetime"
+                    <label for="editEndDate">Edition End Date</label>
+                    <input id="editEndDate" class="form-control" formControlName="editEndDate" type="datetime-local"
                         required>
 
-                    <div *ngIf="editionEndDate.invalid && (editionEndDate.dirty || editionEndDate.touched)"
+                    <div *ngIf="editEndDate.invalid && (editEndDate.dirty || editEndDate.touched)"
                         class="alert alert-danger">
-                        <div *ngIf="editionEndDate.errors.required">
+                        <div *ngIf="editEndDate.errors.required">
                             Event End Date is required.
                         </div>
-                        <div *ngIf="editionEndDate.errors.minlength">
+                        <div *ngIf="editEndDate.errors.minlength">
                             Event End Date must be at least 6 characters long.
                         </div>
-                        <div *ngIf="editionEndDate.errors.shouldNotHaveSpaces">
+                        <div *ngIf="editEndDate.errors.shouldNotHaveSpaces">
                             Event End Date cannot contain invalid characters.
                         </div>
                     </div>

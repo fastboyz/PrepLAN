@@ -15,33 +15,32 @@ export class CreateEditionFormComponent implements OnInit {
   eventList: Event[];
   editionForm: FormGroup;
   constructor(private formBuilder: FormBuilder,
-    private authService: AuthService,
     private eventService: EventService) { }
 
   ngOnInit(): void {
     this.eventList = this.eventService.getAllEvents();
     this.editionForm = this.formBuilder.group({
       event: ['', { validators: [Validators.required, RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editionName: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editionStartDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editionEndDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editName: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editStartDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editEndDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
   }
 
-  createEdition(event: any){
+  createEdition(event: any) {
 
   }
 
   get event() {
     return this.editionForm.get('event');
   }
-  get editionName() {
-    return this.editionForm.get('editionName');
+  get editName() {
+    return this.editionForm.get('editName');
   }
-  get editionStartDate() {
-    return this.editionForm.get('editionStartDate');
+  get editStartDate() {
+    return this.editionForm.get('editStartDate');
   }
-  get editionEndDate() {
-    return this.editionForm.get('editionEndDate');
+  get editEndDate() {
+    return this.editionForm.get('editEndDate');
   }
 }

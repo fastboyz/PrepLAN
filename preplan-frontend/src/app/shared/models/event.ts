@@ -6,8 +6,8 @@ export class Event {
 
 export class Edition {
     id?: string;
-    name: string;
-    startDate: Date;
-    endDate: Date;
+    name?: string;
+    startDate?: Date;
+    endDate?: Date;
     event: Event;
 }

@@ -11,7 +11,8 @@ export class EventService {
         private authService: AuthService) { }
 
     createEvent(edition: Edition){
-        this.http.post<any>(`${environment.apiUrl}/api/event/create/event)`, edition.event, {
+        console.log(edition.event);
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/create/event`, edition.event, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -20,13 +21,15 @@ export class EventService {
             var event = JSON.parse(response);
             var id = event['id'];
             edition.event.id = id;
-            this.createEdition(edition);
-            return response
+            this.createEdition(edition).pipe(map(resp=>{
+                return [response, resp];
+            }));
+            return [response]
         }));
     }
 
     createEdition(edition:Edition){
-        this.http.post<any>(`${environment.apiUrl}/api/event/create/event)`, edition, {
+        return this.http.post<any>(`${environment.apiUrl}/api/event/create/event)`, edition, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }

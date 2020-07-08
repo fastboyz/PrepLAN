@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationFormValidators } from 'src/app/shared/validators/registrationFormValidators';
+import { EventService } from 'src/app/services/event.service';
+import { Event, Edition } from 'src/app/shared/models/event';
 
 @Component({
   selector: 'create-event-form',
@@ -10,23 +12,44 @@ import { RegistrationFormValidators } from 'src/app/shared/validators/registrati
 export class CreateEventFormComponent implements OnInit {
   eventForm:FormGroup;
   editionForm:FormGroup;
+  error:string;
   
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder,
+    private eventService: EventService) { }
 
   ngOnInit(): void {
     this.eventForm = this.formBuilder.group({
-      eventTitle: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      eventDescription: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      eventTitle: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      eventDescription: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
     this.editionForm = this.formBuilder.group({
-      editionName: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editionStartDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editionEndDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editionName: ['', { validators: [ RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editionStartDate: ['', { validators: [ RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editionEndDate: ['', { validators: [ RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
   }
 
   createEvent(event: Event){
-    
+    let newEvent: Event = {
+      title: this.eventTitle.value,
+      description: this.eventDescription.value
+    };
+    let newEdition: Edition ={
+      name: this.editionName.value,
+      startDate: this.editionStartDate.value,
+      endDate: this.editionStartDate.value,
+      event: newEvent
+    }
+    this.eventService.createEvent(newEdition).subscribe(
+      data =>{
+        //alert(data);
+        console.log(data);
+      }, 
+      error => {
+        this.error = error;
+        console.log(error);
+      }
+    )
   }
 
   get eventTitle() {
