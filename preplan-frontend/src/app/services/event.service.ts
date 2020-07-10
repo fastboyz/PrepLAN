@@ -10,33 +10,37 @@ export class EventService {
     constructor(private http: HttpClient,
         private authService: AuthService) { }
 
-    createEvent(edition: Edition){
-        console.log(edition.event);
-        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/create/event`, edition.event, {
+    createEvent(event: Event) {
+        let title = event.title;
+        let description = event.description;
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/create/event`, { title, description }, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
         })
-        .pipe(map(response => {
-            var event = JSON.parse(response);
-            var id = event['id'];
-            edition.event.id = id;
-            this.createEdition(edition).pipe(map(resp=>{
-                return [response, resp];
+            .pipe(map(response => {
+                console.log("Response : " + response)
+                var id = response.id;
+                console.log("Id =  " + id);
+                // this.createEdition(edition).pipe(map(resp => {
+                //     return resp;
+                // }));
+                return response;
             }));
-            return [response]
-        }));
     }
 
-    createEdition(edition:Edition){
-        return this.http.post<any>(`${environment.apiUrl}/api/event/create/event)`, edition, {
+    createEdition(edition: Edition) {
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/create/edition`, edition, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
-        });
+        }).pipe(map(response => {
+            
+            return response
+        }));
     }
 
-    getAllEvents(): Event[]{
+    getAllEvents(): Event[] {
         return null;
     }
 }

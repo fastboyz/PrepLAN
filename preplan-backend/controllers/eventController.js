@@ -14,12 +14,12 @@ router.post('/create/event', [authJwt.verifyToken/*, authJwt.isOrganizer*/], (re
             res.status(500).send({ message: err });
             return
         }
-        const evtPicked = (({ _id, title, description }) => ({ id, title, description }))(evt);
+        const evtPicked = (({ id, title, description }) => ({ id, title, description }))(evt);
         res.status(200).json(evtPicked);
     });
 });
 
-router.post('/create/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.post('/create/edition', [authJwt.verifyToken/*, authJwt.isOrganizer*/], (req, res) => {
     console.log("Create Edition Body: " + req.body)
     new Edition({
         startDate: req.body.startDate,

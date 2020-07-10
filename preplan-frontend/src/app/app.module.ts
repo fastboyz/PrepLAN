@@ -14,7 +14,6 @@ import { UserRegistrationComponent } from './user/user-registration/user-registr
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
-import { fakeBackendProvider } from './helpers/fake-backend';
 import { DashboardEventListComponent } from './dashboard/dashboard-volunteer/dashboard-event-list/dashboard-event-list.component';
 import { DashboardEventTileComponent } from './dashboard/dashboard-volunteer/dashboard-event-tile/dashboard-event-tile.component';
 import { DashboardSidebarComponent } from './dashboard/dashboard-sidebar/dashboard-sidebar.component';
@@ -56,7 +55,6 @@ import { CreateEditionFormComponent } from './dashboard/dashboard-organizer/even
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    //fakeBackendProvider  
   ],
   bootstrap: [AppComponent]
 })
