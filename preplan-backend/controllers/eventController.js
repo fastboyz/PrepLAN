@@ -19,27 +19,96 @@ router.post('/create/event', [authJwt.verifyToken/*, authJwt.isOrganizer*/], (re
     });
 });
 
-router.post('/create/edition', [authJwt.verifyToken/*, authJwt.isOrganizer*/], (req, res) => {
-    console.log("Create Edition Body: " + req.body)
+router.get('/events', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    Event.find({})
+        .populate([{
+            path: 'editions',
+            populate: {
+                path: 'event',
+                model: 'Event'
+            },
+            populate: {
+                path: 'event.positions',
+                model: 'Position'
+            },
+        }]).exec((err, evts) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var events = [];
+            evts.forEach((evt) => {
+                const event = (({ editions, title, description }) => ({ editions, title, description }))(evt);
+                event['id'] = evt['_id'];
+                events.push(event);
+            });
+            res.status(200).json(events);
+        });
+});
+
+router.put('/event/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    const event = req.body;
+    Event.findById(event.id).exec((err, evt) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return
+        }
+        evt.title = event.title;
+        evt.description = event.description;
+        evt.editions = event.editions;
+        evt.save((err, event) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            res.status(200).json(event);
+        });
+    });
+});
+
+router.get('/event/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    var id = req.params.id;
+    Event.findById(id)
+    .populate([{
+        path: 'editions',
+        populate: {
+            path: 'event',
+            model: 'Event'
+        },
+        populate: {
+            path: 'event.positions',
+            model: 'Position'
+        },
+    }])
+    .exec((err, evt) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return
+        }
+        evt.title = req.body.title;
+    });
+})
+
+router.post('/create/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     new Edition({
         startDate: req.body.startDate,
         endDate: req.body.endDate,
         name: req.body.name,
         event: req.body.event.id
     }).save((err, edition) => {
-        if(err) {
+        if (err) {
             res.status(500).send({ message: err });
             return
         }
         Event.findById(edition.event).exec((err, evt) => {
-            if(err) {
+            if (err) {
                 edition.deleteOne();
                 res.status(500).send({ message: err });
                 return
             }
             evt.editions.push(edition._id);
             evt.save((err, event) => {
-                if(err){
+                if (err) {
                     edition.deleteOne();
                     res.status(500).send({ message: err });
                     return
@@ -50,25 +119,25 @@ router.post('/create/edition', [authJwt.verifyToken/*, authJwt.isOrganizer*/], (
     })
 });
 
-router.post('/create/position',  [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.post('/create/position', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     new Position({
         title: req.body.title,
         description: req.body.description,
         edition: req.body.edition
     }).save((err, pos) => {
-        if(err) {
+        if (err) {
             res.status(500).send({ message: err });
             return
         }
         Edition.findById(pos.edition).exec((err, edition) => {
-            if(err) {
+            if (err) {
                 pos.deleteOne();
                 res.status(500).send({ message: err });
                 return
             }
             edition.positions.push(pos._id);
             edition.save((err, edt) => {
-                if(err){
+                if (err) {
                     pos.deleteOne();
                     res.status(500).send({ message: err });
                     return
@@ -80,8 +149,8 @@ router.post('/create/position',  [authJwt.verifyToken, authJwt.isOrganizer], (re
 });
 
 router.post('/create/timeSlot', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
-    
-})
+
+});
 
 const EventController = router;
 export { EventController };

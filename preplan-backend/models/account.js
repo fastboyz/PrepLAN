@@ -26,7 +26,7 @@ const accountSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Role",
     }
-});
+}); 
 
 const Account = mongoose.model('Account', accountSchema);
 export { Account };
