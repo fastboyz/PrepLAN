@@ -12,12 +12,12 @@ const eventSchema = mongoose.Schema({
         trim: true
     },
 
-    // editions: [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Edition'
-    //     }
-    // ]
+    editions: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Edition'
+        }
+    ]
 });
 
 const Event = mongoose.model('Event', eventSchema);

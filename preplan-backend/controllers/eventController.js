@@ -25,7 +25,7 @@ router.post('/create/edition', [authJwt.verifyToken/*, authJwt.isOrganizer*/], (
         startDate: req.body.startDate,
         endDate: req.body.endDate,
         name: req.body.name,
-        event: req.body.event
+        event: req.body.event.id
     }).save((err, edition) => {
         if(err) {
             res.status(500).send({ message: err });
