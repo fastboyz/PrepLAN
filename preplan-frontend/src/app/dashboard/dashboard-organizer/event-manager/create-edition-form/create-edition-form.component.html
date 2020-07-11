@@ -1,5 +1,7 @@
 <div>
-    <form [formGroup]="editionForm" #formDir="ngForm">
+    <p *ngIf="eventList === null">No existing Events</p>
+
+    <form [formGroup]="editionForm" #formDir="ngForm" *ngIf="eventList !== null">
         <div [hidden]="formDir.submitted">
             <div class="cross-validation"
                 [class.cross-validation-error]="editionForm.errors?.identityRevealed && (editionForm.touched || editionForm.dirty)">
@@ -8,7 +10,7 @@
                     <label for="event">Event</label>
                     <select id="event" class="form-control" formControlName="event">
                         <option value="" disabled> Pick an Event </option>
-                        <option *ngFor="let evt of eventList" [ngValue]="evt">{{evt.title}}</option>
+                        <!-- <option *ngFor="let evt of eventList" [ngValue]="evt">{{evt.title}}</option> -->
                     </select>
                     <div *ngIf="event.invalid && (event.dirty || event.touched)" class="alert alert-danger">
                         <div *ngIf="event.errors.required">

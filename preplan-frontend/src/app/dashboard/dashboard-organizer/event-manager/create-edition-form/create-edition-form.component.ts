@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Event } from 'src/app/shared/models/event';
-import { AuthService } from 'src/app/services/auth.service';
+import { Event, Edition } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationFormValidators } from 'src/app/shared/validators/registrationFormValidators';
-import { timingSafeEqual } from 'crypto';
 
 @Component({
   selector: 'create-edition-form',
@@ -14,11 +12,15 @@ import { timingSafeEqual } from 'crypto';
 export class CreateEditionFormComponent implements OnInit {
   eventList: Event[];
   editionForm: FormGroup;
+  error: string;
   constructor(private formBuilder: FormBuilder,
     private eventService: EventService) { }
 
   ngOnInit(): void {
-    this.eventList = this.eventService.getAllEvents();
+     this.eventService.getAllEvents().subscribe(data=>{
+      this.eventList = data;
+     }
+    );
     this.editionForm = this.formBuilder.group({
       event: ['', { validators: [Validators.required, RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       editName: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
@@ -28,7 +30,21 @@ export class CreateEditionFormComponent implements OnInit {
   }
 
   createEdition(event: any) {
-
+    let newEdition: Edition ={
+      name: this.editName.value,
+      startDate: this.editStartDate.value,
+      endDate: this.editEndDate.value,
+      event: event.id
+    }
+    this.eventService.createEdition(newEdition).subscribe(
+      editionData =>{
+        console.log(editionData);
+      }, 
+      error => {
+        this.error = error;
+        console.log(error);
+      }
+    )
   }
 
   get event() {

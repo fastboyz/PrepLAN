@@ -37,17 +37,15 @@ export class CreateEventFormComponent implements OnInit {
     let newEdition: Edition ={
       name: this.editionName.value,
       startDate: this.editionStartDate.value,
-      endDate: this.editionStartDate.value,
+      endDate: this.editionEndDate.value,
       event: newEvent
     }
     this.eventService.createEvent(newEvent).subscribe(
       data =>{
-        //alert(data);
         console.log(data);
         newEdition.event = data;
         this.eventService.createEdition(newEdition).subscribe(
           editionData =>{
-            //alert(data);
             console.log(editionData);
           }, 
           error => {

@@ -40,7 +40,15 @@ export class EventService {
         }));
     }
 
-    getAllEvents(): Event[] {
+    getAllEvents(){
+        return this.http.get<Event[]>(`${environment.apiUrl}/api/dashboard/events`, {
+            headers: {
+                "x-access-token":  this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            console.log(response);
+            return response;
+        }));
         return null;
     }
 }
