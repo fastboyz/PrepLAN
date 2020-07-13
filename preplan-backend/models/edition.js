@@ -13,12 +13,14 @@ const editionSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    positions: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Position'
-        }
-    ],
+    isRegistering: {
+        type: Boolean,
+        required: true
+    },
+    isActive: {
+        type: Boolean,
+        required: true
+    },
     event: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event",
