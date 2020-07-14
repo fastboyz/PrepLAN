@@ -1,0 +1,143 @@
+<div *ngIf="edition !==null && edition.event !== null">
+    <button class="btn btn-primary " (click)="toggleIsEditable()">Edit</button>
+    <div class="container" *ngIf="!isEditable">
+        <h1>{{edition.event.title}}</h1>
+        <h1>{{edition.name}}</h1>
+        <h6>Date: {{edition.startDate| date:'mediumDate'}} - {{edition.endDate| date:'mediumDate'}} </h6>
+        <h6>Location: {{edition.location}}</h6>
+        <p><span>Description:</span> {{edition.event.description}} </p>
+    </div>
+
+    <div class="container" *ngIf="isEditable">  
+        <div>
+            <form [formGroup]="eventForm" #formDir="ngForm">
+                <div [hidden]="formDir.submitted">
+                    <div class="cross-validation"
+                        [class.cross-validation-error]="eventForm.errors?.identityRevealed && (eventForm.touched || eventForm.dirty)">
+        
+                        <div class="form-group">
+                            <label for="editEventTitle">Event Title</label>
+                            <input id="editEventTitle" class="form-control" formControlName="editEventTitle" required>
+        
+                            <div *ngIf="editEventTitle.invalid && (editEventTitle.dirty || editEventTitle.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="editEventTitle.errors.required">
+                                    Event title is required.
+                                </div>
+                                <div *ngIf="editEventTitle.errors.minlength">
+                                    Event title must be at least 6 characters long.
+                                </div>
+                                <div *ngIf="editEventTitle.errors.shouldNotHaveSpaces">
+                                    Event Title cannot contain invalid characters.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEventDescription">Description</label>
+                            <textarea id="editEventDescription" class="form-control" formControlName="editEventDescription"
+                                required></textarea>
+                            <div *ngIf="editEventDescription.invalid && (editEventDescription.dirty || editEventDescription.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="editEventDescription.errors.required">
+                                    Event description is required.
+                                </div>
+                                <div *ngIf="editEventDescription.errors.minlength">
+                                    Event description must be at least 6 characters long.
+                                </div>
+                                <div *ngIf="editEventDescription.errors.shouldNotHaveSpaces">
+                                    Event description cannot contain invalid characters.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form [formGroup]="editionForm" #formDir="ngForm">
+                <div [hidden]="formDir.submitted">
+                    <div class="cross-validation"
+                        [class.cross-validation-error]="editionForm.errors?.identityRevealed && (editionForm.touched || editionForm.dirty)">
+        
+                        <div class="form-group">
+                            <label for="editEditionName">Edition Name</label>
+                            <input id="editEditionName" class="form-control" formControlName="editEditionName" required>
+        
+                            <div *ngIf="editEditionName.invalid && (editEditionName.dirty || editEditionName.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="editEditionName.errors.required">
+                                    Edition Name is required.
+                                </div>
+                                <div *ngIf="editEditionName.errors.minlength">
+                                    Edition Name must be at least 6 characters long.
+                                </div>
+                                <div *ngIf="editEditionName.errors.shouldNotHaveSpaces">
+                                    Edition Name cannot contain invalid characters.
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="editEditionStartDate">Start Date</label>
+                            <input id="editEditionStartDate" class="form-control" formControlName="editEditionStartDate" type="datetime-local"
+                                required>
+        
+                            <div *ngIf="editEditionStartDate.invalid && (editEditionStartDate.dirty || editEditionStartDate.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="editEditionStartDate.errors.required">
+                                    Edition Start Date is required.
+                                </div>
+                                <div *ngIf="editEditionStartDate.errors.minlength">
+                                    Edition Start Date must be at least 6 characters long.
+                                </div>
+                                <div *ngIf="editEditionStartDate.errors.shouldNotHaveSpaces">
+                                    Edition Start Date cannot contain invalid characters.
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="editEditionEndDate">End Date</label>
+                            <input id="editEditionEndDate" class="form-control" formControlName="editEditionEndDate" type="datetime-local"
+                                required>
+        
+                            <div *ngIf="editEditionEndDate.invalid && (editEditionEndDate.dirty || editEditionEndDate.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="editEditionEndDate.errors.required">
+                                    Edition End Date is required.
+                                </div>
+                                <div *ngIf="editEditionEndDate.errors.minlength">
+                                    Edition End Date must be at least 6 characters long.
+                                </div>
+                                <div *ngIf="editEditionEndDate.errors.shouldNotHaveSpaces">
+                                    Edition End Date cannot contain invalid characters.
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="editEditionLocation">Location</label>
+                            <input id="editEditionLocation" class="form-control" formControlName="editEditionLocation" required>
+        
+                            <div *ngIf="editEditionLocation.invalid && (editEditionLocation.dirty || editEditionLocation.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="editEditionLocation.errors.required">
+                                    Location is required.
+                                </div>
+                                <div *ngIf="editEditionLocation.errors.minlength">
+                                    Location must be at least 6 characters long.
+                                </div>
+                                <div *ngIf="editEditionLocation.errors.shouldNotHaveSpaces">
+                                    Location cannot contain invalid characters.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </form>
+            <div>
+                <button class="btn btn-primary" (click)="updateEdition($event)">Update</button>
+            </div>
+        </div>
+    </div>
+
+</div>
