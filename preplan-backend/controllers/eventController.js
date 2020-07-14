@@ -88,20 +88,22 @@ router.post('/create/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req,
 
 router.get('/editions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     Edition.find({})
-    .populate('event')
-    .exec((err, edts) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return
-        }
-        var editions = [];
-        edts.forEach((edt) => {
-            const picked = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
-            picked['id'] = edt['_id'];
-            editions.push(picked);
+        .populate('event')
+        .exec((err, edts) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var editions = [];
+            edts.forEach((edt) => {
+                const picked = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
+                picked['id'] = edt['_id'];
+                picked.event['id'] = picked.event['_id'];
+                delete picked.event['_id'];
+                editions.push(picked);
+            });
+            res.status(200).json(editions);
         });
-        res.status(200).json(editions);
-    });
 });
 
 router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
@@ -124,7 +126,17 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
             }
             const picked = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(saved);
             picked['id'] = edt['_id'];
-            res.status(200).json(picked);
+            Event.findById(saved.event).exec((err, evt) => {
+                if (err) {
+                    res.status(500).send({ message: err });
+                    return
+                }
+                const event = (({ title, description }) => ({ title, description }))(evt);
+                event['id'] = evt['_id'];
+                picked.event = event;
+                res.status(200).json(picked);
+            })
+           
         });
     });
 });
@@ -132,16 +144,18 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
 router.get('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var id = req.params.id;
     Edition.findById(id)
-    .populate('event')
-    .exec((err, edt) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return
-        }
-        const picked = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
-        picked['id'] = edt['_id'];
-        res.status(200).json(picked);
-    });
+        .populate('event')
+        .exec((err, edt) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            const picked = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
+            picked['id'] = edt['_id'];
+            picked.event['id'] = picked.event['_id'];
+            delete picked.event['_id'];
+            res.status(200).json(picked);
+        });
 });
 
 router.post('/create/position', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
@@ -162,20 +176,22 @@ router.post('/create/position', [authJwt.verifyToken, authJwt.isOrganizer], (req
 
 router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     Position.find({})
-    .populate('edition')
-    .exec((err, positions) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return
-        }
-        var poses = [];
-        positions.forEach((pos) => {
-            const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
-            picked['id'] = pos['_id'];
-            poses.push(picked);
+        .populate('edition')
+        .exec((err, positions) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var poses = [];
+            positions.forEach((pos) => {
+                const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+                picked['id'] = pos['_id'];
+                picked.edition['id'] = picked.edition['_id'];
+                delete picked.edition['_id'];
+                poses.push(picked);
+            });
+            res.status(200).json(poses);
         });
-        res.status(200).json(poses);
-    });
 });
 
 router.put('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
@@ -195,7 +211,18 @@ router.put('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, re
             }
             const picked = (({ title, description, edition }) => ({ title, description, edition }))(saved);
             picked['id'] = pos['_id'];
-            res.status(200).json(picked);
+            Edition.findById(saved.edition).exec((err, edt) => {
+                if (err) {
+                    res.status(500).send({ message: err });
+                    return
+                }
+                const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
+                pickedEdt['id'] = edt['_id'];
+                pickedEdt.event['id'] = pickedEdt.event['_id'];
+                delete pickedEdt.event['_id'];
+                picked.edition = edt;
+                res.status(200).json(picked);
+            });
         });
     });
 });
@@ -203,16 +230,18 @@ router.put('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, re
 router.get('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var id = req.params.id;
     Position.findById(id)
-    .populate('edition')
-    .exec((err, pos) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return
-        }
-        const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
-        picked['id'] = pos['_id'];
-        res.status(200).json(picked);
-    });
+        .populate('edition')
+        .exec((err, pos) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+            picked['id'] = pos['_id'];
+            picked.edition['id'] = picked.edition['_id'];
+            delete picked.edition['_id'];
+            res.status(200).json(picked);
+        });
 })
 
 router.post('/create/timeSlot', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
