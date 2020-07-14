@@ -87,7 +87,9 @@ router.post('/create/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req,
 });
 
 router.get('/editions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
-    Edition.find({}).exec((err, edts) => {
+    Edition.find({})
+    .populate('event')
+    .exec((err, edts) => {
         if (err) {
             res.status(500).send({ message: err });
             return
@@ -109,12 +111,12 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
             res.status(500).send({ message: err });
             return
         }
-        edt.startDate = req.body.startDate;
-        edt.endDate = req.body.endDate;
-        edt.name = req.body.name;
-        edt.isActive = req.body.isActive;
-        edt.isRegistering = req.body.isRegistering;
-        edt.event = req.body.event.id;
+        edt.startDate = edition.startDate;
+        edt.endDate = edition.endDate;
+        edt.name = edition.name;
+        edt.isActive = edition.isActive;
+        edt.isRegistering = edition.isRegistering;
+        edt.event = edition.event.id;
         edt.save((err, saved) => {
             if (err) {
                 res.status(500).send({ message: err });
@@ -129,7 +131,9 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
 
 router.get('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var id = req.params.id;
-    Edition.findById(id).exec((err, edt) => {
+    Edition.findById(id)
+    .populate('event')
+    .exec((err, edt) => {
         if (err) {
             res.status(500).send({ message: err });
             return
@@ -155,6 +159,61 @@ router.post('/create/position', [authJwt.verifyToken, authJwt.isOrganizer], (req
         res.status(200).json(picked);
     });
 });
+
+router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    Position.find({})
+    .populate('edition')
+    .exec((err, positions) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return
+        }
+        var poses = [];
+        positions.forEach((pos) => {
+            const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+            picked['id'] = pos['_id'];
+            poses.push(picked);
+        });
+        res.status(200).json(poses);
+    });
+});
+
+router.put('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    const position = req.body;
+    Position.findById(position.id).exec((err, pos) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return
+        }
+        pos.title = req.body.title;
+        pos.description = req.body.description;
+        pos.edition = req.body.edition;
+        pos.save((err, saved) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            const picked = (({ title, description, edition }) => ({ title, description, edition }))(saved);
+            picked['id'] = pos['_id'];
+            res.status(200).json(picked);
+        });
+    });
+});
+
+router.get('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    var id = req.params.id;
+    Position.findById(id)
+    .populate('edition')
+    .exec((err, pos) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return
+        }
+        const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+        picked['id'] = pos['_id'];
+        res.status(200).json(picked);
+    });
+})
 
 router.post('/create/timeSlot', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
 
