@@ -17,29 +17,34 @@ export class CreateEditionFormComponent implements OnInit {
     private eventService: EventService) { }
 
   ngOnInit(): void {
-     this.eventService.getAllEvents().subscribe(data=>{
+    this.eventService.getAllEvents().subscribe(data => {
+      console.log("Data: " + data);
       this.eventList = data;
-     }
+    }
     );
     this.editionForm = this.formBuilder.group({
       event: ['', { validators: [Validators.required, RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       editName: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       editStartDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       editEndDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editLocation: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
   }
 
   createEdition(event: any) {
-    let newEdition: Edition ={
+    let newEdition: Edition = {
       name: this.editName.value,
       startDate: this.editStartDate.value,
       endDate: this.editEndDate.value,
-      event: event.id
+      location: this.editLocation.value,
+      event: this.event.value.id,
+      isActive: false,
+      isRegistering: false
     }
     this.eventService.createEdition(newEdition).subscribe(
-      editionData =>{
+      editionData => {
         console.log(editionData);
-      }, 
+      },
       error => {
         this.error = error;
         console.log(error);
@@ -59,4 +64,8 @@ export class CreateEditionFormComponent implements OnInit {
   get editEndDate() {
     return this.editionForm.get('editEndDate');
   }
+  get editLocation() {
+    return this.editionForm.get('editLocation');
+  }
 }
+

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationFormValidators } from 'src/app/shared/validators/registrationFormValidators';
 import { EventService } from 'src/app/services/event.service';
@@ -26,6 +26,7 @@ export class CreateEventFormComponent implements OnInit {
       editionName: ['', { validators: [ RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       editionStartDate: ['', { validators: [ RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       editionEndDate: ['', { validators: [ RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editionLocation: ['', { validators: [ RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
   }
 
@@ -38,7 +39,10 @@ export class CreateEventFormComponent implements OnInit {
       name: this.editionName.value,
       startDate: this.editionStartDate.value,
       endDate: this.editionEndDate.value,
-      event: newEvent
+      location: this.editionLocation.value,
+      event: newEvent,
+      isActive: false,
+      isRegistering: false
     }
     this.eventService.createEvent(newEvent).subscribe(
       data =>{
@@ -47,10 +51,12 @@ export class CreateEventFormComponent implements OnInit {
         this.eventService.createEdition(newEdition).subscribe(
           editionData =>{
             console.log(editionData);
+            document.getElementById('create-event-close').click();
           }, 
           error => {
             this.error = error;
             console.log(error);
+          
           }
         )
       }, 
@@ -78,6 +84,10 @@ export class CreateEventFormComponent implements OnInit {
   }
   get editionEndDate() {
     return this.editionForm.get('editionEndDate');
+  }
+
+  get editionLocation() {
+    return this.editionForm.get('editionLocation');
   }
 
 }

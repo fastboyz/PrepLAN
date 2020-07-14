@@ -101,12 +101,30 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="editionLocation">Location</label>
+                    <input id="editionLocation" class="form-control" formControlName="editionLocation" required>
+
+                    <div *ngIf="editionLocation.invalid && (editionLocation.dirty || editionLocation.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="editionLocation.errors.required">
+                            Location is required.
+                        </div>
+                        <div *ngIf="editionLocation.errors.minlength">
+                            Location must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editionLocation.errors.shouldNotHaveSpaces">
+                            Location cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
     </form>
     <div>
-        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="create-event-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button class="btn btn-primary" (click)="createEvent($event)">Create</button>
     </div>
 </div>

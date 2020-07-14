@@ -22,9 +22,6 @@ export class EventService {
                 console.log("Response : " + response)
                 var id = response.id;
                 console.log("Id =  " + id);
-                // this.createEdition(edition).pipe(map(resp => {
-                //     return resp;
-                // }));
                 return response;
             }));
     }
@@ -49,6 +46,16 @@ export class EventService {
             console.log(response);
             return response;
         }));
-        return null;
+    }
+
+    getAllEditions(){
+        return this.http.get<Edition[]>(`${environment.apiUrl}/api/dashboard/editions`, {
+            headers: {
+                "x-access-token":  this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            console.log("Editions: " + response);
+            return response;
+        }));
     }
 }
