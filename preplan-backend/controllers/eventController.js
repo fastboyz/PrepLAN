@@ -194,6 +194,28 @@ router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
         });
 });
 
+
+router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    var editionId = req.params.editionId;
+    Position.find({edition: editionId})
+        .populate('edition')
+        .exec((err, positions) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var poses = [];
+            positions.forEach((pos) => {
+                const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+                picked['id'] = pos['_id'];
+                picked.edition['id'] = picked.edition['_id'];
+                delete picked.edition['_id'];
+                poses.push(picked);
+            });
+            res.status(200).json(poses);
+        });
+});
+
 router.put('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     const position = req.body;
     Position.findById(position.id).exec((err, pos) => {
