@@ -25,7 +25,11 @@ const editionSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event",
         required: true
-    }
+    },
+    location: {
+        type: String,
+        required: true
+    },
 });
 
 const Edition = mongoose.model('Edition', editionSchema);

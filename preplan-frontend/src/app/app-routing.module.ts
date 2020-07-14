@@ -7,15 +7,17 @@ import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-hom
 import { AuthGuard } from './helpers/auth.guard';
 import { DashboardEventListComponent } from './dashboard/dashboard-volunteer/dashboard-event-list/dashboard-event-list.component';
 import { CoordinatorPanelComponent } from './dashboard/dashboard-organizer/coordinator-panel/coordinator-panel.component';
+import { EditionDetailsComponent } from './dashboard/dashboard-organizer/event-manager/edition-details/edition-details.component';
 
 const routes: Routes = [
   {path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] },
   //{path: '', redirectTo:'/login', pathMatch: 'full' },
   {path: 'login', component: LoginFormComponent },
   {path: 'register', component: UserRegistrationComponent },
-  {path: 'profile', component: UserProfileComponent},
-  {path: 'event-list', component: DashboardEventListComponent},
-  {path: 'coordinator-panel', component: CoordinatorPanelComponent},
+  {path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard]},
+  {path: 'event-list', component: DashboardEventListComponent,canActivate: [AuthGuard]},
+  {path: 'coordinator-panel', component: CoordinatorPanelComponent,canActivate: [AuthGuard]},
+  {path: 'edition/:id', component: EditionDetailsComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ];
 

@@ -1,10 +1,11 @@
+<h1>Event Manager</h1>
 <button class="btn btn-primary" data-toggle="modal" data-target="#create-edition-modal">Create new Edition</button>
 <button class="btn btn-primary" data-toggle="modal" data-target="#create-event-modal">Create new Event</button>
 
 <div class="">
     <ul class="list-unstyled" >
         <li class="media" *ngFor="let edition of editionList">     
-            <event-tile [edition]="edition"></event-tile>
+            <event-tile [edition]="edition" (onClick)="openDetails($event)"></event-tile>
         </li>
     </ul>
 </div>

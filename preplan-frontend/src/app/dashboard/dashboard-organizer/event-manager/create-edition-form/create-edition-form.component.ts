@@ -24,26 +24,30 @@ export class CreateEditionFormComponent implements OnInit {
     );
     this.editionForm = this.formBuilder.group({
       event: ['', { validators: [Validators.required, RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editName: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editStartDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editEndDate: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editLocation: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editName: ['', { validators: [Validators.required, Validators.minLength(2), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editStartDate: ['', { validators: [Validators.required, RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editEndDate: ['', { validators: [Validators.required,  RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editLocation: ['', { validators: [Validators.required, RegistrationFormValidators.trimValue], updateOn: 'blur' }],
     })
   }
 
   createEdition(event: any) {
+    let selectedEvent = this.eventList.find(evt =>
+      evt.id == this.event.value.id
+    );
     let newEdition: Edition = {
       name: this.editName.value,
       startDate: this.editStartDate.value,
       endDate: this.editEndDate.value,
       location: this.editLocation.value,
-      event: this.event.value.id,
+      event: selectedEvent,
       isActive: false,
       isRegistering: false
     }
     this.eventService.createEdition(newEdition).subscribe(
       editionData => {
         console.log(editionData);
+        document.getElementById('create-edition-close').click();
       },
       error => {
         this.error = error;
@@ -67,5 +71,7 @@ export class CreateEditionFormComponent implements OnInit {
   get editLocation() {
     return this.editionForm.get('editLocation');
   }
+
+  
 }
 

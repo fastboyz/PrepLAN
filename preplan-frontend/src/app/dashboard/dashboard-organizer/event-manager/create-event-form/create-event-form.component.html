@@ -66,8 +66,8 @@
 
                 <div class="form-group">
                     <label for="editionStartDate">Edition Start Date</label>
-                    <input id="editionStartDate" class="form-control" formControlName="editionStartDate" type="datetime-local"
-                        required>
+                    <input id="editionStartDate" class="form-control" formControlName="editionStartDate"
+                        type="datetime-local" required>
 
                     <div *ngIf="editionStartDate.invalid && (editionStartDate.dirty || editionStartDate.touched)"
                         class="alert alert-danger">
@@ -85,8 +85,8 @@
 
                 <div class="form-group">
                     <label for="editionEndDate">Edition End Date</label>
-                    <input id="editionEndDate" class="form-control" formControlName="editionEndDate" type="datetime-local"
-                        required>
+                    <input id="editionEndDate" class="form-control" formControlName="editionEndDate"
+                        type="datetime-local" required>
 
                     <div *ngIf="editionEndDate.invalid && (editionEndDate.dirty || editionEndDate.touched)"
                         class="alert alert-danger">
@@ -119,6 +119,33 @@
                         </div>
                     </div>
                 </div>
+
+
+                <!-- Start -->
+                <div class="form-group" formArrayName="edition_Positions">
+                    <h5>Positions</h5>
+                    <div class="position" *ngFor="let item of editionPositions.controls; let positionIndex=index"
+                        [formGroupName]="positionIndex">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="editionPositionName">Position Name</label>
+                                <input id="editionPositionName" class="form-control" formControlName="positionName">
+                            </div>
+                            <div class="col-md-7">
+                                <label for="editionPositionDescription">Position Description</label>
+                                <textarea id="editionPositionDescription" class="form-control"
+                                    formControlName="positionDescription">
+                                    </textarea>
+
+                            </div>
+
+                            <button class="btn btn-primary" (click)="deletePosition(positionIndex)"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" (click)="addPosition()">Add Position</button>
+
+                </div>
+                <!-- End -->
             </div>
         </div>
 

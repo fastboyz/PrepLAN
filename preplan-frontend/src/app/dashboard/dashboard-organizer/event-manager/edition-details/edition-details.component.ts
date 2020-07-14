@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Edition, Event } from 'src/app/shared/models/event';
+import { Edition, Event, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { RegistrationFormValidators } from 'src/app/shared/validators/registrationFormValidators';
 import * as moment from 'moment';
 
@@ -16,10 +16,12 @@ export class EditionDetailsComponent implements OnInit {
   isEditable: boolean;
   eventForm: FormGroup;
   editionForm: FormGroup;
+  positionForm: FormGroup;
+  positionList: Position[];
   constructor(
-    private route: ActivatedRoute, 
-    private router: Router, 
-    private eventService: EventService, 
+    private route: ActivatedRoute,
+    private router: Router,
+    private eventService: EventService,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -33,6 +35,10 @@ export class EditionDetailsComponent implements OnInit {
       editEditionStartDate: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       editEditionEndDate: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
       editEditionLocation: [''],
+
+    })
+    this.positionForm = this.formBuilder.group({
+      edition_Positions: this.formBuilder.array([this.formBuilder.group({ positionName: '', positionDescription: '' })]),
     })
 
 
@@ -40,30 +46,40 @@ export class EditionDetailsComponent implements OnInit {
     this.eventService.getEditionById(id).subscribe(data => {
       this.edition = data;
       if (this.edition) {
-        if(this.edition.event){
+        if (this.edition.event) {
           this.eventForm.patchValue({
             editEventTitle: this.edition.event.title,
             editEventDescription: this.edition.event.description
           });
         }
-       
+
         this.editionForm.patchValue({
           editEditionName: this.edition.name,
           editEditionStartDate: moment(this.edition.startDate).format("YYYY-MM-DDTkk:mm"),
-          editEditionEndDate:  moment(this.edition.endDate).format("YYYY-MM-DDTkk:mm"),
+          editEditionEndDate: moment(this.edition.endDate).format("YYYY-MM-DDTkk:mm"),
           editEditionLocation: this.edition.location,
+        });
+
+        this.eventService.getPositionsbyEditionId(this.edition.id).subscribe(data => {
+          this.positionList = data;
+          this.positionList.forEach(element => {
+            this.editionPositions.push(this.formBuilder.group({ positionName: element.title, positionDescription: element.description }));
+          });
         });
       }
     });
+
+    
   }
-  
+
   updateEdition(event: any) {
     let newEvent: Event = {
       id: this.edition.event.id,
       title: this.editEventTitle.value,
       description: this.editEventDescription.value
     };
-    let newEdition: Edition ={
+    let newEdition: Edition = {
+      id: this.edition.id,
       name: this.editEditionName.value,
       startDate: this.editEditionStartDate.value,
       endDate: this.editEditionEndDate.value,
@@ -73,14 +89,14 @@ export class EditionDetailsComponent implements OnInit {
       isRegistering: false
     }
 
-    if (this.eventForm.touched || this.eventForm.dirty){
-      this.eventService.updateEvent(newEvent).subscribe(data=>{
-          this.edition.event = data;
+    if (this.eventForm.touched || this.eventForm.dirty) {
+      this.eventService.updateEvent(newEvent).subscribe(data => {
+        this.edition.event = data;
       });
     }
-    if (this.editionForm.touched || this.editionForm.dirty){
-      this.eventService.updateEdition(newEdition).subscribe(data=>{
-          this.edition = data;
+    if (this.editionForm.touched || this.editionForm.dirty) {
+      this.eventService.updateEdition(newEdition).subscribe(data => {
+        this.edition = data;
       });
     }
   }
@@ -111,5 +127,15 @@ export class EditionDetailsComponent implements OnInit {
     return this.editionForm.get('editEditionLocation');
   }
 
+  get editionPositions() {
+    return this.positionForm.get('edition_Positions') as FormArray;
+  }
 
+  addPosition() {
+    this.editionPositions.push(this.formBuilder.group({ positionName: '', positionDescription: '' }));
+  }
+
+  deletePosition(index) {
+    this.editionPositions.removeAt(index);
+  }
 }

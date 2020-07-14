@@ -3,22 +3,21 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Account, Profile, CombinedUser } from '../shared/models/user';
 import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private authService:AuthService) { }
 
     getAll() {
         return this.http.get<Account[]>(`${environment.apiUrl}/users`);
     }
 
     getProfile(id: string) {
-        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        var token = currentUser['token'];
         return this.http.get<Profile>(`${environment.apiUrl}/api/users/profile/${id}`, {
             headers: {
-                "x-access-token": token
+                "x-access-token": this.authService.getToken()
             }
         }).pipe(map(response => {
             let cUser: CombinedUser = new CombinedUser;

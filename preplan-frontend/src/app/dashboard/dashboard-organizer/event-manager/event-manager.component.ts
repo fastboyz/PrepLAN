@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Edition } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'event-manager',
@@ -9,7 +10,9 @@ import { EventService } from 'src/app/services/event.service';
 })
 export class EventManagerComponent implements OnInit {
   editionList: Edition[];
+  editionDetails: Edition;
   constructor(
+    private router: Router,
     private eventService: EventService) { }
 
   ngOnInit(): void {
@@ -20,4 +23,7 @@ export class EventManagerComponent implements OnInit {
 
   }
 
+  openDetails(data: Edition){
+    this.router.navigate(['/edition', data.id]);
+  }
 }
