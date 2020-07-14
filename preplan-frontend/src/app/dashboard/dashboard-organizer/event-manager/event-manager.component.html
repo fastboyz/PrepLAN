@@ -2,9 +2,10 @@
 <button class="btn btn-primary" data-toggle="modal" data-target="#create-event-modal">Create new Event</button>
 
 <div class="">
-    <ul class="list-unstyled">
-        <event-tile></event-tile>
-        <event-tile></event-tile>
+    <ul class="list-unstyled" >
+        <li class="media" *ngFor="let edition of editionList">     
+            <event-tile [edition]="edition"></event-tile>
+        </li>
     </ul>
 </div>
 

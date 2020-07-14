@@ -10,7 +10,7 @@
                     <label for="event">Event</label>
                     <select id="event" class="form-control" formControlName="event">
                         <option value="" disabled> Pick an Event </option>
-                        <!-- <option *ngFor="let evt of eventList" [ngValue]="evt">{{evt.title}}</option> -->
+                        <option *ngFor="let evt of eventList" [ngValue]="evt">{{evt.title}}</option>
                     </select>
                     <div *ngIf="event.invalid && (event.dirty || event.touched)" class="alert alert-danger">
                         <div *ngIf="event.errors.required">
@@ -74,6 +74,25 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="editLocation">Location</label>
+                    <input id="editLocation" class="form-control" formControlName="editLocation" required>
+
+                    <div *ngIf="editLocation.invalid && (editLocation.dirty || editLocation.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="editLocation.errors.required">
+                            Location is required.
+                        </div>
+                        <div *ngIf="editLocation.errors.minlength">
+                            Location must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editLocation.errors.shouldNotHaveSpaces">
+                            Location cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 

@@ -1,45 +1,20 @@
-<!-- <div class="row">
-    <div class="col-lg-4">
-        <img class="mr-4"src="https://cdn.discordapp.com/attachments/112471487264350208/728090803716620291/lanets.png">
-    </div>
-
-    <div class="col-lg-8 col-md-12 col-sm-12">
-        <h3>Title</h3>
-        <h5>Date: Lorem Ipsum</h5>
-        <h5>Location: Heaven</h5>
-        <p>Description: </p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacus enim, dignissim vitae bibendum a,
-            ullamcorper vel nulla. Ut in leo tellus. Etiam vitae ex ut nunc facilisis porta eu nec ante. Vestibulum
-            feugiat dapibus dui, at luctus orci tincidunt non. Phasellus elementum, tellus in tempus feugiat, ex erat
-            viverra purus, non semper elit nulla nec justo. Vestibulum dui ligula, suscipit vitae ligula ut, vehicula
-            sagittis nisi. Aliquam viverra nunc eget tempor blandit. </p>
-
-        <button class="btn-primary btn btn-enroll">Enroll</button>
-        <button class="btn-primary btn btn-enroll">View Details</button>
-    </div>
-</div> -->
-
-<li class="media">
+<div class="media">
     <img class="align-self-center mr-3"
         src="https://cdn.discordapp.com/attachments/112471487264350208/728090803716620291/lanets.png"
         alt="Generic placeholder image">
     <div class="media-body">
         <div class="row">
             <div class="col">
-                <h3 class="mt-0 mb-1">Event Name</h3>
-                <h6 class="mt-0 mb-1">Edition Name</h6>
+                <h3 class="mt-0 mb-1">{{edition.event.title}}</h3>
+                <h6 class="mt-0 mb-1">Edition: {{edition.name}}</h6>
             </div>
             <div class="col-md-auto align-right">
-                <h6>Date: Lorem Ipsum </h6>
-                <h6>Location: Heaven</h6>
+                <h6>Date: {{edition.startDate| date:'mediumDate'}} - {{edition.endDate| date:'mediumDate'}} </h6>
+                <h6>Location: {{edition.location}}</h6>
             </div>
         </div>
-        <p><span>Description:</span> Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
-            sollicitudin. Cras purus odio,
-            vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec
-            lacinia congue felis in faucibus.
+        <p><span>Description:</span> {{edition.event.description}}
         </p>
         <button class="btn btn-primary">View More details</button>
     </div>
-
-</li>
+</div>

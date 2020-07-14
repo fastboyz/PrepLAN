@@ -10,4 +10,7 @@ export class Edition {
     startDate?: Date;
     endDate?: Date;
     event: Event;
+    isActive: boolean;
+    isRegistering: boolean;
+    location: string;
 }
