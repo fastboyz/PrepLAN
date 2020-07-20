@@ -16,14 +16,22 @@ export class EventManagerComponent implements OnInit {
     private eventService: EventService) { }
 
   ngOnInit(): void {
-    this.eventService.getAllEditions().subscribe(data => {
-      console.log("Data: " + data);
-      this.editionList = data;
-    });
-
+    this.loadAllEditions();
   }
 
+  loadAllEditions(){
+    this.eventService.getAllEditions().subscribe(data => {
+      this.editionList = data;
+    });
+  }
   openDetails(data: Edition){
     this.router.navigate(['/edition', data.id]);
   }
+
+  onEventCreated(isCreated :boolean){
+    if(isCreated){
+      this.loadAllEditions();
+    }
+  }
+
 }

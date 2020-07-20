@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Edition, Event, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
-import { RegistrationFormValidators } from 'src/app/shared/validators/registrationFormValidators';
+import { FormValidators } from 'src/app/shared/validators/formValidators';
 import * as moment from 'moment';
 
 @Component({
@@ -27,13 +27,13 @@ export class EditionDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.isEditable = false;
     this.eventForm = this.formBuilder.group({
-      editEventTitle: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editEventDescription: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editEventTitle: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      editEventDescription: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
     })
     this.editionForm = this.formBuilder.group({
-      editEditionName: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editEditionStartDate: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      editEditionEndDate: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      editEditionName: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      editEditionStartDate: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      editEditionEndDate: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
       editEditionLocation: [''],
 
     })

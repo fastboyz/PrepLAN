@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <create-event-form></create-event-form>
+                    <event-form (onEventCreated)="onEventCreated($event)"></event-form>
                 </div>
             </div>
     </div>
@@ -36,7 +36,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <create-edition-form></create-edition-form>
+                    <edition-form [activateButton]="true"></edition-form>
                 </div>
             </div>
     </div>

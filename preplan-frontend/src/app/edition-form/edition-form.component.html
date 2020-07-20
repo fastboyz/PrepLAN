@@ -1,0 +1,128 @@
+<div>
+    <p *ngIf="eventList === null">No existing Events</p>
+
+    <form [formGroup]="editionForm" #formDir="ngForm" *ngIf="eventList !== null">
+        <div [hidden]="formDir.submitted">
+            <div class="cross-validation"
+                [class.cross-validation-error]="editionForm.errors?.identityRevealed && (editionForm.touched || editionForm.dirty)">
+
+                <div class="form-group" *ngIf="activateButton">
+                    <label for="event">Event</label>
+                    <select id="event" class="form-control" formControlName="event">
+                        <option value="" disabled> Pick an Event </option>
+                        <option *ngFor="let evt of eventList" [ngValue]="evt">{{evt.title}}</option>
+                    </select>
+                    <div *ngIf="event.invalid && (event.dirty || event.touched)" class="alert alert-danger">
+                        <div *ngIf="event.errors.required">
+                            Event is required.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editionName">Edition Name</label>
+                    <input id="editionName" class="form-control" formControlName="editionName" required>
+
+                    <div *ngIf="editionName.invalid && (editionName.dirty || editionName.touched)" class="alert alert-danger">
+                        <div *ngIf="editionName.errors.required">
+                            Edition Name is required.
+                        </div>
+                        <div *ngIf="editionName.errors.minlength">
+                            Edition Name must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editionName.errors.shouldNotHaveSpaces">
+                            Edition Name cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editionStartDate">Edition Start Date</label>
+                    <input id="editionStartDate" class="form-control" formControlName="editionStartDate" type="datetime-local"
+                        required>
+
+                    <div *ngIf="editionStartDate.invalid && (editionStartDate.dirty || editionStartDate.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="editionStartDate.errors.required">
+                            Event Start Date is required.
+                        </div>
+                        <div *ngIf="editionStartDate.errors.minlength">
+                            Event Start Date must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editionStartDate.errors.shouldNotHaveSpaces">
+                            Event Start Date cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editionEndDate">Edition End Date</label>
+                    <input id="editionEndDate" class="form-control" formControlName="editionEndDate" type="datetime-local"
+                        required>
+
+                    <div *ngIf="editionEndDate.invalid && (editionEndDate.dirty || editionEndDate.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="editionEndDate.errors.required">
+                            Event End Date is required.
+                        </div>
+                        <div *ngIf="editionEndDate.errors.minlength">
+                            Event End Date must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editionEndDate.errors.shouldNotHaveSpaces">
+                            Event End Date cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="editionLocation">Location</label>
+                    <input id="editionLocation" class="form-control" formControlName="editionLocation" required>
+
+                    <div *ngIf="editionLocation.invalid && (editionLocation.dirty || editionLocation.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="editionLocation.errors.required">
+                            Location is required.
+                        </div>
+                        <div *ngIf="editionLocation.errors.minlength">
+                            Location must be at least 6 characters long.
+                        </div>
+                        <div *ngIf="editionLocation.errors.shouldNotHaveSpaces">
+                            Location cannot contain invalid characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div formArrayName="edition_Positions">
+                        <div *ngFor="let item of editionPositions.controls; let pointIndex=index">
+                            <div class="row" [formGroupName]="pointIndex">
+                                <div class="col-md-4">
+                                    <label for="editionPositionName">Position Name</label>
+                                    <input id="editionPositionName" class="form-control" formControlName="positionName">
+                                </div>
+                                <div class="col-md-7">
+                                    <label for="editionPositionDescription">Position Description</label>
+                                    <textarea id="editionPositionDescription" class="form-control"
+                                        formControlName="positionDescription">
+                                        </textarea>
+
+                                </div>
+                                <button class="btn" type="button" (click)="deletePosition(pointIndex)"><i
+                                        class="fas fa-trash-alt"></i></button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="btn btn-primary" type="button" (click)="addPosition()">Add Position</button>
+
+                </div>
+            </div>
+        </div>
+    </form>
+    <div *ngIf="activateButton">
+        <button class="btn btn-secondary" id="edition-close" data-dismiss="modal">Close</button>
+        <button class="btn btn-primary" (click)="createEdition($event)">Create</button>
+    </div>
+</div>
