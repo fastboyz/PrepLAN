@@ -15,13 +15,10 @@ import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-hom
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { DashboardEventListComponent } from './dashboard/dashboard-volunteer/dashboard-event-list/dashboard-event-list.component';
-import { DashboardEventTileComponent } from './dashboard/dashboard-volunteer/dashboard-event-tile/dashboard-event-tile.component';
 import { DashboardSidebarComponent } from './dashboard/dashboard-sidebar/dashboard-sidebar.component';
 import { DashboardEventDetailComponent } from './dashboard/dashboard-volunteer/dashboard-event-detail/dashboard-event-detail.component';
 import { EventManagerComponent } from './dashboard/dashboard-organizer/event-manager/event-manager.component';
 import { EventVolunteerListComponent } from './dashboard/dashboard-organizer/event-volunteer-list/event-volunteer-list.component';
-import { CreateEventFormComponent } from './dashboard/dashboard-organizer/event-manager/create-event-form/create-event-form.component';
-import { CreateEditionFormComponent } from './dashboard/dashboard-organizer/event-manager/create-edition-form/create-edition-form.component';
 import { EditionDetailsComponent } from './dashboard/dashboard-organizer/event-manager/edition-details/edition-details.component';
 import { EventFormComponent } from './event-form/event-form.component';
 import { EditionFormComponent } from './edition-form/edition-form.component';
@@ -39,12 +36,9 @@ import { EventTileComponent } from './event-tile/event-tile.component';
     DashboardHomeComponent,
     DashboardSidebarComponent,
     DashboardEventListComponent,
-    DashboardEventTileComponent,
     DashboardEventDetailComponent,
     EventManagerComponent,
     EventVolunteerListComponent,
-    CreateEventFormComponent,
-    CreateEditionFormComponent,
     EditionDetailsComponent,
     EventFormComponent,
     EditionFormComponent,
