@@ -1,0 +1,8 @@
+<h1>Active Events</h1>
+<div class="">
+    <ul class="list-unstyled" >
+        <li class="media" *ngFor="let edition of editionList">     
+            <event-tile [edition]="edition" (onClick)="openDetails($event)"></event-tile>
+        </li>
+    </ul>
+</div>

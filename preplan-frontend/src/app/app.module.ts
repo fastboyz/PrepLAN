@@ -14,9 +14,7 @@ import { UserRegistrationComponent } from './user/user-registration/user-registr
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
-import { DashboardEventListComponent } from './dashboard/dashboard-volunteer/dashboard-event-list/dashboard-event-list.component';
 import { DashboardSidebarComponent } from './dashboard/dashboard-sidebar/dashboard-sidebar.component';
-import { DashboardEventDetailComponent } from './dashboard/dashboard-volunteer/dashboard-event-detail/dashboard-event-detail.component';
 import { EventManagerComponent } from './dashboard/dashboard-organizer/event-manager/event-manager.component';
 import { EventVolunteerListComponent } from './dashboard/dashboard-organizer/event-volunteer-list/event-volunteer-list.component';
 import { EditionDetailsComponent } from './dashboard/dashboard-organizer/event-manager/edition-details/edition-details.component';
@@ -24,6 +22,7 @@ import { EventFormComponent } from './event-form/event-form.component';
 import { EditionFormComponent } from './edition-form/edition-form.component';
 import { EventTileComponent } from './event-tile/event-tile.component';
 import { EventEditionFormComponent } from './event-edition-form/event-edition-form.component';
+import { EventListComponent } from './event-list/event-list.component';
 
 
 
@@ -36,8 +35,6 @@ import { EventEditionFormComponent } from './event-edition-form/event-edition-fo
     UserRegistrationComponent,
     DashboardHomeComponent,
     DashboardSidebarComponent,
-    DashboardEventListComponent,
-    DashboardEventDetailComponent,
     EventManagerComponent,
     EventVolunteerListComponent,
     EditionDetailsComponent,
@@ -45,6 +42,7 @@ import { EventEditionFormComponent } from './event-edition-form/event-edition-fo
     EditionFormComponent,
     EventTileComponent,
     EventEditionFormComponent,
+    EventListComponent,
   ],
   imports: [
     BrowserModule,
