@@ -23,6 +23,7 @@ import { EditionDetailsComponent } from './dashboard/dashboard-organizer/event-m
 import { EventFormComponent } from './event-form/event-form.component';
 import { EditionFormComponent } from './edition-form/edition-form.component';
 import { EventTileComponent } from './event-tile/event-tile.component';
+import { EventEditionFormComponent } from './event-edition-form/event-edition-form.component';
 
 
 
@@ -43,6 +44,7 @@ import { EventTileComponent } from './event-tile/event-tile.component';
     EventFormComponent,
     EditionFormComponent,
     EventTileComponent,
+    EventEditionFormComponent,
   ],
   imports: [
     BrowserModule,

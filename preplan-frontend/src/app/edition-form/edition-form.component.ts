@@ -3,6 +3,7 @@ import { Event, Edition, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { FormValidators } from 'src/app/shared/validators/formValidators';
+import * as moment from 'moment';
 
 @Component({
   selector: 'edition-form',
@@ -10,6 +11,8 @@ import { FormValidators } from 'src/app/shared/validators/formValidators';
   styleUrls: ['./edition-form.component.scss']
 })
 export class EditionFormComponent implements OnInit {
+  @Input() edition: Edition;
+  @Input() positionList: Position[];
   @Input() activateButton: boolean;
   eventList: Event[];
   editionForm: FormGroup;
@@ -31,6 +34,24 @@ export class EditionFormComponent implements OnInit {
       console.log("Data: " + data);
       this.eventList = data;
     });
+
+    if (this.edition) {
+      this.editionForm.patchValue({
+        event: this.edition.event,
+        editionName: this.edition.name,
+        editionStartDate: moment(this.edition.startDate).format("YYYY-MM-DDTkk:mm"),
+        editionEndDate: moment(this.edition.endDate).format("YYYY-MM-DDTkk:mm"),
+        editionLocation: this.edition.location,
+      });
+      
+      if(this.positionList && this.positionList.length > 0){
+        this.editionPositions.clear();
+        this.positionList.forEach(position => {
+          this.editionPositions.push(this.formBuilder.group({ positionName: position.title, positionDescription: position.description }));
+        });
+        
+      }
+    }
   }
 
   createEdition(event: any) {

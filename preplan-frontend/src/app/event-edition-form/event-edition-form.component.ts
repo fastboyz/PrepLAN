@@ -1,48 +1,33 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { FormValidators } from 'src/app/shared/validators/formValidators';
-import { EventService } from 'src/app/services/event.service';
-import { Event, Edition, Position } from 'src/app/shared/models/event';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { EditionFormComponent } from '../edition-form/edition-form.component';
-import * as moment from 'moment';
+import { EventFormComponent } from '../event-form/event-form.component';
+import { EventService } from '../services/event.service';
+import { Event, Edition, Position } from '../shared/models/event';
+import { FormArray } from '@angular/forms';
 
 @Component({
-  selector: 'event-form',
-  templateUrl: './event-form.component.html',
-  styleUrls: ['./event-form.component.scss']
+  selector: 'event-edition-form',
+  templateUrl: './event-edition-form.component.html',
+  styleUrls: ['./event-edition-form.component.scss']
 })
-export class EventFormComponent implements OnInit {
+export class EventEditionFormComponent implements OnInit {
   @ViewChild(EditionFormComponent) editionFormComponent: EditionFormComponent;
+  @ViewChild(EventFormComponent) eventFormComponent: EventFormComponent;
   @Output() onEventCreated = new EventEmitter<boolean>();
-  @Input() activateButton: boolean;
-  @Input() event: Event;
 
-  eventForm: FormGroup;
   error: string;
 
-
-  constructor(private formBuilder: FormBuilder,
-    private eventService: EventService) { }
+  constructor(private eventService:EventService) { }
 
   ngOnInit(): void {
-    this.eventForm = this.formBuilder.group({
-      eventTitle: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-      eventDescription: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-    });
-
-    if (this.event) {
-      this.eventForm.patchValue({
-        eventTitle: this.event.title,
-        eventDescription: this.event.description
-      });
-    }
   }
 
   createEvent(event: Event) {
-    if (this.eventForm.valid) {
+    let eventForm =  this.eventFormComponent.eventForm;
+    if (eventForm.valid) {
       let newEvent: Event = {
-        title: this.eventTitle.value,
-        description: this.eventDescription.value
+        title: eventForm.get('eventTitle').value,
+        description: eventForm.get('eventDescription').value
       };
 
       this.eventService.createEvent(newEvent).subscribe(
@@ -75,7 +60,7 @@ export class EventFormComponent implements OnInit {
                       console.log(error);
                     });
                 }
-                document.getElementById('event-close').click();
+                document.getElementById('event-edition-close').click();
                 this.onEventCreated.emit(true);
               },
               error => {
@@ -90,14 +75,6 @@ export class EventFormComponent implements OnInit {
           console.log(error);
         });
     }
-  }
-
-  get eventTitle() {
-    return this.eventForm.get('eventTitle');
-  }
-
-  get eventDescription() {
-    return this.eventForm.get('eventDescription');
   }
 
 }
