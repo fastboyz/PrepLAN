@@ -127,7 +127,7 @@ export class EditionDetailsComponent implements OnInit {
       }).length == 0);
     }
   }
-}
+
 
   editionListToUpdate(list: any) {
     return (current: any) => {
