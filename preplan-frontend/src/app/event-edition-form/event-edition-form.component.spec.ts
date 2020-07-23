@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardEventListComponent } from './dashboard-event-list.component';
+import { EventEditionFormComponent } from './event-edition-form.component';
 
-describe('DashboardEventListComponent', () => {
-  let component: DashboardEventListComponent;
-  let fixture: ComponentFixture<DashboardEventListComponent>;
+describe('EventEditionFormComponent', () => {
+  let component: EventEditionFormComponent;
+  let fixture: ComponentFixture<EventEditionFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardEventListComponent ]
+      declarations: [ EventEditionFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardEventListComponent);
+    fixture = TestBed.createComponent(EventEditionFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

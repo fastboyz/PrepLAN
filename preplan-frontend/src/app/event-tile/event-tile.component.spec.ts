@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CoordinatorPanelComponent } from './coordinator-panel.component';
+import { EventTileComponent } from './event-tile.component';
 
-describe('CoordinatorPanelComponent', () => {
-  let component: CoordinatorPanelComponent;
-  let fixture: ComponentFixture<CoordinatorPanelComponent>;
+describe('EventTileComponent', () => {
+  let component: EventTileComponent;
+  let fixture: ComponentFixture<EventTileComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CoordinatorPanelComponent ]
+      declarations: [ EventTileComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CoordinatorPanelComponent);
+    fixture = TestBed.createComponent(EventTileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

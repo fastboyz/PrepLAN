@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Account } from '../../shared/models/user'
-import { RegistrationFormValidators } from '../../shared/validators/registrationFormValidators'
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormValidators } from '../../shared/validators/formValidators'
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -42,22 +41,22 @@ export class UserFormComponent implements OnInit {
     }
 
     this.userForm = this.formBuilder.group({
-      username: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      password: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      username: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
+      password: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
       email: ['', { validators: [Validators.required, Validators.pattern(this.emailPattern)], updateOn: 'blur' }],
-      firstName: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      lastName: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      firstName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      lastName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
       pronoun: ['', { validators: [Validators.required], updateOn: 'blur' }],
       birthday: ['', { validators: [Validators.required, Validators.pattern(this.birthdayPattern)], updateOn: 'blur' }],
       phoneNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
       discord: ['', { validators: [Validators.pattern(this.discordPattern)], updateOn: 'blur' }],
       tshirtSize: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      allergy: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      certification: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      firstNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      lastNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      allergy: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      certification: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      firstNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      lastNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
       emergencyNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
-      relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
+      relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
     })
   }
 

@@ -9,8 +9,14 @@ export class Edition {
     name?: string;
     startDate?: Date;
     endDate?: Date;
-    event: Event;
+    event?: Event;
     isActive: boolean;
     isRegistering: boolean;
     location: string;
+}
+
+export class Position {
+    title: string;
+    description: string;
+    edition: Edition;
 }
