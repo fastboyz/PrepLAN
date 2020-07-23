@@ -49,7 +49,6 @@ export class EventFormComponent implements OnInit {
         data => {
           let editionForm = this.editionFormComponent.editionForm;
           if ((editionForm.touched || editionForm.dirty) /* && editionForm.valid*/) {
-            console.log(this.editionFormComponent.editionForm.value);
             let newEdition: Edition = {
               name: editionForm.get('editionName').value,
               startDate: editionForm.get('editionStartDate').value,

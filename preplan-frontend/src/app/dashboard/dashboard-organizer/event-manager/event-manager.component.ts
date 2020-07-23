@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Edition } from 'src/app/shared/models/event';
+import { Edition, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
 import { Router } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 export class EventManagerComponent implements OnInit {
   editionList: Edition[];
   editionDetails: Edition;
+  positionList:Position[];
   constructor(
     private router: Router,
     private eventService: EventService) { }
@@ -25,7 +26,11 @@ export class EventManagerComponent implements OnInit {
     });
   }
   openDetails(data: Edition){
-    this.router.navigate(['/edition', data.id]);
+    this.editionDetails = data;
+    this.eventService.getPositionsbyEditionId(this.editionDetails.id).subscribe(data => {
+      this.positionList = data;
+    });
+    // this.router.navigate(['/edition', data.id]);
   }
 
   onEventCreated(isCreated :boolean){

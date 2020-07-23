@@ -19,9 +19,7 @@ export class EventService {
             }
         })
             .pipe(map(response => {
-                console.log("Response : " + response)
                 var id = response.id;
-                console.log("Id =  " + id);
                 return response;
             }));
     }
@@ -53,7 +51,6 @@ export class EventService {
                 "x-access-token":  this.authService.getToken()
             }
         }).pipe(map(response => {
-            console.log(response);
             return response;
         }));
     }
@@ -64,7 +61,6 @@ export class EventService {
                 "x-access-token":  this.authService.getToken()
             }
         }).pipe(map(response => {
-            console.log("Editions: " + response);
             return response;
         }));
     }

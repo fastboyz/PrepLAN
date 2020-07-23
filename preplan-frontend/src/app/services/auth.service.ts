@@ -42,11 +42,28 @@ export class AuthService {
             }));
     }
 
+    getRole(){
+        let id = this.getCurrentUserId();
+        return this.http.get<any>(`${environment.apiUrl}/api/auth/role/${id}`, {
+            headers: {
+                "x-access-token": this.getToken()
+            }
+        }).pipe(map(response => {
+            console.log("Role:" + response)
+            return response;
+        }));
+    }
+
     getToken() {
         if(!this.token){
             var currentUser = JSON.parse(localStorage.getItem('currentUser'));
             this.token = currentUser['token'];
         }
         return this.token;
+    }
+
+    getCurrentUserId(){
+        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        return currentUser['id'];
     }
 }

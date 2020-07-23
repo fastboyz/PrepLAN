@@ -14,8 +14,8 @@ export class UserProfileComponent implements OnInit {
     this.formData = new FormData();
   }
 
-  editUser(event: Event) {
-
+  editUser(event: any) {
+    console.log(event);
   }
 
   cancel() {

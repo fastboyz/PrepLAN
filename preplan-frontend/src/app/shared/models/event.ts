@@ -16,6 +16,7 @@ export class Edition {
 }
 
 export class Position {
+    id?: string;
     title: string;
     description: string;
     edition: Edition;

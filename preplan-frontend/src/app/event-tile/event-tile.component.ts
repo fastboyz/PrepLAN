@@ -13,6 +13,7 @@ export class EventTileComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  
   onButtonClick(event:Event){
     this.onClick.emit(this.edition);
   }

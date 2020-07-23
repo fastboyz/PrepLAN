@@ -21,6 +21,10 @@ export class UserService {
             }
         }).pipe(map(response => {
             let cUser: CombinedUser = new CombinedUser;
+            cUser.idAccount = response.user.account.id;
+            cUser.idEmergencyContact = response.emergencyContact.id;
+            cUser.idProfile = response.id;
+            cUser.idUser = response.user.id;
             cUser.allergy = response.allergy;
             cUser.certification = response.certification;
             cUser.tshirtSize = response.tshirtSize;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Edition, Event, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
@@ -6,90 +6,102 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 
 import { EditionFormComponent } from 'src/app/edition-form/edition-form.component';
 import { EventFormComponent } from 'src/app/event-form/event-form.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-edition-details',
+  selector: 'edition-details',
   templateUrl: './edition-details.component.html',
   styleUrls: ['./edition-details.component.scss']
 })
 export class EditionDetailsComponent implements OnInit {
   @ViewChild(EditionFormComponent) editionFormComponent: EditionFormComponent;
   @ViewChild(EventFormComponent) eventFormComponent: EventFormComponent;
-  edition: Edition;
-  positionList: Position[];
+  @Input() edition: Edition;
+  @Input() positionList: Position[];
   isEditable: boolean;
+  isOrganizer: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private eventService: EventService,
-    private formBuilder: FormBuilder) { }
+    private authService: AuthService) { }
 
   ngOnInit(): void {
     this.isEditable = false;
+    // let id = this.route.snapshot.paramMap.get('id');
 
+    // this.eventService.getEditionById(id).subscribe(data => {
+    //   this.edition = data;
+    // });
+    // let id = this.edition?.id;
+    // console.log(id);
+    // if (id) {
+    //   this.eventService.getPositionsbyEditionId(id).subscribe(data => {
+    //     this.positionList = data;
+    //   });
 
-    let id = this.route.snapshot.paramMap.get('id');
-
-    this.eventService.getEditionById(id).subscribe(data => {
-      this.edition = data;
-      //   if (this.edition) {
-      //     if (this.edition.event) {
-      //       this.eventForm.patchValue({
-      //         editEventTitle: this.edition.event.title,
-      //         editEventDescription: this.edition.event.description
-      //       });
-      //     }
-
-      //     this.editionForm.patchValue({
-      //       editEditionName: this.edition.name,
-      //       editEditionStartDate: moment(this.edition.startDate).format("YYYY-MM-DDTkk:mm"),
-      //       editEditionEndDate: moment(this.edition.endDate).format("YYYY-MM-DDTkk:mm"),
-      //       editEditionLocation: this.edition.location,
-      //     });
-
-
-    });
-
-    this.eventService.getPositionsbyEditionId(id).subscribe(data => {
-      this.positionList = data;
-      // this.positionList.forEach(element => {
-      //   this.editionPositions.push(this.formBuilder.group({ positionName: element.title, positionDescription: element.description }));
-      // });
-    });
+    //   this.authService.getRole().subscribe(data => {
+    //     console.log("data: " + data);
+    //     if (data == 'organizer')
+    //       this.isOrganizer = true;
+    //     else
+    //       this.isOrganizer = false;
+    //   })
+    // }
 
   }
 
   updateEdition(event: any) {
-    // let newEvent: Event = {
-    //   id: this.edition.event.id,
-    //   title: this.editEventTitle.value,
-    //   description: this.editEventDescription.value
-    // };
-    // let newEdition: Edition = {
-    //   id: this.edition.id,
-    //   name: this.editEditionName.value,
-    //   startDate: this.editEditionStartDate.value,
-    //   endDate: this.editEditionEndDate.value,
-    //   location: this.editEditionLocation.value,
-    //   event: newEvent,
-    //   isActive: false,
-    //   isRegistering: false
-    // }
+    let editionForm = this.editionFormComponent.editionForm;
+    let eventForm = this.eventFormComponent.eventForm;
+    let newEvent: Event = {
+      id: this.edition.event.id,
+      title: eventForm.get('eventTitle').value,
+      description: eventForm.get('eventDescription').value
+    };
+    let newEdition: Edition = {
+      id: this.edition.id,
+      name: editionForm.get('editionName').value,
+      startDate: editionForm.get('editionStartDate').value,
+      endDate: editionForm.get('editionEndDate').value,
+      location: editionForm.get('editionLocation').value,
+      event: newEvent,
+      isActive: false,
+      isRegistering: false
+    }
 
-    // if (this.eventForm.touched || this.eventForm.dirty) {
-    //   this.eventService.updateEvent(newEvent).subscribe(data => {
-    //     this.edition.event = data;
-    //   });
-    // }
-    // if (this.editionForm.touched || this.editionForm.dirty) {
-    //   this.eventService.updateEdition(newEdition).subscribe(data => {
-    //     this.edition = data;
-    //   });
-    // }
-  }
+    if (eventForm.touched || eventForm.dirty) {
+      this.eventService.updateEvent(newEvent).subscribe(data => {
+        this.edition.event = data;
+      });
+    }
+    if (editionForm.touched || editionForm.dirty) {
+      let editionPositionForm = editionForm.get('edition_Positions');
 
-  toggleIsEditable() {
-    this.isEditable = !this.isEditable;
+      this.eventService.updateEdition(newEdition).subscribe(data => {
+        this.edition = data;
+      });
+
+      if (editionPositionForm.touched || editionPositionForm.dirty) {
+        for (let index = 0; index < editionPositionForm.value.length; index++) {
+          let position: Position = {
+            title: editionPositionForm.value[index].positionName,
+            description: editionPositionForm.value[index].positionDescription,
+            edition: this.edition
+          };
+          // call update
+          // TODO-Steve: 
+          // untouched = positionList,
+          // touched = editionPositionForm (formArray)
+          // this.eventService.method(param).subscribe(data=>{});
+        }
+      }
+
+      }
+    }
+
+    toggleIsEditable() {
+      this.isEditable = !this.isEditable;
+    }
   }
-}

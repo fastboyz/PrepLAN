@@ -31,7 +31,6 @@ export class EditionFormComponent implements OnInit {
     })
 
     this.eventService.getAllEvents().subscribe(data => {
-      console.log("Data: " + data);
       this.eventList = data;
     });
 

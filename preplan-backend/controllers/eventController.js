@@ -5,7 +5,6 @@ import { Event, Edition, Position } from '../models';
 const router = Router();
 
 router.post('/create/event', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
-    console.log("Create Event Body: " + req.body.title + ", " + req.body.description)
     new Event({
         title: req.body.title,
         description: req.body.description,

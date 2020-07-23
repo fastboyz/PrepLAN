@@ -32,8 +32,6 @@ export class UserFormComponent implements OnInit {
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-
-
     if (this.authService.currentUserValue) {
       this.userService.getProfile(this.authService.currentUserValue.id).subscribe(user => {
         this.userForm.patchValue(user)
@@ -63,8 +61,9 @@ export class UserFormComponent implements OnInit {
   onSubmitForm() {
     this.submitted = true;
     if (this.userForm.invalid) return;
-    console.log(this.userForm.value);
+
     this.onSubmit.emit(this.userForm.value as FormData);
+    // TODO-Steve: append id into form data
   }
 
   onCancelForm() {

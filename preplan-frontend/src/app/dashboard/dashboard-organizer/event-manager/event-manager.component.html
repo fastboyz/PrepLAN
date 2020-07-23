@@ -41,3 +41,19 @@
             </div>
     </div>
 </div>
+
+<div  class="modal fade" id="edition-details-modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Edition Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times" style="color: #fff"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   <edition-details [edition]="editionDetails" [positionList]="positionList"></edition-details>
+                </div>
+            </div>
+    </div>
+</div>
