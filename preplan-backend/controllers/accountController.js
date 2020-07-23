@@ -128,6 +128,20 @@ router.post('/signin', (req, res) => {
             token: token
         });
     });
+});
+
+router.get('/role/:id', (req, res) => {
+    var accountId = req.params.id;
+    Account.findById(accountId)
+    .populate('role')
+    .exec((err, acc) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+        }
+
+        res.status(200).send(acc.role.name);
+    })
 })
 
 const AccountController = router;

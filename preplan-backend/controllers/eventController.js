@@ -136,7 +136,7 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
                 picked.event = event;
                 res.status(200).json(picked);
             })
-           
+
         });
     });
 });
@@ -174,6 +174,27 @@ router.post('/create/position', [authJwt.verifyToken, authJwt.isOrganizer], (req
     });
 });
 
+router.post('/create/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    var elements = req.body;
+    var data = [];
+    elements.forEach(element => {
+        new Position({
+            title: element.title,
+            description: element.description,
+            edition: element.edition
+        }).save((err, pos) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+            picked['id'] = pos['_id'];
+            data.push(picked);
+        });
+    });
+    res.status(200).json(data);
+});
+
 router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     Position.find({})
         .populate('edition')
@@ -197,7 +218,7 @@ router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
 
 router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var editionId = req.params.editionId;
-    Position.find({edition: editionId})
+    Position.find({ edition: editionId })
         .populate('edition')
         .exec((err, positions) => {
             if (err) {
