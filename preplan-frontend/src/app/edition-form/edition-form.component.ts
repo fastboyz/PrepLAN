@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Event, Edition, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -14,6 +14,7 @@ export class EditionFormComponent implements OnInit {
   @Input() edition: Edition;
   @Input() positionList: Position[];
   @Input() activateButton: boolean;
+  @Output() onEventCreated = new EventEmitter<boolean>();
   eventList: Event[];
   editionForm: FormGroup;
   error: string;
@@ -27,7 +28,7 @@ export class EditionFormComponent implements OnInit {
       editionStartDate: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
       editionEndDate: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
       editionLocation: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
-      edition_Positions: this.formBuilder.array([this.formBuilder.group({ positionName: '', positionDescription: '' })]),
+      edition_Positions: this.formBuilder.array([this.formBuilder.group({ positionName: '', positionDescription: '', id: '' })]),
     })
 
     this.eventService.getAllEvents().subscribe(data => {
@@ -46,7 +47,7 @@ export class EditionFormComponent implements OnInit {
       if(this.positionList && this.positionList.length > 0){
         this.editionPositions.clear();
         this.positionList.forEach(position => {
-          this.editionPositions.push(this.formBuilder.group({ positionName: position.title, positionDescription: position.description }));
+          this.editionPositions.push(this.formBuilder.group({ positionName: position.title, positionDescription: position.description,  id: position.id}));
         });
         
       }
@@ -78,13 +79,14 @@ export class EditionFormComponent implements OnInit {
             edition: editionData
           };
           this.eventService.createPosition(position).subscribe(positionData => {
-            document.getElementById('edition-close').click();
           },
             error => {
               this.error = error;
               console.log(error);
             });
         }
+        document.getElementById('edition-close').click();
+        this.onEventCreated.emit(true)
       },
       error => {
         this.error = error;
@@ -114,7 +116,7 @@ export class EditionFormComponent implements OnInit {
   }
 
   addPosition() {
-    this.editionPositions.push(this.formBuilder.group({ positionName: '', positionDescription: '' }));
+    this.editionPositions.push(this.formBuilder.group({ positionName: '', positionDescription: '', id: '' }));
   }
 
   deletePosition(index) {

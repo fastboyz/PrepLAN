@@ -36,7 +36,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <edition-form [activateButton]="true"></edition-form>
+                    <edition-form (onEventCreated)="onEventCreated($event)" [activateButton]="true"></edition-form>
                 </div>
             </div>
     </div>

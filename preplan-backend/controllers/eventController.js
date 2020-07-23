@@ -1,10 +1,10 @@
-import { Router } from 'express';
+import e, { Router } from 'express';
 import { authJwt } from '../middlewares'
 import { Event, Edition, Position } from '../models';
 
 const router = Router();
 
-router.post('/create/event', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.post('/event', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     new Event({
         title: req.body.title,
         description: req.body.description,
@@ -66,21 +66,21 @@ router.get('/event/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
     });
 });
 
-router.post('/create/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.post('/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     new Edition({
         startDate: req.body.startDate,
         endDate: req.body.endDate,
         name: req.body.name,
         isActive: req.body.isActive,
         isRegistering: req.body.isRegistering,
-        event: req.body.event.id,
-        location: req.body.location
+        location: req.body.location,
+        event: req.body.event.id
     }).save((err, edition) => {
         if (err) {
             res.status(500).send({ message: err });
             return
         }
-        const picked = (({ startDate, endDate, name, isRegistering, isActive, event, location }) => ({ startDate, endDate, name, isRegistering, isActive, event, location }))(edition);
+        const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edition);
         picked['id'] = edition['_id'];
         res.status(200).json(picked);
     })
@@ -96,10 +96,14 @@ router.get('/editions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) =
             }
             var editions = [];
             edts.forEach((edt) => {
-                const picked = (({ startDate, endDate, name, isRegistering, isActive, event, location }) => ({ startDate, endDate, name, isRegistering, isActive, event , location}))(edt);
+                const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edt);
                 picked['id'] = edt['_id'];
-                picked.event['id'] = picked.event['_id'];
-                delete picked.event['_id'];
+
+                var evt = picked.event;
+                const event = (({ title, description }) => ({ title, description }))(evt);
+                event['id'] = evt['_id'];
+
+                picked.event = event;
                 editions.push(picked);
             });
             res.status(200).json(editions);
@@ -119,13 +123,13 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
         edt.isActive = edition.isActive;
         edt.isRegistering = edition.isRegistering;
         edt.event = edition.event.id;
-        edt.location = edition.location;
+        edt.location = edition.location
         edt.save((err, saved) => {
             if (err) {
                 res.status(500).send({ message: err });
                 return
             }
-            const picked = (({ startDate, endDate, name, isRegistering, isActive, event, location }) => ({ startDate, endDate, name, isRegistering, isActive, event , location}))(saved);
+            const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(saved);
             picked['id'] = edt['_id'];
             Event.findById(saved.event).exec((err, evt) => {
                 if (err) {
@@ -151,19 +155,19 @@ router.get('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
                 res.status(500).send({ message: err });
                 return
             }
-            const evt = edt.event;
-            const picked = (({ startDate, endDate, name, isRegistering, isActive, location}) => ({ startDate, endDate, name, isRegistering, isActive, location }))(edt);
+            const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edt);
+            picked['id'] = edt['_id'];
 
+            var evt = picked.event;
             const event = (({ title, description }) => ({ title, description }))(evt);
             event['id'] = evt['_id'];
 
-            picked['id'] = edt['_id'];
-            picked['event'] = event;
+            picked.event = event;
             res.status(200).json(picked);
         });
 });
 
-router.post('/create/position', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.post('/position', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     new Position({
         title: req.body.title,
         description: req.body.description,
@@ -179,14 +183,14 @@ router.post('/create/position', [authJwt.verifyToken, authJwt.isOrganizer], (req
     });
 });
 
-router.post('/create/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var elements = req.body;
     var data = [];
     elements.forEach(element => {
         new Position({
             title: element.title,
             description: element.description,
-            edition: element.edition
+            edition: element.edition.id
         }).save((err, pos) => {
             if (err) {
                 res.status(500).send({ message: err });
@@ -197,7 +201,64 @@ router.post('/create/positions', [authJwt.verifyToken, authJwt.isOrganizer], (re
             data.push(picked);
         });
     });
+});
+
+router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    var elements = req.body;
+    var data = [];
+    console.log(elements);
+    elements.forEach(element => {
+        Position.findById(element.id).exec((err, pos) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            pos.title = element.title;
+            pos.description = element.description;
+            pos.edition = element.edition;
+            pos.save((err, saved) => {
+                if (err) {
+                    res.status(500).send({ message: err });
+                    return
+                }
+                const picked = (({ title, description, edition }) => ({ title, description, edition }))(saved);
+                picked['id'] = pos['_id'];
+                Edition.findById(saved.edition).exec((err, edt) => {
+                    if (err) {
+                        res.status(500).send({ message: err });
+                        return
+                    }
+                    const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
+                    pickedEdt['id'] = edt['_id'];
+
+                    var evt = pickedEdt.event;
+                    const event = (({ title, description }) => ({ title, description }))(evt);
+                    event['id'] = evt['_id'];
+
+                    pickedEdt.event = event;
+                    picked.edition = pickedEdt;
+                    data.push(picked);
+
+                });
+            });
+        });
+    });
     res.status(200).json(data);
+});
+
+
+router.delete('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    var elements = req.body;
+    elements.forEach(element => {
+        Position.findById(element.id).exec((err, pos) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            pos.deleteOne();
+            res.status(200).send();
+        })
+    });
 });
 
 router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
@@ -212,8 +273,12 @@ router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
             positions.forEach((pos) => {
                 const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
                 picked['id'] = pos['_id'];
-                picked.edition['id'] = picked.edition['_id'];
-                delete picked.edition['_id'];
+
+                var edt = picked.edition;
+                const edition = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edt);
+                edition['id'] = edt['_id'];
+
+                picked.edition = edition;
                 poses.push(picked);
             });
             res.status(200).json(poses);
@@ -234,8 +299,12 @@ router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isOrganizer], 
             positions.forEach((pos) => {
                 const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
                 picked['id'] = pos['_id'];
-                picked.edition['id'] = picked.edition['_id'];
-                delete picked.edition['_id'];
+
+                var edt = picked.edition;
+                const edition = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edt);
+                edition['id'] = edt['_id'];
+
+                picked.edition = edition;
                 poses.push(picked);
             });
             res.status(200).json(poses);
@@ -266,9 +335,13 @@ router.put('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, re
                 }
                 const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
                 pickedEdt['id'] = edt['_id'];
-                pickedEdt.event['id'] = pickedEdt.event['_id'];
-                delete pickedEdt.event['_id'];
-                picked.edition = edt;
+
+                var evt = pickedEdt.event;
+                const event = (({ title, description }) => ({ title, description }))(evt);
+                event['id'] = evt['_id'];
+
+                pickedEdt.event = event;
+                picked.edition = pickedEdt;
                 res.status(200).json(picked);
             });
         });
@@ -286,8 +359,11 @@ router.get('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, re
             }
             const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
             picked['id'] = pos['_id'];
-            picked.edition['id'] = picked.edition['_id'];
-            delete picked.edition['_id'];
+
+            var edt = picked.edition;
+            const edition = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edt);
+            edition['id'] = edt['_id'];
+            picked.edition = edition;
             res.status(200).json(picked);
         });
 })

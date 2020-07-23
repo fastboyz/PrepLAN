@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
 import { Edition, Event, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
@@ -84,24 +85,64 @@ export class EditionDetailsComponent implements OnInit {
       });
 
       if (editionPositionForm.touched || editionPositionForm.dirty) {
-        for (let index = 0; index < editionPositionForm.value.length; index++) {
-          let position: Position = {
-            title: editionPositionForm.value[index].positionName,
-            description: editionPositionForm.value[index].positionDescription,
-            edition: this.edition
-          };
-          // call update
-          // TODO-Steve: 
-          // untouched = positionList,
-          // touched = editionPositionForm (formArray)
-          // this.eventService.method(param).subscribe(data=>{});
+        let deleted = this.positionList.filter(this.editionListCompare(editionPositionForm.value));
+        let added = editionPositionForm.value.filter(this.editionListCompare(this.positionList));
+        let tmp = this.positionList;
+        let filtered = deleted.concat(added);
+        let toUpdate = _.remove(tmp, (el) => {
+          return filtered.indexOf(el);
+        });
+
+       this.addEditionToPosition(deleted, newEdition);
+       this.addEditionToPosition(toUpdate, newEdition);
+       this.addEditionToPosition(added, newEdition);
+
+        if (deleted.length > 0) {
+          this.eventService.deletePositions(deleted).subscribe();
         }
+
+        if (toUpdate.length > 0) {
+          this.eventService.updatePositions(toUpdate).subscribe();
+        }
+
+        if (added.length > 0) {
+          this.eventService.createPositions(added).subscribe();
+        }
+        //   // call update
+        //   // TODO-Steve: 
+        //   // untouched = positionList,
+        //   // touched = editionPositionForm (formArray)
+        //   // this.eventService.method(param).subscribe(data=>{});
+        // }
       }
 
-      }
-    }
-
-    toggleIsEditable() {
-      this.isEditable = !this.isEditable;
     }
   }
+
+  toggleIsEditable() {
+    this.isEditable = !this.isEditable;
+  }
+
+  editionListCompare(list: any) {
+    return (current: any) => {
+      return (list.filter((other: { id: any; }) => {
+        return other.id && current.id && other.id === current.id
+      }).length == 0);
+    }
+  }
+
+  editionListToUpdate(list: any) {
+    return (current: any) => {
+      return (list.filter((other: { id: any; }) => {
+        return other.id && current.id && other.id !== current.id
+      }).length == 0);
+    }
+  }
+
+  addEditionToPosition(positions: any , edition: Edition) {
+    positions.forEach((e: { [x: string]: Edition; }) => {
+      e['edition'] = edition;
+    });
+  }
+
+}
