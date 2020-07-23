@@ -19,9 +19,10 @@ export class EditionDetailsComponent implements OnInit {
   @ViewChild(EventFormComponent) eventFormComponent: EventFormComponent;
   @Input() edition: Edition;
   @Input() positionList: Position[];
+  @Input() editable: boolean;
   isEditable: boolean;
   isOrganizer: boolean;
-
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -30,29 +31,6 @@ export class EditionDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isEditable = false;
-    this.authService.getRole().subscribe(data => {
-      console.log("data: " + data);
-      if (data == 'organizer') {
-        this.isOrganizer = true;
-      } else {
-        this.isOrganizer = false;
-      }
-    });
-    // let id = this.route.snapshot.paramMap.get('id');
-
-    // this.eventService.getEditionById(id).subscribe(data => {
-    //   this.edition = data;
-    // });
-    // let id = this.edition?.id;
-    // console.log(id);
-    // if (id) {
-    //   this.eventService.getPositionsbyEditionId(id).subscribe(data => {
-    //     this.positionList = data;
-    //   });
-
-    console.log("Organizer:" + this.isOrganizer);
-    // }
-
   }
 
 
