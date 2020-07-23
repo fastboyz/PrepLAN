@@ -108,12 +108,6 @@ export class EditionDetailsComponent implements OnInit {
         if (added.length > 0) {
           this.eventService.createPositions(added).subscribe();
         }
-        //   // call update
-        //   // TODO-Steve: 
-        //   // untouched = positionList,
-        //   // touched = editionPositionForm (formArray)
-        //   // this.eventService.method(param).subscribe(data=>{});
-        // }
       }
 
     }

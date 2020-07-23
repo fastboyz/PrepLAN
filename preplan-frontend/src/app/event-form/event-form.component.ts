@@ -63,8 +63,8 @@ export class EventFormComponent implements OnInit {
                 let editionPositions = this.editionFormComponent.editionForm.get('edition_Positions') as FormArray;
                 for (let index = 0; index < editionPositions.value.length; index++) {
                   let position: Position = {
-                    title: editionPositions.value[index].positionName,
-                    description: editionPositions.value[index].positionDescription,
+                    title: editionPositions.value[index].title,
+                    description: editionPositions.value[index].description,
                     edition: editionData
                   };
                   this.eventService.createPosition(position).subscribe(positionData => {

@@ -28,7 +28,7 @@ export class EditionFormComponent implements OnInit {
       editionStartDate: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
       editionEndDate: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
       editionLocation: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
-      edition_Positions: this.formBuilder.array([this.formBuilder.group({ positionName: '', positionDescription: '', id: '' })]),
+      edition_Positions: this.formBuilder.array([this.formBuilder.group({ title: '', description: '', id: '' })]),
     })
 
     this.eventService.getAllEvents().subscribe(data => {
@@ -47,7 +47,7 @@ export class EditionFormComponent implements OnInit {
       if(this.positionList && this.positionList.length > 0){
         this.editionPositions.clear();
         this.positionList.forEach(position => {
-          this.editionPositions.push(this.formBuilder.group({ positionName: position.title, positionDescription: position.description,  id: position.id}));
+          this.editionPositions.push(this.formBuilder.group({ title: position.title, description: position.description,  id: position.id}));
         });
         
       }
@@ -74,8 +74,8 @@ export class EditionFormComponent implements OnInit {
 
         for (let index = 0; index < this.editionPositions.value.length; index++) {
           let position: Position = {
-            title: this.editionPositions.value[index].positionName,
-            description: this.editionPositions.value[index].positionDescription,
+            title: this.editionPositions.value[index].title,
+            description: this.editionPositions.value[index].description,
             edition: editionData
           };
           this.eventService.createPosition(position).subscribe(positionData => {
@@ -116,7 +116,7 @@ export class EditionFormComponent implements OnInit {
   }
 
   addPosition() {
-    this.editionPositions.push(this.formBuilder.group({ positionName: '', positionDescription: '', id: '' }));
+    this.editionPositions.push(this.formBuilder.group({ title: '', description: '', id: '' }));
   }
 
   deletePosition(index) {
