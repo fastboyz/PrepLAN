@@ -44,11 +44,13 @@ export class AuthService {
 
     getRole(){
         let id = this.getCurrentUserId();
-        return this.http.get<any>(`${environment.apiUrl}/api/auth/role/${id}`, {
-            headers: {
-                "x-access-token": this.getToken()
-            }
-        }).pipe(map(response => {
+        return this.http.get<string>(`${environment.apiUrl}/api/auth/role/${id}`
+        // , {
+        //     headers: {
+        //         "x-access-token": this.getToken()
+        //     }
+        // }
+        ).pipe(map(response => {
             console.log("Role:" + response)
             return response;
         }));

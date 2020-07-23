@@ -30,6 +30,14 @@ export class EditionDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isEditable = false;
+    this.authService.getRole().subscribe(data => {
+      console.log("data: " + data);
+      if (data == 'organizer') {
+        this.isOrganizer = true;
+      } else {
+        this.isOrganizer = false;
+      }
+    });
     // let id = this.route.snapshot.paramMap.get('id');
 
     // this.eventService.getEditionById(id).subscribe(data => {
@@ -42,16 +50,11 @@ export class EditionDetailsComponent implements OnInit {
     //     this.positionList = data;
     //   });
 
-    //   this.authService.getRole().subscribe(data => {
-    //     console.log("data: " + data);
-    //     if (data == 'organizer')
-    //       this.isOrganizer = true;
-    //     else
-    //       this.isOrganizer = false;
-    //   })
+    console.log("Organizer:" + this.isOrganizer);
     // }
 
   }
+
 
   updateEdition(event: any) {
     let editionForm = this.editionFormComponent.editionForm;
@@ -124,6 +127,7 @@ export class EditionDetailsComponent implements OnInit {
       }).length == 0);
     }
   }
+}
 
   editionListToUpdate(list: any) {
     return (current: any) => {

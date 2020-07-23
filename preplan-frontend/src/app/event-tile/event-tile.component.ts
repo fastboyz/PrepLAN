@@ -8,10 +8,12 @@ import { Edition } from '../shared/models/event';
 })
 export class EventTileComponent implements OnInit {
   @Input() edition: Edition;
+  @Input() modalId:string;
   @Output() onClick = new EventEmitter <Edition>();
   constructor() { }
 
   ngOnInit(): void {
+    this.modalId = "#"+this.modalId;
   }
   
   onButtonClick(event:Event){

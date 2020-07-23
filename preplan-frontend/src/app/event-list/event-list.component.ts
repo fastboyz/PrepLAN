@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
-import { Edition } from '../shared/models/event';
+import { Edition, Position } from '../shared/models/event';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,6 +10,9 @@ import { Router } from '@angular/router';
 })
 export class EventListComponent implements OnInit {
   editionList:Edition[];
+  editionDetails: Edition;
+  positionList:Position[];
+
   constructor(private router:Router,
     private eventService:EventService) { }
 
@@ -24,6 +27,10 @@ export class EventListComponent implements OnInit {
   }
   
   openDetails(data: Edition){
-    this.router.navigate(['/edition', data.id]);
+    this.editionDetails = data;
+    this.eventService.getPositionsbyEditionId(this.editionDetails.id).subscribe(data => {
+      this.positionList = data;
+    });
+    // this.router.navigate(['/edition', data.id]);
   }
 }
