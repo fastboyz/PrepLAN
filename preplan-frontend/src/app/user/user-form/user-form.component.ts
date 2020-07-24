@@ -4,6 +4,7 @@ import { FormValidators } from '../../shared/validators/formValidators'
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { CombinedUser } from 'src/app/shared/models/user';
 
 @Component({
   selector: 'user-form',
@@ -22,6 +23,7 @@ export class UserFormComponent implements OnInit {
   discordPattern = ""; //"^((.+?)*#\d{4})$";
   birthdayPattern = "";
   submitted: boolean = false;
+  user: CombinedUser;
 
   tshirtSizeOptions: any = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
   pronounOptions: any = ['He/Him', 'She/Her', 'They/Them'];
@@ -34,6 +36,7 @@ export class UserFormComponent implements OnInit {
   ngOnInit(): void {
     if (this.authService.currentUserValue) {
       this.userService.getProfile(this.authService.currentUserValue.id).subscribe(user => {
+        this.user = user;
         this.userForm.patchValue(user)
       });
     }
@@ -62,7 +65,13 @@ export class UserFormComponent implements OnInit {
     this.submitted = true;
     if (this.userForm.invalid) return;
 
-    this.onSubmit.emit(this.userForm.value as FormData);
+    let formData = (this.userForm.value as FormData);
+    formData['idAccount'] =  this.user.idAccount;
+    formData['idUser'] = this.user.idUser;
+    formData['idProfile'] = this.user.idProfile;
+    formData['idEmergencyContact'] = this.user.idEmergencyContact;
+
+    this.onSubmit.emit(formData);
     // TODO-Steve: append id into form data
   }
 

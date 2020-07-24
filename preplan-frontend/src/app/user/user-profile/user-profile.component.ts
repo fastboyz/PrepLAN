@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Profile } from 'src/app/shared/models/user';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'profile',
@@ -8,13 +9,14 @@ import { Profile } from 'src/app/shared/models/user';
 })
 export class UserProfileComponent implements OnInit {
   public formData: FormData;
-  constructor() { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
     this.formData = new FormData();
   }
 
   editUser(event: any) {
+    this.userService.updateProfile(event).subscribe();
     console.log(event);
   }
 

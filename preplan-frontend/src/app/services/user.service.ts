@@ -12,7 +12,18 @@ export class UserService {
 
     getAll() {
         return this.http.get<Account[]>(`${environment.apiUrl}/users`);
+    } 
+    
+    updateProfile(profile: any) {
+        return this.http.put<Account[]>(`${environment.apiUrl}/api/users/profile`, profile, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
     }
+
 
     getProfile(id: string) {
         return this.http.get<Profile>(`${environment.apiUrl}/api/users/profile/${id}`, {
