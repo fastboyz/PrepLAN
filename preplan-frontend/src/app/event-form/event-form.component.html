@@ -5,7 +5,7 @@
                 [class.cross-validation-error]="eventForm.errors?.identityRevealed && (eventForm.touched || eventForm.dirty)">
 
                 <div class="form-group">
-                    <label for="eventTitle">Event Title</label>
+                    <label for="eventTitle">Event Title*</label>
                     <input id="eventTitle" class="form-control" formControlName="eventTitle" required>
 
                     <div *ngIf="eventTitle.invalid && (eventTitle.dirty || eventTitle.touched)"
@@ -14,7 +14,7 @@
                             Event title is required.
                         </div>
                         <div *ngIf="eventTitle.errors.minlength">
-                            Event title must be at least 6 characters long.
+                            Event title must be at least 1 character long.
                         </div>
                         <div *ngIf="eventTitle.errors.shouldNotHaveSpaces">
                             Event Title cannot contain invalid characters.
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="eventDescription">Description</label>
+                    <label for="eventDescription">Description*</label>
                     <textarea id="eventDescription" class="form-control" formControlName="eventDescription"
                         required></textarea>
                     <div *ngIf="eventDescription.invalid && (eventDescription.dirty || eventDescription.touched)"
@@ -31,7 +31,7 @@
                             Event description is required.
                         </div>
                         <div *ngIf="eventDescription.errors.minlength">
-                            Event description must be at least 6 characters long.
+                            Event description must be at least 1 characters long.
                         </div>
                         <div *ngIf="eventDescription.errors.shouldNotHaveSpaces">
                             Event description cannot contain invalid characters.

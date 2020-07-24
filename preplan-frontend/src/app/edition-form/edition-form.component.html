@@ -7,7 +7,7 @@
                 [class.cross-validation-error]="editionForm.errors?.identityRevealed && (editionForm.touched || editionForm.dirty)">
 
                 <div class="form-group" *ngIf="activateButton">
-                    <label for="event">Event</label>
+                    <label for="event">Event*</label>
                     <select id="event" class="form-control" formControlName="event">
                         <option value="" disabled> Pick an Event </option>
                         <option *ngFor="let evt of eventList" [ngValue]="evt">{{evt.title}}</option>
@@ -20,15 +20,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="editionName">Edition Name</label>
+                    <label for="editionName">Edition Name*</label>
                     <input id="editionName" class="form-control" formControlName="editionName" required>
 
-                    <div *ngIf="editionName.invalid && (editionName.dirty || editionName.touched)" class="alert alert-danger">
+                    <div *ngIf="editionName.invalid && (editionName.dirty || editionName.touched)"
+                        class="alert alert-danger">
                         <div *ngIf="editionName.errors.required">
                             Edition Name is required.
                         </div>
                         <div *ngIf="editionName.errors.minlength">
-                            Edition Name must be at least 6 characters long.
+                            Edition Name must be at least 2 characters long.
                         </div>
                         <div *ngIf="editionName.errors.shouldNotHaveSpaces">
                             Edition Name cannot contain invalid characters.
@@ -37,55 +38,52 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="editionStartDate">Edition Start Date</label>
-                    <input id="editionStartDate" class="form-control" formControlName="editionStartDate" type="datetime-local"
-                        required>
+                    <label for="editionStartDate">Edition Start Date*</label>
+                    <input id="editionStartDate" class="form-control" formControlName="editionStartDate"
+                        type="datetime-local" required>
 
                     <div *ngIf="editionStartDate.invalid && (editionStartDate.dirty || editionStartDate.touched)"
                         class="alert alert-danger">
                         <div *ngIf="editionStartDate.errors.required">
-                            Event Start Date is required.
+                            Edition Start Date is required.
                         </div>
-                        <div *ngIf="editionStartDate.errors.minlength">
-                            Event Start Date must be at least 6 characters long.
+                        <div *ngIf="editionStartDate.errors.pattern">
+                            Edition Start date is invalid.
                         </div>
                         <div *ngIf="editionStartDate.errors.shouldNotHaveSpaces">
-                            Event Start Date cannot contain invalid characters.
+                            Edition Start Date cannot contain invalid characters.
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="editionEndDate">Edition End Date</label>
-                    <input id="editionEndDate" class="form-control" formControlName="editionEndDate" type="datetime-local"
-                        required>
+                    <label for="editionEndDate">Edition End Date*</label>
+                    <input id="editionEndDate" class="form-control" formControlName="editionEndDate"
+                        type="datetime-local" required>
 
                     <div *ngIf="editionEndDate.invalid && (editionEndDate.dirty || editionEndDate.touched)"
                         class="alert alert-danger">
                         <div *ngIf="editionEndDate.errors.required">
-                            Event End Date is required.
+                            Edition End Date is required.
                         </div>
-                        <div *ngIf="editionEndDate.errors.minlength">
-                            Event End Date must be at least 6 characters long.
+                        <div *ngIf="editionEndDate.errors.pattern">
+                            Edition End date is invalid.
                         </div>
                         <div *ngIf="editionEndDate.errors.shouldNotHaveSpaces">
-                            Event End Date cannot contain invalid characters.
+                            Edition End Date cannot contain invalid characters.
                         </div>
                     </div>
                 </div>
 
 
                 <div class="form-group">
-                    <label for="editionLocation">Location</label>
+                    <label for="editionLocation">Location*</label>
                     <input id="editionLocation" class="form-control" formControlName="editionLocation" required>
 
                     <div *ngIf="editionLocation.invalid && (editionLocation.dirty || editionLocation.touched)"
                         class="alert alert-danger">
                         <div *ngIf="editionLocation.errors.required">
                             Location is required.
-                        </div>
-                        <div *ngIf="editionLocation.errors.minlength">
-                            Location must be at least 6 characters long.
                         </div>
                         <div *ngIf="editionLocation.errors.shouldNotHaveSpaces">
                             Location cannot contain invalid characters.

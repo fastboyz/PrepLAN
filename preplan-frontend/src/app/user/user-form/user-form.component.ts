@@ -18,10 +18,6 @@ export class UserFormComponent implements OnInit {
 
   userForm: FormGroup;
   namePattern = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
-  emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
-  phoneNumberPattern = "";
-  discordPattern = ""; //"^((.+?)*#\d{4})$";
-  birthdayPattern = "";
   submitted: boolean = false;
   user: CombinedUser;
 
@@ -44,19 +40,19 @@ export class UserFormComponent implements OnInit {
     this.userForm = this.formBuilder.group({
       username: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
       password: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
-      email: ['', { validators: [Validators.required, Validators.pattern(this.emailPattern)], updateOn: 'blur' }],
+      email: ['', { validators: [Validators.required, Validators.pattern(FormValidators.emailPattern)], updateOn: 'blur' }],
       firstName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
       lastName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
       pronoun: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      birthday: ['', { validators: [Validators.required, Validators.pattern(this.birthdayPattern)], updateOn: 'blur' }],
-      phoneNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
-      discord: ['', { validators: [Validators.pattern(this.discordPattern)], updateOn: 'blur' }],
+      birthday: ['', { validators: [Validators.required, Validators.pattern(FormValidators.datePattern)], updateOn: 'blur' }],
+      phoneNumber: ['', { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
+      discord: ['', { validators: [Validators.pattern(FormValidators.discordPattern)], updateOn: 'blur' }],
       tshirtSize: ['', { validators: [Validators.required], updateOn: 'blur' }],
       allergy: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
       certification: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
       firstNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
       lastNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-      emergencyNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
+      emergencyNumber: ['', { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
       relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
     })
   }
