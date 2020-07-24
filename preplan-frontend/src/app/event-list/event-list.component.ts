@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./event-list.component.scss']
 })
 export class EventListComponent implements OnInit {
+
   editionList:Edition[];
   editionDetails: Edition;
   positionList:Position[];
