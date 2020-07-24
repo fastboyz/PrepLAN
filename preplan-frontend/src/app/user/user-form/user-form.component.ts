@@ -66,10 +66,10 @@ export class UserFormComponent implements OnInit {
     if (this.userForm.invalid) return;
 
     let formData = (this.userForm.value as FormData);
-    formData['idAccount'] =  this.user.idAccount;
-    formData['idUser'] = this.user.idUser;
-    formData['idProfile'] = this.user.idProfile;
-    formData['idEmergencyContact'] = this.user.idEmergencyContact;
+    formData['idAccount'] =  this.user?.idAccount;
+    formData['idUser'] = this.user?.idUser;
+    formData['idProfile'] = this.user?.idProfile;
+    formData['idEmergencyContact'] = this.user?.idEmergencyContact;
 
     this.onSubmit.emit(formData);
     // TODO-Steve: append id into form data

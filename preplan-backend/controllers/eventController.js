@@ -86,7 +86,7 @@ router.post('/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) =
     })
 });
 
-router.get('/editions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/editions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
     Edition.find({})
         .populate('event')
         .exec((err, edts) => {
