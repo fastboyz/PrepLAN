@@ -18,7 +18,7 @@ router.post('/event', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => 
     });
 });
 
-router.get('/events', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/events', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
     Event.find({}).exec((err, evts) => {
         if (err) {
             res.status(500).send({ message: err });
