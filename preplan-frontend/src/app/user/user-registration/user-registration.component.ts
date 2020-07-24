@@ -20,32 +20,32 @@ export class UserRegistrationComponent implements OnInit {
   }
 
   addUser(data: FormData){
-    /*var userAccount:Account = { 
-      username: data.get("username").value, 
-      password: data.get("password").value, 
+    /*var userAccount:Account = {
+      username: data.get("username").value,
+      password: data.get("password").value,
       email: data.get("email").value
     };
 
     var userInfo: User = {
       account: userAccount,
-      firstName: data.get("firstName").value, 
-      lastName: data.get("lastName").value, 
+      firstName: data.get("firstName").value,
+      lastName: data.get("lastName").value,
       pronoun: data.get("pronoun").value,
-      birthday: data.get("birthday").value, 
-      discord: data.get("discord").value, 
+      birthday: data.get("birthday").value,
+      discord: data.get("discord").value,
       phoneNumber: data.get("phoneNumber").value
     };
 
     var emergencyContactInfo: EmergencyContact = {
-      firstName: data.get("firstNameEmergency").value, 
-      lastName: data.get("lastNameEmergency").value, 
-      relationship: data.get("relationshipEmergency").value, 
+      firstName: data.get("firstNameEmergency").value,
+      lastName: data.get("lastNameEmergency").value,
+      relationship: data.get("relationshipEmergency").value,
       phoneNumber: data.get("emergencyNumber").value
     }
 
     var profile: Profile = {
       user: userInfo,
-      tshirtSize: null, 
+      tshirtSize: null,
       allergy: data.get("allergy").value,
       certification: data.get("certification").value,
       emergencyContact: emergencyContactInfo
@@ -54,18 +54,16 @@ export class UserRegistrationComponent implements OnInit {
     var profileJson = JSON.stringify(profile);
     console.log(profileJson);*/
 
-    data['role'] =  'volunteer';
     this.authService.signup(data).subscribe(
       data =>{
-        alert(data);
         this.router.navigate(['login']);
-      }, 
+      },
       error => {
         this.error = error;
-        console.log(error);
+        //TODO add logger
       }
     )
-    
+
   }
 
   cancel(){

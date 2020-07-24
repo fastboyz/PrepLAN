@@ -1,6 +1,6 @@
 FROM node:10.19.0
 
-ENV MONGODB_URI='mongodb://database:27017/preplan'
+ENV MONGODB_URI='mongodb://preplan:preplan@database:27017/preplan'
 
 ENV PORT='3000'
 

@@ -73,7 +73,6 @@ const isVolunteer = (req, res, next) => {
                 res.status(500).send({message: err});
                 return;
             }
-             console.log(role.name)
             if(role.name === 'organizer' || role.name === 'admin' ||  role.name === 'volunteer') {
                 next();
                 return;

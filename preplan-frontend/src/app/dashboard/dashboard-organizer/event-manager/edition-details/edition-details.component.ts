@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Edition, Event, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
 @Component({
   selector: 'edition-details',
   templateUrl: './edition-details.component.html',
-  styleUrls: ['./edition-details.component.scss']
+  styleUrls: ['./edition-details.component.scss'],
 })
 export class EditionDetailsComponent implements OnInit {
   @ViewChild(EditionFormComponent) editionFormComponent: EditionFormComponent;
@@ -27,20 +27,27 @@ export class EditionDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private eventService: EventService,
-    private authService: AuthService) { }
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.isEditable = false;
-    this.authService.getRole().subscribe(data => {
+    this.authService.getRole().subscribe((data) => {
       if (data.name == 'organizer') {
         this.isOrganizer = true;
       } else {
         this.isOrganizer = false;
       }
-    })
+    });
   }
-  onEnrollClick(event: any){
-    console.log('Enroll at edition '+ this.edition.name + " of event "+ this.edition.event.title + " from detail modal");
+  onEnrollClick(event: any) {
+    console.log(
+      'Enroll at edition ' +
+        this.edition.name +
+        ' of event ' +
+        this.edition.event.title +
+        ' from detail modal'
+    );
   }
 
   updateEdition(event: any) {
@@ -49,7 +56,7 @@ export class EditionDetailsComponent implements OnInit {
     let newEvent: Event = {
       id: this.edition.event.id,
       title: eventForm.get('eventTitle').value,
-      description: eventForm.get('eventDescription').value
+      description: eventForm.get('eventDescription').value,
     };
     let newEdition: Edition = {
       id: this.edition.id,
@@ -59,33 +66,37 @@ export class EditionDetailsComponent implements OnInit {
       location: editionForm.get('editionLocation').value,
       event: newEvent,
       isActive: false,
-      isRegistering: false
-    }
+      isRegistering: false,
+    };
 
     if (eventForm.touched || eventForm.dirty) {
-      this.eventService.updateEvent(newEvent).subscribe(data => {
+      this.eventService.updateEvent(newEvent).subscribe((data) => {
         this.edition.event = data;
       });
     }
     if (editionForm.touched || editionForm.dirty) {
       let editionPositionForm = editionForm.get('edition_Positions');
 
-      this.eventService.updateEdition(newEdition).subscribe(data => {
+      this.eventService.updateEdition(newEdition).subscribe((data) => {
         this.edition = data;
       });
 
       if (editionPositionForm.touched || editionPositionForm.dirty) {
-        let deleted = this.positionList.filter(this.editionListCompare(editionPositionForm.value));
-        let added = editionPositionForm.value.filter(this.editionListCompare(this.positionList));
-        let tmp = this.positionList;
-        let filtered = deleted.concat(added);
-        let toUpdate = _.remove(tmp, (el) => {
-          return filtered.indexOf(el);
+        let deleted = this.positionList.filter(
+          this.editionListCompare(editionPositionForm.value)
+        );
+        let added = editionPositionForm.value.filter(
+          this.editionListCompare(this.positionList)
+        );
+        let toUpdate = JSON.parse(JSON.stringify(editionPositionForm.value));
+        let filtered = JSON.parse(JSON.stringify(deleted));
+        _.remove(toUpdate, (el: any) => {
+          return !el.id;
         });
 
-       this.addEditionToPosition(deleted, newEdition);
-       this.addEditionToPosition(toUpdate, newEdition);
-       this.addEditionToPosition(added, newEdition);
+        this.addEditionToPosition(deleted, newEdition);
+        this.addEditionToPosition(toUpdate, newEdition);
+        this.addEditionToPosition(added, newEdition);
 
         if (deleted.length > 0) {
           this.eventService.deletePositions(deleted).subscribe();
@@ -110,25 +121,27 @@ export class EditionDetailsComponent implements OnInit {
 
   editionListCompare(list: any) {
     return (current: any) => {
-      return (list.filter((other: { id: any; }) => {
-        return other.id && current.id && other.id === current.id
-      }).length == 0);
-    }
+      return (
+        list.filter((other: { id: any }) => {
+          return other.id && current.id && other.id === current.id;
+        }).length == 0
+      );
+    };
   }
-
 
   editionListToUpdate(list: any) {
     return (current: any) => {
-      return (list.filter((other: { id: any; }) => {
-        return other.id && current.id && other.id !== current.id
-      }).length == 0);
-    }
+      return (
+        list.filter((other: { id: any }) => {
+          return other.id && current.id && other.id !== current.id;
+        }).length == 0
+      );
+    };
   }
 
-  addEditionToPosition(positions: any , edition: Edition) {
-    positions.forEach((e: { [x: string]: Edition; }) => {
+  addEditionToPosition(positions: any, edition: Edition) {
+    positions.forEach((e: { [x: string]: Edition }) => {
       e['edition'] = edition;
     });
   }
-
 }

@@ -40,6 +40,7 @@ export class CombinedUser {
     username: string;
     password: string;
     email: string;
+    role?: string;
 
     idUser:string;
     firstName: string;

@@ -104,6 +104,11 @@ router.post('/signin', (req, res) => {
             return;
         }
 
+        if(!account) {
+            res.status(401).send({ message: "Unauthorized!" });
+            return;
+        }
+
         let passwordIsValid = bcrypt.compareSync(
             req.body.password,
             account.password

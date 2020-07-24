@@ -71,7 +71,7 @@ export class EventFormComponent implements OnInit {
                   },
                     error => {
                       this.error = error;
-                      console.log(error);
+                      //TODO add logger
                     });
                 }
                 document.getElementById('event-close').click();
@@ -79,14 +79,14 @@ export class EventFormComponent implements OnInit {
               },
               error => {
                 this.error = error;
-                console.log(error);
+                //TODO add logger
 
               });
           }
         },
         error => {
           this.error = error;
-          console.log(error);
+          //TODO add logger
         });
     }
   }

@@ -8,7 +8,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'edition-form',
   templateUrl: './edition-form.component.html',
-  styleUrls: ['./edition-form.component.scss']
+  styleUrls: ['./edition-form.component.scss'],
 })
 export class EditionFormComponent implements OnInit {
   @Input() edition: Edition;
@@ -18,20 +18,58 @@ export class EditionFormComponent implements OnInit {
   eventList: Event[];
   editionForm: FormGroup;
   error: string;
-  constructor(private formBuilder: FormBuilder,
-    private eventService: EventService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private eventService: EventService
+  ) {}
 
   ngOnInit(): void {
     this.editionForm = this.formBuilder.group({
-      event: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
-      editionName: ['', { validators: [Validators.required, Validators.minLength(2), FormValidators.trimValue], updateOn: 'blur' }],
-      editionStartDate: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
-      editionEndDate: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
-      editionLocation: ['', { validators: [Validators.required, FormValidators.trimValue], updateOn: 'blur' }],
-      edition_Positions: this.formBuilder.array([this.formBuilder.group({ title: '', description: '', id: '' })]),
-    })
+      event: [
+        '',
+        {
+          validators: [Validators.required, FormValidators.trimValue],
+          updateOn: 'blur',
+        },
+      ],
+      editionName: [
+        '',
+        {
+          validators: [
+            Validators.required,
+            Validators.minLength(2),
+            FormValidators.trimValue,
+          ],
+          updateOn: 'blur',
+        },
+      ],
+      editionStartDate: [
+        '',
+        {
+          validators: [Validators.required, FormValidators.trimValue],
+          updateOn: 'blur',
+        },
+      ],
+      editionEndDate: [
+        '',
+        {
+          validators: [Validators.required, FormValidators.trimValue],
+          updateOn: 'blur',
+        },
+      ],
+      editionLocation: [
+        '',
+        {
+          validators: [Validators.required, FormValidators.trimValue],
+          updateOn: 'blur',
+        },
+      ],
+      edition_Positions: this.formBuilder.array([
+        this.formBuilder.group({ title: '', description: '', id: '' }),
+      ]),
+    });
 
-    this.eventService.getAllEvents().subscribe(data => {
+    this.eventService.getAllEvents().subscribe((data) => {
       this.eventList = data;
     });
 
@@ -39,24 +77,31 @@ export class EditionFormComponent implements OnInit {
       this.editionForm.patchValue({
         event: this.edition.event,
         editionName: this.edition.name,
-        editionStartDate: moment(this.edition.startDate).format("YYYY-MM-DDTkk:mm"),
-        editionEndDate: moment(this.edition.endDate).format("YYYY-MM-DDTkk:mm"),
+        editionStartDate: moment(this.edition.startDate).format(
+          'YYYY-MM-DDTkk:mm'
+        ),
+        editionEndDate: moment(this.edition.endDate).format('YYYY-MM-DDTkk:mm'),
         editionLocation: this.edition.location,
       });
-      
-      if(this.positionList && this.positionList.length > 0){
+
+      if (this.positionList && this.positionList.length > 0) {
         this.editionPositions.clear();
-        this.positionList.forEach(position => {
-          this.editionPositions.push(this.formBuilder.group({ title: position.title, description: position.description,  id: position.id}));
+        this.positionList.forEach((position) => {
+          this.editionPositions.push(
+            this.formBuilder.group({
+              title: position.title,
+              description: position.description,
+              id: position.id,
+            })
+          );
         });
-        
       }
     }
   }
 
   createEdition(event: any) {
-    let selectedEvent = this.eventList.find(evt =>
-      evt.id == this.event.value.id
+    let selectedEvent = this.eventList.find(
+      (evt) => evt.id == this.event.value.id
     );
     let newEdition: Edition = {
       name: this.editionName.value,
@@ -65,34 +110,38 @@ export class EditionFormComponent implements OnInit {
       location: this.editionLocation.value,
       event: selectedEvent,
       isActive: false,
-      isRegistering: false
-    }
+      isRegistering: false,
+    };
 
     this.eventService.createEdition(newEdition).subscribe(
-      editionData => {
-        console.log(editionData);
+      (editionData) => {
 
-        for (let index = 0; index < this.editionPositions.value.length; index++) {
+        for (
+          let index = 0;
+          index < this.editionPositions.value.length;
+          index++
+        ) {
           let position: Position = {
             title: this.editionPositions.value[index].title,
             description: this.editionPositions.value[index].description,
-            edition: editionData
+            edition: editionData,
           };
-          this.eventService.createPosition(position).subscribe(positionData => {
-          },
-            error => {
+          this.eventService.createPosition(position).subscribe(
+            (positionData) => {},
+            (error) => {
               this.error = error;
-              console.log(error);
-            });
+              //TODO add logger
+            }
+          );
         }
         document.getElementById('edition-close').click();
-        this.onEventCreated.emit(true)
+        this.onEventCreated.emit(true);
       },
-      error => {
+      (error) => {
         this.error = error;
-        console.log(error);
+        //TODO add logger
       }
-    )
+    );
   }
 
   get event() {
@@ -116,13 +165,14 @@ export class EditionFormComponent implements OnInit {
   }
 
   addPosition() {
-    this.editionPositions.push(this.formBuilder.group({ title: '', description: '', id: '' }));
+    this.editionPositions.push(
+      this.formBuilder.group({ title: '', description: '', id: '' })
+    );
   }
 
   deletePosition(index) {
     this.editionPositions.removeAt(index);
-    this.editionPositions.markAsTouched;
+    this.editionForm.markAsDirty();
+    this.editionForm.get('edition_Positions').markAsTouched();
   }
-
 }
-

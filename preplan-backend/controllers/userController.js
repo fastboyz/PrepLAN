@@ -10,15 +10,23 @@ router.get('/profile/:id', [authJwt.verifyToken], (req, res) => {
     let id = req.params.id
     User.findOne({
         account: id
-    }).populate("account", "-__v")
+    }).populate({
+        path: 'account',
+        model: 'Account',
+        populate: {
+            path: 'role',
+            model: 'Role'
+        }
+    })
         .exec((err, user) => {
             if (err) {
                 res.status(500).send({ message: err });
             }
             let accountBD = user.account;
-            const accountPicked = (({email, username, password }) => ({ email, username, password }))(accountBD);
+            const accountPicked = (({ email, username, password }) => ({ email, username, password }))(accountBD);
             accountPicked['id'] = accountBD._id;
-            const pickedUser = (({firstName, lastName, birthday, phoneNumber, discord, pronoun }) => ({firstName, lastName, birthday, phoneNumber, discord, pronoun }))(user);
+            accountPicked['role'] = accountBD.role.name;
+            const pickedUser = (({ firstName, lastName, birthday, phoneNumber, discord, pronoun }) => ({ firstName, lastName, birthday, phoneNumber, discord, pronoun }))(user);
             pickedUser['account'] = accountPicked;
             pickedUser['id'] = user._id;
             Profile.findOne({
@@ -28,11 +36,11 @@ router.get('/profile/:id', [authJwt.verifyToken], (req, res) => {
                     if (err) {
                         res.status(500).send({ message: err });
                     }
-                    const picked = (({tshirtSize, allergy, certification }) => ({tshirtSize, allergy, certification }))(profile);
+                    const picked = (({ tshirtSize, allergy, certification }) => ({ tshirtSize, allergy, certification }))(profile);
                     picked['id'] = profile._id;
 
                     var eContact = profile.emergencyContact;
-                    const eContactPicked = (({firstName, lastName, phoneNumber, relationship }) => ({firstName, lastName, phoneNumber, relationship }))(eContact)
+                    const eContactPicked = (({ firstName, lastName, phoneNumber, relationship }) => ({ firstName, lastName, phoneNumber, relationship }))(eContact)
                     eContactPicked['id'] = eContact._id;
                     picked['emergencyContact'] = eContactPicked
 

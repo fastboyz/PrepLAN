@@ -56,7 +56,7 @@ export class EventEditionFormComponent implements OnInit {
                   },
                     error => {
                       this.error = error;
-                      console.log(error);
+                      //TODO add logger
                     });
                 }
                 document.getElementById('event-edition-close').click();
@@ -64,14 +64,14 @@ export class EventEditionFormComponent implements OnInit {
               },
               error => {
                 this.error = error;
-                console.log(error);
+                //TODO add logger
 
               });
           }
         },
         error => {
           this.error = error;
-          console.log(error);
+          //TODO add logger
         });
     }
   }

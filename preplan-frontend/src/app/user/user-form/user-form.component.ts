@@ -23,6 +23,7 @@ export class UserFormComponent implements OnInit {
 
   tshirtSizeOptions: any = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
   pronounOptions: any = ['He/Him', 'She/Her', 'They/Them'];
+  roleOption: any = ['admin', 'volunteer', 'organizer'];
 
   constructor(private router: Router,
     private userService: UserService,
@@ -41,6 +42,7 @@ export class UserFormComponent implements OnInit {
       username: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
       password: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
       email: ['', { validators: [Validators.required, Validators.pattern(FormValidators.emailPattern)], updateOn: 'blur' }],
+      role: ['', { validators: [Validators.required], updateOn: 'blur' }],
       firstName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
       lastName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
       pronoun: ['', { validators: [Validators.required], updateOn: 'blur' }],
@@ -82,6 +84,9 @@ export class UserFormComponent implements OnInit {
   }
   get email() {
     return this.userForm.get('email');
+  }
+  get role() {
+    return this.userForm.get('role');
   }
 
   get firstName() {

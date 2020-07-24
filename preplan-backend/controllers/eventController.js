@@ -186,79 +186,84 @@ router.post('/position', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
 router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var elements = req.body;
     var data = [];
-    elements.forEach(element => {
-        new Position({
-            title: element.title,
-            description: element.description,
-            edition: element.edition.id
-        }).save((err, pos) => {
-            if (err) {
-                res.status(500).send({ message: err });
-                return
-            }
-            const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
-            picked['id'] = pos['_id'];
-            data.push(picked);
+    var BreakException = {};
+    try {
+        elements.forEach(element => {
+            new Position({
+                title: element.title,
+                description: element.description,
+                edition: element.edition.id
+            }).save((err, pos) => {
+                if (err) {
+                    res.status(500).send({ message: err });
+                    throw BreakException;
+                }
+                const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+                picked['id'] = pos['_id'];
+                data.push(picked);
+            });
         });
-    });
+    } catch (e) { }
 });
 
 router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var elements = req.body;
     var data = [];
-    console.log(elements);
-    elements.forEach(element => {
-        Position.findById(element.id).exec((err, pos) => {
-            if (err) {
-                res.status(500).send({ message: err });
-                return
-            }
-            pos.title = element.title;
-            pos.description = element.description;
-            pos.edition = element.edition;
-            pos.save((err, saved) => {
+    var BreakException = {};
+    try {
+        elements.forEach(element => {
+            Position.findById(element.id).exec((err, pos) => {
                 if (err) {
                     res.status(500).send({ message: err });
-                    return
+                    throw BreakException;
                 }
-                const picked = (({ title, description, edition }) => ({ title, description, edition }))(saved);
-                picked['id'] = pos['_id'];
-                Edition.findById(saved.edition).exec((err, edt) => {
+                pos.title = element.title;
+                pos.description = element.description;
+                pos.save((err, saved) => {
                     if (err) {
                         res.status(500).send({ message: err });
-                        return
                     }
-                    const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
-                    pickedEdt['id'] = edt['_id'];
+                    const picked = (({ title, description, edition }) => ({ title, description, edition }))(saved);
+                    picked['id'] = pos['_id'];
+                    Edition.findById(saved.edition).exec((err, edt) => {
+                        if (err) {
+                            res.status(500).send({ message: err });
+                            throw BreakException;
+                        }
+                        const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
+                        pickedEdt['id'] = edt['_id'];
 
-                    var evt = pickedEdt.event;
-                    const event = (({ title, description }) => ({ title, description }))(evt);
-                    event['id'] = evt['_id'];
+                        var evt = pickedEdt.event;
+                        const event = (({ title, description }) => ({ title, description }))(evt);
+                        event['id'] = evt['_id'];
 
-                    pickedEdt.event = event;
-                    picked.edition = pickedEdt;
-                    data.push(picked);
-
+                        pickedEdt.event = event;
+                        picked.edition = pickedEdt;
+                        data.push(picked);
+                    });
                 });
             });
         });
-    });
-    res.status(200).json(data);
+    } catch (e) { }
 });
 
 
 router.delete('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var elements = req.body;
-    elements.forEach(element => {
-        Position.findById(element.id).exec((err, pos) => {
-            if (err) {
-                res.status(500).send({ message: err });
-                return
-            }
-            pos.deleteOne();
-            res.status(200).send();
-        })
-    });
+    var BreakException = {};
+    try {
+        elements.forEach(element => {
+            Position.findById(element.id).exec((err, pos) => {
+                if (err) {
+                    res.status(500).send({ message: err });
+                    throw BreakException;
+                }
+                pos.deleteOne();
+
+            })
+        });
+    } catch (error) { }
+
 });
 
 router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {

@@ -24,6 +24,7 @@
     "jquery": "^3.5.1",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
     "popper.js": "^1.16.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
