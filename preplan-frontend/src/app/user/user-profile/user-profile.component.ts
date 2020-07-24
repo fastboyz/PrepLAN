@@ -17,6 +17,7 @@ export class UserProfileComponent implements OnInit {
 
   editUser(event: any) {
     this.userService.updateProfile(event).subscribe();
+    location.reload();
   }
 
   cancel() {
