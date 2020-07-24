@@ -15,11 +15,13 @@ const EmergencyContact = mongoose.model(
             required: true,
             trim: true
         },
+
         phoneNumber: {
             type: String,
             required: true,
             trim: true
         },
+        
         relationship: {
             type: String,
             required: true,

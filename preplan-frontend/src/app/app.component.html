@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<div class="wrapper" *ngIf="currentUser">
+    <sidebar></sidebar>
+
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<router-outlet *ngIf="!currentUser"></router-outlet>

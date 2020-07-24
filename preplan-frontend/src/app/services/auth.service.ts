@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -9,6 +9,7 @@ import { Account } from '../shared/models/user';
 export class AuthService {
     private currentUserSubject: BehaviorSubject<Account>;
     public currentUser: Observable<Account>;
+    private token: string;
 
     constructor(private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<Account>(JSON.parse(localStorage.getItem('currentUser')));
@@ -20,18 +21,44 @@ export class AuthService {
     }
 
     login(username: string, password: string) {
-        return this.http.post<any>(`${environment.apiUrl}/users/authenticate`, { username, password })
-            .pipe(map(user => {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                this.currentUserSubject.next(user);
-                return user;
-            }));
+        return this.http.post<any>(`${environment.apiUrl}/api/auth/signin`, { username, password }
+        ).pipe(map(response => {
+            localStorage.setItem('currentUser', JSON.stringify(response));
+            this.currentUserSubject.next(response);
+            return response
+        }));
     }
 
     logout() {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
         this.currentUserSubject.next(null);
+    }
+
+    signup(userRegistration: FormData) {
+        return this.http.post<any>(`${environment.apiUrl}/api/auth/signup`, userRegistration)
+            .pipe(map(response => {
+                return response
+            }));
+    }
+
+    getRole() {
+        let id = this.getCurrentUserId();
+        return this.http.get<any>(`${environment.apiUrl}/api/auth/role/${id}`).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    getToken() {
+        if (!this.token) {
+            var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            this.token = currentUser['token'];
+        }
+        return this.token;
+    }
+
+    getCurrentUserId() {
+        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        return currentUser['id'];
     }
 }

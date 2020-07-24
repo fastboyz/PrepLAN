@@ -1,0 +1,30 @@
+<div *ngIf="edition !==null && edition?.event !== null">
+    <button *ngIf="!isEnrollable && isOrganizer" class="btn btn-primary " (click)="toggleIsEditable()">Edit</button>
+    <div class="container" *ngIf="!isEditable">
+        <h1>{{edition.event.title}}</h1>
+        <h1>{{edition.name}}</h1>
+        <h6>Date: {{edition.startDate| date:'mediumDate'}} - {{edition.endDate| date:'mediumDate'}} </h6>
+        <h6>Location: {{edition.location}}</h6>
+        <p><span>Description:</span> {{edition.event.description}} </p>
+        <h6>Positions</h6>
+        <ul>
+            <li *ngFor="let pos of positionList">
+                <p>{{pos.title}}</p>
+                <p><span>Position Description:</span> {{ pos.description }}</p>
+            </li>
+        </ul>
+    </div>
+    <button class="btn btn-primary" *ngIf="isEnrollable" (click)="onEnrollClick($event)">Enroll</button>
+
+    <div class="container" *ngIf="isEditable">
+        <div>
+            <event-form [event]="edition.event" (activateButton)="false"></event-form>
+            <edition-form [edition]="edition" [positionList]="positionList" (activateButton)="false"></edition-form>
+            <div>
+                <button   style="display: none" id="close-edition-details-modal" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" (click)="updateEdition($event)">Update</button>
+            </div>
+        </div>
+    </div>
+
+</div>

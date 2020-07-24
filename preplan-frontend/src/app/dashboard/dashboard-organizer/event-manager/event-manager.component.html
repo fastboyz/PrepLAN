@@ -1,0 +1,59 @@
+<h1>Event Manager</h1>
+<button class="btn btn-primary" data-toggle="modal" data-target="#create-edition-modal">Create new Edition</button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#create-event-modal">Create new Event</button>
+
+<div class="">
+    <ul class="list-unstyled" >
+        <li class="media" *ngFor="let edition of editionList">     
+            <event-tile [edition]="edition" (onClick)="openDetails($event)" [isEnrollable]="false"></event-tile>
+        </li>
+    </ul>
+</div>
+
+<div class="modal fade" id="create-event-modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Create New Event</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times" style="color: #fff"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <event-edition-form (onEventCreated)="onEventCreated($event)"></event-edition-form>
+                </div>
+            </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create-edition-modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Create New Edition</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times" style="color: #fff"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <edition-form (onEventCreated)="onEventCreated($event)" [activateButton]="true"></edition-form>
+                </div>
+            </div>
+    </div>
+</div>
+
+<div  class="modal fade" id="edition-details-modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Edition Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times" style="color: #fff"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   <edition-details [edition]="editionDetails" [positionList]="positionList" [isEnrollable]="false" (onUpdate)="onUpdate($event)"></edition-details>
+                </div>
+            </div>
+    </div>
+</div>

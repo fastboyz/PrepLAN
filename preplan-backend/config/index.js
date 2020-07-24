@@ -1,3 +1,4 @@
 import { SECRET } from './auth.config';
+import { dbConfig} from './db.config';
 
-export { SECRET };
+export { SECRET, dbConfig };

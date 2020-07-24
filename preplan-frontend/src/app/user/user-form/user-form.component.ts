@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Account } from '../../shared/models/user'
-import { RegistrationFormValidators } from '../../shared/validators/registrationFormValidators'
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormValidators } from '../../shared/validators/formValidators'
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { CombinedUser } from 'src/app/shared/models/user';
 
 @Component({
   selector: 'user-form',
@@ -16,66 +18,58 @@ export class UserFormComponent implements OnInit {
 
   userForm: FormGroup;
   namePattern = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
-  emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
-  phoneNumberPattern = "";
-  discordPattern = ""; //"^((.+?)*#\d{4})$";
-  birthdayPattern = "";
   submitted: boolean = false;
+  user: CombinedUser;
 
   tshirtSizeOptions: any = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
   pronounOptions: any = ['He/Him', 'She/Her', 'They/Them'];
+  roleOption: any = ['admin', 'volunteer', 'organizer'];
 
   constructor(private router: Router,
+    private userService: UserService,
+    private authService: AuthService,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this.userForm = this.formBuilder.group({
-      username: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      password: ['', { validators: [Validators.required, Validators.minLength(6), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      email: ['', { validators: [Validators.required, Validators.pattern(this.emailPattern)], updateOn: 'blur' }],
-      firstName: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      lastName: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      pronoun: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      birthday: ['', { validators: [Validators.required, Validators.pattern(this.birthdayPattern)], updateOn: 'blur' }],
-      phoneNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
-      discord: ['', { validators: [Validators.pattern(this.discordPattern)], updateOn: 'blur' }],
-      tshirtSize: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      allergy: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      certification: ['', { validators: [RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      firstNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      lastNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-      emergencyNumber: ['', { validators: [Validators.required, Validators.pattern(this.phoneNumberPattern)], updateOn: 'blur' }],
-      relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), RegistrationFormValidators.trimValue], updateOn: 'blur' }],
-    })
-
-    // this.userService.loadUser().pipe(tap (user=> this.form.patchValue(user)));
-    if (this.formData) {
-      this.userForm.patchValue({
-        "username": "tiwuty",
-        "password": "Pa$$w0rd!",
-        "email": "kape@mailinator.com",
-        "firstName": "Bree",
-        "lastName": "Wright",
-        "pronoun": "He/Him",
-        "birthday": "1995-04-12",
-        "phoneNumber": "+1 (154) 763-3652",
-        "discord": "",
-        "tshirtSize": "M",
-        "allergy": "Est non dolor volupt",
-        "certification": "Nisi ullam qui enim ",
-        "firstNameEmergency": "Claudia",
-        "lastNameEmergency": "Freeman",
-        "emergencyNumber": "+1 (358) 776-4047",
-        "relationshipEmergency": "Ratione architecto n"
+    if (this.authService.currentUserValue) {
+      this.userService.getProfile(this.authService.currentUserValue.id).subscribe(user => {
+        this.user = user;
+        this.userForm.patchValue(user)
       });
     }
+
+    this.userForm = this.formBuilder.group({
+      username: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
+      password: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
+      email: ['', { validators: [Validators.required, Validators.pattern(FormValidators.emailPattern)], updateOn: 'blur' }],
+      role: ['', { validators: [Validators.required], updateOn: 'blur' }],
+      firstName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      lastName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      pronoun: ['', { validators: [Validators.required], updateOn: 'blur' }],
+      birthday: ['', { validators: [Validators.required, Validators.pattern(FormValidators.datePattern)], updateOn: 'blur' }],
+      phoneNumber: ['', { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
+      discord: ['', { validators: [Validators.pattern(FormValidators.discordPattern)], updateOn: 'blur' }],
+      tshirtSize: ['', { validators: [Validators.required], updateOn: 'blur' }],
+      allergy: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      certification: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      firstNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      lastNameEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      emergencyNumber: ['', { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
+      relationshipEmergency: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+    })
   }
 
   onSubmitForm() {
     this.submitted = true;
     if (this.userForm.invalid) return;
-    console.log(this.userForm.value);
-    this.onSubmit.emit(this.userForm.value as FormData);
+
+    let formData = (this.userForm.value as FormData);
+    formData['idAccount'] =  this.user?.idAccount;
+    formData['idUser'] = this.user?.idUser;
+    formData['idProfile'] = this.user?.idProfile;
+    formData['idEmergencyContact'] = this.user?.idEmergencyContact;
+
+    this.onSubmit.emit(formData);
   }
 
   onCancelForm() {
@@ -90,6 +84,9 @@ export class UserFormComponent implements OnInit {
   }
   get email() {
     return this.userForm.get('email');
+  }
+  get role() {
+    return this.userForm.get('role');
   }
 
   get firstName() {
