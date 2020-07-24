@@ -11,14 +11,21 @@ import { EventManagerComponent } from './dashboard/dashboard-organizer/event-man
 import { EventListComponent } from './event-list/event-list.component';
 
 const routes: Routes = [
-  {path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] },
-  {path: 'login', component: LoginFormComponent },
-  {path: 'register', component: UserRegistrationComponent },
-  {path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard]},
-  {path: 'event-list', component: EventListComponent,canActivate: [AuthGuard]},
-  {path: 'event-manager', component: EventManagerComponent,canActivate: [RoleGuard]},
+  { path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginFormComponent },
+  { path: 'register', component: UserRegistrationComponent },
+  { path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard] },
+  { path: 'event-list', component: EventListComponent, canActivate: [AuthGuard] },
+  {
+    path: 'event-manager', 
+    component: EventManagerComponent, 
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: 'organizer'
+    }
+  },
   // {path: 'edition/:id', component: EditionDetailsComponent, canActivate: [AuthGuard]},
-  {path: '**', redirectTo: ''}
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
