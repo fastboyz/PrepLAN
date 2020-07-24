@@ -9,7 +9,7 @@ import { Account } from '../shared/models/user';
 export class AuthService {
     private currentUserSubject: BehaviorSubject<Account>;
     public currentUser: Observable<Account>;
-    private token:string;
+    private token: string;
 
     constructor(private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<Account>(JSON.parse(localStorage.getItem('currentUser')));
@@ -42,29 +42,22 @@ export class AuthService {
             }));
     }
 
-    getRole(){
+    getRole() {
         let id = this.getCurrentUserId();
-        return this.http.get<any>(`${environment.apiUrl}/api/auth/role/${id}`
-        // , {
-        //     headers: {
-        //         "x-access-token": this.getToken()
-        //     }
-        // }
-        ).pipe(map(response => {
-            console.log("Role:" + response)
+        return this.http.get<any>(`${environment.apiUrl}/api/auth/role/${id}`).pipe(map(response => {
             return response;
         }));
     }
 
     getToken() {
-        if(!this.token){
+        if (!this.token) {
             var currentUser = JSON.parse(localStorage.getItem('currentUser'));
             this.token = currentUser['token'];
         }
         return this.token;
     }
 
-    getCurrentUserId(){
+    getCurrentUserId() {
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         return currentUser['id'];
     }

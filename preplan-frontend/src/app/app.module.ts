@@ -23,6 +23,8 @@ import { EditionFormComponent } from './edition-form/edition-form.component';
 import { EventTileComponent } from './event-tile/event-tile.component';
 import { EventEditionFormComponent } from './event-edition-form/event-edition-form.component';
 import { EventListComponent } from './event-list/event-list.component';
+import { RoleGuard } from './helpers/role.guard';
+import { AuthGuard } from './helpers/auth.guard';
 
 
 
@@ -55,6 +57,8 @@ import { EventListComponent } from './event-list/event-list.component';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    RoleGuard,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
