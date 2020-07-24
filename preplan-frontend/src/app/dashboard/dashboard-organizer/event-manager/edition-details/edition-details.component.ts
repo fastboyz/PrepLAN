@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
 import { Edition, Event, Position } from 'src/app/shared/models/event';
@@ -19,6 +19,7 @@ export class EditionDetailsComponent implements OnInit {
   @Input() edition: Edition;
   @Input() positionList: Position[];
   @Input() isEnrollable: boolean;
+  @Output() onUpdate = new EventEmitter<boolean>();
   isEditable: boolean;
   isOrganizer: boolean;
 
@@ -98,8 +99,9 @@ export class EditionDetailsComponent implements OnInit {
           this.eventService.createPositions(added).subscribe();
         }
       }
-      document.getElementById('close-edition-details-modal').click();
     }
+    this.onUpdate.emit(true);
+    document.getElementById('close-edition-details-modal').click();
   }
 
   toggleIsEditable() {

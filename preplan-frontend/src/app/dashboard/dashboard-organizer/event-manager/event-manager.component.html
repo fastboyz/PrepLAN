@@ -52,7 +52,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                   <edition-details [edition]="editionDetails" [positionList]="positionList" [isEnrollable]="false"></edition-details>
+                   <edition-details [edition]="editionDetails" [positionList]="positionList" [isEnrollable]="false" (onUpdate)="onUpdate($event)"></edition-details>
                 </div>
             </div>
     </div>

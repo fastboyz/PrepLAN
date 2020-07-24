@@ -39,4 +39,9 @@ export class EventManagerComponent implements OnInit {
     }
   }
 
+  onUpdate(isUpdated:boolean){
+    if(isUpdated){
+      this.loadAllEditions();
+    }
+  }
 }
