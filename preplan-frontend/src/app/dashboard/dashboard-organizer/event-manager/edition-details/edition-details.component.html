@@ -21,6 +21,7 @@
             <event-form [event]="edition.event" (activateButton)="false"></event-form>
             <edition-form [edition]="edition" [positionList]="positionList" (activateButton)="false"></edition-form>
             <div>
+                <button   style="display: none" id="close-edition-details-modal" class="btn btn-primary" data-dismiss="modal">Close</button>
                 <button class="btn btn-primary" (click)="updateEdition($event)">Update</button>
             </div>
         </div>

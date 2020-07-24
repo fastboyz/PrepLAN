@@ -98,7 +98,7 @@ export class EditionDetailsComponent implements OnInit {
           this.eventService.createPositions(added).subscribe();
         }
       }
-
+      document.getElementById('close-edition-details-modal').click();
     }
   }
 
