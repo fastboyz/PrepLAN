@@ -19,10 +19,10 @@ export class EditionDetailsComponent implements OnInit {
   @ViewChild(EventFormComponent) eventFormComponent: EventFormComponent;
   @Input() edition: Edition;
   @Input() positionList: Position[];
-  @Input() editable: boolean;
+  @Input() isEnrollable: boolean;
   isEditable: boolean;
   isOrganizer: boolean;
-  
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -32,7 +32,9 @@ export class EditionDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.isEditable = false;
   }
-
+  onEnrollClick(event: any){
+    console.log('Enroll at edition '+ this.edition.name + " of event "+ this.edition.event.title + " from detail modal");
+  }
 
   updateEdition(event: any) {
     let editionForm = this.editionFormComponent.editionForm;

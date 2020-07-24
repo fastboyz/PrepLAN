@@ -8,15 +8,18 @@ import { Edition } from '../shared/models/event';
 })
 export class EventTileComponent implements OnInit {
   @Input() edition: Edition;
-  @Input() modalId:string;
+  @Input() isEnrollable:boolean;
   @Output() onClick = new EventEmitter <Edition>();
   constructor() { }
 
   ngOnInit(): void {
-    this.modalId = "#"+this.modalId;
   }
   
   onButtonClick(event:Event){
     this.onClick.emit(this.edition);
+  }
+
+  onEnrollClick(event:Event){
+    console.log('Enroll at edition '+ this.edition.name + " of event "+ this.edition.event.title);
   }
 }
