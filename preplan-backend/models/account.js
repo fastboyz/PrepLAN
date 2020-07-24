@@ -20,8 +20,13 @@ const accountSchema = mongoose.Schema({
         type: String,
         required: true,
         minlength: 6
+    },
+
+    role: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Role",
     }
-});
+}); 
 
 const Account = mongoose.model('Account', accountSchema);
 export { Account };

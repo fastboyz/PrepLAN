@@ -33,7 +33,6 @@ const User = mongoose.model(
         discord: {
             type: String,
             required: false,
-            unique: true,
             trim: true
         },
 

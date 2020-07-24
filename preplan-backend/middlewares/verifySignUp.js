@@ -1,7 +1,6 @@
 import { Account } from '../models';
 
 const checkUserNameOrEmailDuplicate = (req, res, next) => {
-    // Username
     Account.findOne({
         username: req.body.username
     }).exec((err, user) => {

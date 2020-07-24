@@ -1,0 +1,22 @@
+<div class="media">
+    <img class="align-self-center mr-3"
+        src="https://cdn.discordapp.com/attachments/112471487264350208/728090803716620291/lanets.png"
+        alt="Generic placeholder image">
+    <div class="media-body">
+        <div class="row">
+            <div class="col">
+                <h3 class="mt-0 mb-1">{{edition.event.title}}</h3>
+                <h6>Date: {{edition.startDate| date:'mediumDate'}} - {{edition.endDate| date:'mediumDate'}} </h6>
+               
+            </div>
+            <div class="col-md-auto align-right">
+                <h4 class="mt-0 mb-1">Edition: {{edition.name}}</h4>
+                <h6>Location: {{edition.location}}</h6>
+            </div>
+        </div>
+        <p><span>Description:</span> {{edition.event.description}}
+        </p>
+        <button *ngIf="isEnrollable" class="btn btn-primary" (click)="onEnrollClick($event)">Enroll</button>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#edition-details-modal" (click)="onButtonClick($event)">View More details</button>
+          </div>
+</div>

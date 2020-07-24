@@ -1,0 +1,23 @@
+<nav class="sidebar">
+    <div class="sidebar-header" (click)="redirectHome()">
+        <h3>PrepLan</h3>
+    </div>
+    <div class="sidebar-content">
+        <ul class="list-unstyled">
+            <li *ngIf="isOrganizer">
+                <a [routerLink]="['/event-manager']"  routerLinkActive="active">Event Manager</a>
+            </li>
+            <li>
+                <a [routerLink]="['/profile']"  routerLinkActive="active">Profile</a>
+            </li>
+            <li>
+                <a [routerLink]="['/event-list']"  routerLinkActive="active">Event List</a>
+            </li>
+        </ul>
+        <ul class="list-unstyled">
+            <li class="logout-sidebar-button">
+                <a (click)="logOut()">Log out</a>
+            </li>
+        </ul>
+    </div>
+</nav>

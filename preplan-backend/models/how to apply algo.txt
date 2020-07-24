@@ -1,0 +1,5 @@
+how to apply algo
+1- for each requirement, create matching time slot, for example, if there is a need for 
+10 people from 8am-4pm, create 10 time slots
+2- Sort all the slots by priorities, for example night slot 1st, position priorities
+3- start filling the slots as much as possible. 
