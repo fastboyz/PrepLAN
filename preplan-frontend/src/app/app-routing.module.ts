@@ -5,6 +5,7 @@ import { UserProfileComponent } from './user/user-profile/user-profile.component
 import { UserRegistrationComponent } from './user/user-registration/user-registration.component';
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { AuthGuard } from './helpers/auth.guard';
+import { RoleGuard } from './helpers/role.guard';
 import { EditionDetailsComponent } from './dashboard/dashboard-organizer/event-manager/edition-details/edition-details.component';
 import { EventManagerComponent } from './dashboard/dashboard-organizer/event-manager/event-manager.component';
 import { EventListComponent } from './event-list/event-list.component';
@@ -15,8 +16,8 @@ const routes: Routes = [
   {path: 'register', component: UserRegistrationComponent },
   {path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard]},
   {path: 'event-list', component: EventListComponent,canActivate: [AuthGuard]},
-  {path: 'event-manager', component: EventManagerComponent,canActivate: [AuthGuard]},
-  {path: 'edition/:id', component: EditionDetailsComponent, canActivate: [AuthGuard]},
+  {path: 'event-manager', component: EventManagerComponent,canActivate: [RoleGuard]},
+  // {path: 'edition/:id', component: EditionDetailsComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ];
 
