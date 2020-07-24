@@ -86,7 +86,7 @@ router.post('/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) =
     })
 });
 
-router.get('/editions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/editions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
     Edition.find({})
         .populate('event')
         .exec((err, edts) => {
@@ -286,7 +286,7 @@ router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
 });
 
 
-router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
     var editionId = req.params.editionId;
     Position.find({ edition: editionId })
         .populate('edition')

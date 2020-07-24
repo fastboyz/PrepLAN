@@ -140,7 +140,7 @@ router.get('/role/:id', (req, res) => {
             return;
         }
 
-        res.status(200).send(acc.role.name);
+        res.status(200).send({name: acc.role.name});
     })
 })
 
