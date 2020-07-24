@@ -3,7 +3,6 @@ import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
 import { Edition, Event, Position } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/services/event.service';
-import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 
 import { EditionFormComponent } from 'src/app/edition-form/edition-form.component';
 import { EventFormComponent } from 'src/app/event-form/event-form.component';
@@ -31,6 +30,13 @@ export class EditionDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isEditable = false;
+    this.authService.getRole().subscribe(data => {
+      if (data.name == 'organizer') {
+        this.isOrganizer = true;
+      } else {
+        this.isOrganizer = false;
+      }
+    })
   }
   onEnrollClick(event: any){
     console.log('Enroll at edition '+ this.edition.name + " of event "+ this.edition.event.title + " from detail modal");

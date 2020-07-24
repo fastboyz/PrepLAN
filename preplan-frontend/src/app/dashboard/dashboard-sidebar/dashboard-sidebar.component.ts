@@ -8,19 +8,26 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./dashboard-sidebar.component.scss']
 })
 export class DashboardSidebarComponent implements OnInit {
-
-  constructor(private router:Router,
-    private authService:AuthService
-    ) { }
+  isOrganizer: boolean;
+  constructor(private router: Router,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
+    this.authService.getRole().subscribe(data => {
+      if (data.name == 'organizer') {
+        this.isOrganizer = true;
+      } else {
+        this.isOrganizer = false;
+      }
+    });
   }
 
-  redirectHome(){
+  redirectHome() {
     this.router.navigate(['/']);
   }
-  
-  logOut(){
+
+  logOut() {
     this.authService.logout();
     this.router.navigate(['/login']);
   }

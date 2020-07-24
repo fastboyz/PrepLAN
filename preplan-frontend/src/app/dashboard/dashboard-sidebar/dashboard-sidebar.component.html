@@ -4,7 +4,7 @@
     </div>
     <div class="sidebar-content">
         <ul class="list-unstyled">
-            <li>
+            <li *ngIf="isOrganizer">
                 <a [routerLink]="['/event-manager']"  routerLinkActive="active">Event Manager</a>
             </li>
             <li>

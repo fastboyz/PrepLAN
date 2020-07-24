@@ -44,7 +44,7 @@ export class AuthService {
 
     getRole(){
         let id = this.getCurrentUserId();
-        return this.http.get<string>(`${environment.apiUrl}/api/auth/role/${id}`
+        return this.http.get<any>(`${environment.apiUrl}/api/auth/role/${id}`
         // , {
         //     headers: {
         //         "x-access-token": this.getToken()
