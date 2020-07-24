@@ -72,7 +72,6 @@ export class UserFormComponent implements OnInit {
     formData['idEmergencyContact'] = this.user?.idEmergencyContact;
 
     this.onSubmit.emit(formData);
-    // TODO-Steve: append id into form data
   }
 
   onCancelForm() {

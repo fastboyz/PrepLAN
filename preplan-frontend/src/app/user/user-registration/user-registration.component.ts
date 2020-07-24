@@ -54,13 +54,10 @@ export class UserRegistrationComponent implements OnInit {
     var profileJson = JSON.stringify(profile);
     console.log(profileJson);*/
 
-    var formDataJson = JSON.stringify(data);
-    console.log(formDataJson);
-
+    data['role'] =  'volunteer';
     this.authService.signup(data).subscribe(
       data =>{
         alert(data);
-        console.log(data);
         this.router.navigate(['login']);
       }, 
       error => {
