@@ -2,15 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
-import { LoginFormComponent } from './login-form/login-form.component';
-import { UserFormComponent } from './user/user-form/user-form.component';
-import { UserProfileComponent } from './user/user-profile/user-profile.component';
-import { UserRegistrationComponent } from './user/user-registration/user-registration.component';
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
@@ -25,16 +20,13 @@ import { EventEditionFormComponent } from './event-edition-form/event-edition-fo
 import { EventListComponent } from './event-list/event-list.component';
 import { RoleGuard } from './helpers/role.guard';
 import { AuthGuard } from './helpers/auth.guard';
+import { UserModule } from './user/user.module';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginFormComponent,
-    UserFormComponent,
-    UserProfileComponent,
-    UserRegistrationComponent,
     DashboardHomeComponent,
     DashboardSidebarComponent,
     EventManagerComponent,
@@ -45,11 +37,17 @@ import { AuthGuard } from './helpers/auth.guard';
     EventTileComponent,
     EventEditionFormComponent,
     EventListComponent,
+    // LoginFormComponent,
+    // UserFormComponent,
+    // UserProfileComponent,
+    // UserRegistrationComponent,
+    // AccountFormComponent,
+    // EmergencyContactFormComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule

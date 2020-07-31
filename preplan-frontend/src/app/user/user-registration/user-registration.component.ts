@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Account, User, Profile, EmergencyContact } from 'src/app/shared/models/user';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserFormComponent } from '../user-form/user-form.component';
+import { AccountFormComponent } from '../account-form/account-form.component';
+import { EmergencyContactFormComponent } from '../emergency-contact-form/emergency-contact-form.component';
 
 @Component({
   selector: 'user-registration',
@@ -10,13 +13,19 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./user-registration.component.scss']
 })
 export class UserRegistrationComponent implements OnInit {
+  @ViewChild(AccountFormComponent) accountFormComponent: AccountFormComponent;
+  @ViewChild(UserFormComponent) userFormComponent: UserFormComponent;
+  @ViewChild(EmergencyContactFormComponent) contactFormComponent: EmergencyContactFormComponent;
+  
   error: string;
-  formData: FormData;
+  profileData: Profile;
+  contactData: EmergencyContact;
+  accountData: Account;
+
   constructor(private router:Router,
     private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.formData = null;
   }
 
   addUser(data: FormData){
@@ -66,7 +75,11 @@ export class UserRegistrationComponent implements OnInit {
 
   }
 
-  cancel(){
+  onSubmitForm(){
+    
+  }
+
+  onCancelForm(){
     this.router.navigate(['login']);
   }
 }
