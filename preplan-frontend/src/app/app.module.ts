@@ -25,6 +25,7 @@ import { EventEditionFormComponent } from './event-edition-form/event-edition-fo
 import { EventListComponent } from './event-list/event-list.component';
 import { RoleGuard } from './helpers/role.guard';
 import { AuthGuard } from './helpers/auth.guard';
+import { EditionManagerComponent } from './edition-manager/edition-manager.component';
 
 
 
@@ -45,6 +46,7 @@ import { AuthGuard } from './helpers/auth.guard';
     EventTileComponent,
     EventEditionFormComponent,
     EventListComponent,
+    EditionManagerComponent,
   ],
   imports: [
     BrowserModule,

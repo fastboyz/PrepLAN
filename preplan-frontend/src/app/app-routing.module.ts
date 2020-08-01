@@ -9,6 +9,7 @@ import { RoleGuard } from './helpers/role.guard';
 import { EditionDetailsComponent } from './dashboard/dashboard-organizer/event-manager/edition-details/edition-details.component';
 import { EventManagerComponent } from './dashboard/dashboard-organizer/event-manager/event-manager.component';
 import { EventListComponent } from './event-list/event-list.component';
+import { EditionManagerComponent } from './edition-manager/edition-manager.component';
 
 const routes: Routes = [
   { path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] },
@@ -24,7 +25,7 @@ const routes: Routes = [
       expectedRole: 'organizer'
     }
   },
-  // {path: 'edition/:id', component: EditionDetailsComponent, canActivate: [AuthGuard]},
+  {path: 'edition/:id', component: EditionManagerComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: '' }
 ];
 
