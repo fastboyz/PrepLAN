@@ -25,12 +25,13 @@ export class EventManagerComponent implements OnInit {
       this.editionList = data;
     });
   }
+  
   openDetails(data: Edition){
-    this.editionDetails = data;
-    this.eventService.getPositionsbyEditionId(this.editionDetails.id).subscribe(data => {
-      this.positionList = data;
-    });
-    // this.router.navigate(['/edition', data.id]);
+    // this.editionDetails = data;
+    // this.eventService.getPositionsbyEditionId(this.editionDetails.id).subscribe(data => {
+    //   this.positionList = data;
+    // });
+    this.router.navigate(['/edition', data.id]);
   }
 
   onEventCreated(isCreated :boolean){
