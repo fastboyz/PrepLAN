@@ -78,14 +78,14 @@ export class UserProfileComponent implements OnInit {
     let contactForm = this.contactFormComponent.contactForm;
     if (contactForm.valid && (contactForm.touched || contactForm.dirty)) {
       let emergencyContact: EmergencyContact = {
-        firstName: contactForm.get("firstNameEmergency").value,
-        lastName: contactForm.get("lastNameEmergency").value,
-        relationship: contactForm.get("relationshipEmergency").value,
-        phoneNumber: contactForm.get("emergencyNumber").value
+        id: this.contactData.id,
+        firstName: contactForm.get("firstName").value,
+        lastName: contactForm.get("lastName").value,
+        relationship: contactForm.get("relationship").value,
+        phoneNumber: contactForm.get("phoneNumber").value
       }
 
       this.userService.updateEmergencyContact(emergencyContact).subscribe();
-      location.reload();
     }
   }
 

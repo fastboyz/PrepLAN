@@ -78,7 +78,6 @@ router.put('/account', [authJwt.verifyToken], (req, res) => {
 router.put('/profile', [authJwt.verifyToken], (req, res) => {
     var profile = req.body;
     var user = profile.user;
-    console.log(user.firstName);
     User.findById(user.id).exec((err, usr) => {
         if (err) {
             res.status(500).send({ message: err });
@@ -112,6 +111,23 @@ router.put('/profile', [authJwt.verifyToken], (req, res) => {
     })
 });
 
+router.put('/contact', [authJwt.verifyToken], (req, res) => {
+    let contact = req.body;
+
+    EmergencyContact.findById(contact.id).exec((err, cont) => {
+        cont.firstName = contact.firstName;
+        cont.lastName = contact.lastName;
+        cont.relationship = contact.relationship;
+        cont.phoneNumber = contact.phoneNumber;
+        cont.save((err, updatedContact) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            res.status(200).send();
+        })
+    });
+});
 /*
 router.put('/profile', (req, res) => {
     var cUser = req.body;
