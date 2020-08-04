@@ -6,9 +6,9 @@ import { UserRegistrationComponent } from './user/user-registration/user-registr
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { AuthGuard } from './helpers/auth.guard';
 import { RoleGuard } from './helpers/role.guard';
-import { EditionDetailsComponent } from './dashboard/dashboard-organizer/event-manager/edition-details/edition-details.component';
 import { EventManagerComponent } from './dashboard/dashboard-organizer/event-manager/event-manager.component';
 import { EventListComponent } from './event-list/event-list.component';
+import { InscriptionEventFormComponent } from './inscription-event-form/inscription-event-form.component';
 
 const routes: Routes = [
   { path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] },
@@ -25,6 +25,7 @@ const routes: Routes = [
     }
   },
   // {path: 'edition/:id', component: EditionDetailsComponent, canActivate: [AuthGuard]},
+  { path: 'test', component: InscriptionEventFormComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];
 

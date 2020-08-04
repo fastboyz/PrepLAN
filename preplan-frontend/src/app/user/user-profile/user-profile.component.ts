@@ -32,7 +32,7 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  editAccount() {
+  updateAccount() {
     let accountForm = this.accountFormComponent.accountForm;
     if (accountForm.valid && (accountForm.touched || accountForm.dirty)) {
       let account: Account = {
@@ -44,16 +44,14 @@ export class UserProfileComponent implements OnInit {
       }
 
       this.userService.updateAccount(account).subscribe();
-      location.reload();
     }
   }
 
-  editUser(event: any) {
+  updateUserProfile() {
     let userForm = this.userFormComponent.userForm;
     if (userForm.valid && (userForm.touched || userForm.dirty)) {
-
-
       let userInfo: User = {
+        id: this.profileData.user.id,
         account: this.accountData,
         firstName: userForm.get("firstName").value,
         lastName: userForm.get("lastName").value,
@@ -63,22 +61,20 @@ export class UserProfileComponent implements OnInit {
         phoneNumber: userForm.get("phoneNumber").value
       };
 
-
       let userProfile: Profile = {
+        id: this.profileData.id,
         user: userInfo,
-        tshirtSize: null,
+        tshirtSize: userForm.get("tshirtSize").value,
         allergy: userForm.get("allergy").value,
         certification: userForm.get("certification").value,
         emergencyContact: this.contactData
       }
 
-
       this.userService.updateUserProfile(userProfile).subscribe();
-      location.reload();
     }
   }
 
-  editEmergencyContact() {
+  updateContact() {
     let contactForm = this.contactFormComponent.contactForm;
     if (contactForm.valid && (contactForm.touched || contactForm.dirty)) {
       let emergencyContact: EmergencyContact = {

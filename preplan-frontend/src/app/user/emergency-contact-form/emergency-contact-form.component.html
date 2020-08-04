@@ -2,73 +2,69 @@
     <div [hidden]="formDir.submitted">
         <div class="cross-validation"
             [class.cross-validation-error]="contactForm.errors?.identityRevealed && (contactForm.touched || contactForm.dirty)">
-            
+
             <h4>Emergency Contact</h4>
             <div class="form-group">
-                <label for="firstNameEmergency">First Name*</label>
-                <input id="firstNameEmergency" class="form-control" formControlName="firstNameEmergency" required>
+                <label>First Name*</label>
+                <input class="form-control" formControlName="firstName" required>
 
-                <div *ngIf="firstNameEmergency.invalid && (firstNameEmergency.dirty || firstNameEmergency.touched)"
-                    class="alert alert-danger">
+                <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
 
-                    <div *ngIf="firstNameEmergency.errors.required">
+                    <div *ngIf="firstName.errors.required">
                         First name is required.
                     </div>
-                    <div *ngIf="firstNameEmergency.errors.minlength">
+                    <div *ngIf="firstName.errors.minlength">
                         First name must be at least 3 characters long.
                     </div>
-                    <div *ngIf="firstNameEmergency.errors.shouldNotHaveSpaces">
+                    <div *ngIf="firstName.errors.shouldNotHaveSpaces">
                         First Name cannot be empty.
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="lastNameEmergency">Last name*</label>
-                <input id="lastNameEmergency" class="form-control" formControlName="lastNameEmergency" type="text"
-                    required>
+                <label>Last name*</label>
+                <input class="form-control" formControlName="lastName" type="text" required>
 
-                <div *ngIf="lastNameEmergency.invalid && (lastNameEmergency.dirty || lastNameEmergency.touched)"
-                    class="alert alert-danger">
-                    <div *ngIf="lastNameEmergency.errors.required">
+                <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
+                    <div *ngIf="lastName.errors.required">
                         Last name is required.
                     </div>
-                    <div *ngIf="lastNameEmergency.errors.minlength">
+                    <div *ngIf="lastName.errors.minlength">
                         Last name must be at least 3 characters long.
                     </div>
-                    <div *ngIf="lastNameEmergency.errors.shouldNotHaveSpaces">
+                    <div *ngIf="lastName.errors.shouldNotHaveSpaces">
                         Last name cannot be empty.
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="relationshipEmergency">Relationship with contact*</label>
-                <input id="relationshipEmergency" class="form-control" formControlName="relationshipEmergency"
-                    type="text" required>
+                <label>Relationship with contact*</label>
+                <input class="form-control" formControlName="relationship" type="text" required>
 
-                <div *ngIf="relationshipEmergency.invalid && (relationshipEmergency.dirty || relationshipEmergency.touched)"
+                <div *ngIf="relationship.invalid && (relationship.dirty || relationship.touched)"
                     class="alert alert-danger">
-                    <div *ngIf="relationshipEmergency.errors.required">
+                    <div *ngIf="relationship.errors.required">
                         Relationship is required.
                     </div>
-                    <div *ngIf="relationshipEmergency.errors.shouldNotHaveSpaces">
+                    <div *ngIf="relationship.errors.shouldNotHaveSpaces">
                         Relationship cannot be empty.
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="emergencyNumber">Contact Phone Number*</label>
-                <input id="emergencyNumber" class="form-control" formControlName="emergencyNumber" type="tel" required
+                <label>Contact Phone Number*</label>
+                <input class="form-control" formControlName="phoneNumber" type="tel" required
                     placeholder="###-###-####">
 
-                <div *ngIf="emergencyNumber.invalid && (emergencyNumber.dirty || emergencyNumber.touched)"
+                <div *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)"
                     class="alert alert-danger">
-                    <div *ngIf="emergencyNumber.errors.required">
+                    <div *ngIf="phoneNumber.errors.required">
                         Phone Number is required.
                     </div>
-                    <div *ngIf="emergencyNumber.errors.pattern">
+                    <div *ngIf="phoneNumber.errors.pattern">
                         Phone number is invalid. Format : 123-123-1234
                     </div>
                 </div>

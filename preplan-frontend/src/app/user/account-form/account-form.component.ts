@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { FormValidators } from 'src/app/shared/validators/formValidators';
 import { Account } from 'src/app/shared/models/user';
+import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'account-form',
@@ -9,11 +11,13 @@ import { Account } from 'src/app/shared/models/user';
   styleUrls: ['./account-form.component.scss']
 })
 export class AccountFormComponent implements OnInit {
-  @Input() accountData: Account;
+  @Input("accountData") accountData: Account;
   accountForm: FormGroup;
   roleOption: any = ['admin', 'volunteer', 'organizer'];
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder,
+    private userService: UserService,
+    private authService: AuthService) { }
 
   ngOnInit(): void {
     this.accountForm = this.formBuilder.group({
@@ -22,6 +26,12 @@ export class AccountFormComponent implements OnInit {
       email: ['', { validators: [Validators.required, Validators.pattern(FormValidators.emailPattern)], updateOn: 'blur' }],
       role: ['', { validators: [Validators.required], updateOn: 'blur' }],
     })
+
+    if (this.authService.currentUserValue) {
+      this.userService.getProfile(this.authService.currentUserValue.id).subscribe(profile => {
+          this.accountForm.patchValue(profile.user.account);
+      });
+    }
   }
   onSubmitForm() {
   }

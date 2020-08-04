@@ -21,8 +21,7 @@ import { EventListComponent } from './event-list/event-list.component';
 import { RoleGuard } from './helpers/role.guard';
 import { AuthGuard } from './helpers/auth.guard';
 import { UserModule } from './user/user.module';
-
-
+import { InscriptionEventFormComponent } from './inscription-event-form/inscription-event-form.component';
 
 @NgModule({
   declarations: [
@@ -37,14 +36,10 @@ import { UserModule } from './user/user.module';
     EventTileComponent,
     EventEditionFormComponent,
     EventListComponent,
-    // LoginFormComponent,
-    // UserFormComponent,
-    // UserProfileComponent,
-    // UserRegistrationComponent,
-    // AccountFormComponent,
-    // EmergencyContactFormComponent,
+    InscriptionEventFormComponent
   ],
   imports: [
+    UserModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,

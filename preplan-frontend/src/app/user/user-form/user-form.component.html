@@ -4,8 +4,8 @@
             [class.cross-validation-error]="userForm.errors?.identityRevealed && (userForm.touched || userForm.dirty)">
             <h4>Personal Informations</h4>
             <div class="form-group">
-                <label for="firstName">First Name*</label>
-                <input id="firstName" class="form-control" formControlName="firstName" required>
+                <label>First Name*</label>
+                <input class="form-control" formControlName="firstName" required>
 
                 <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
 
@@ -22,8 +22,8 @@
             </div>
 
             <div class="form-group">
-                <label for="lastName">Last name*</label>
-                <input id="lastName" class="form-control" formControlName="lastName" type="text" required>
+                <label>Last name*</label>
+                <input class="form-control" formControlName="lastName" type="text" required>
 
                 <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
                     <div *ngIf="lastName.errors.required">
@@ -39,8 +39,8 @@
             </div>
 
             <div class="form-group">
-                <label for="pronoun">Preferred Pronoun*</label>
-                <select id="pronoun" class="form-control" formControlName="pronoun">
+                <label>Preferred Pronoun*</label>
+                <select class="form-control" formControlName="pronoun">
                     <option value="" disabled> Choose Your Preffered Pronoun </option>
                     <option *ngFor="let pro of pronounOptions" [ngValue]="pro">{{pro}}</option>
                 </select>
@@ -52,9 +52,8 @@
             </div>
 
             <div class="form-group">
-                <label for="birthday">Birthday*</label>
-                <input id="birthday" class="form-control" formControlName="birthday" type="date" required
-                    placeholder="dd/MM/yyyy">
+                <label>Birthday*</label>
+                <input class="form-control" formControlName="birthday" type="date" required placeholder="dd/MM/yyyy">
 
                 <div *ngIf="birthday.invalid && (birthday.dirty || birthday.touched)" class="alert alert-danger">
                     <div *ngIf="birthday.errors.required">
@@ -67,8 +66,8 @@
             </div>
 
             <div class="form-group">
-                <label for="phoneNumber">Phone Number*</label>
-                <input id="phoneNumber" class="form-control" formControlName="phoneNumber" type="tel" required
+                <label>Phone Number*</label>
+                <input class="form-control" formControlName="phoneNumber" type="tel" required
                     placeholder="###-###-####">
 
                 <div *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)"
@@ -83,9 +82,8 @@
             </div>
 
             <div class="form-group">
-                <label for="discord">Discord Username</label>
-                <input id="discord" class="form-control" formControlName="discord" type="text"
-                    placeholder="Username#9999">
+                <label>Discord Username</label>
+                <input class="form-control" formControlName="discord" type="text" placeholder="Username#9999">
 
                 <div *ngIf="discord.invalid && (discord.dirty || discord.touched)" class="alert alert-danger">
                     <div *ngIf="discord.errors.pattern">
@@ -95,25 +93,25 @@
             </div>
 
             <div class="form-group">
-                <label for="tshirtSize">T-Shirt Size</label>
-                <select id="tshirtSize" class="form-control" formControlName="tshirtSize">
+                <label>T-Shirt Size</label>
+                <select class="form-control" formControlName="tshirtSize">
                     <option value="" disabled> Choose your T-Shirt Size </option>
                     <option *ngFor="let size of tshirtSizeOptions" [ngValue]="size">{{size}}</option>
                 </select>
                 <div *ngIf="tshirtSize.invalid && (tshirtSize.dirty || tshirtSize.touched)" class="alert alert-danger">
                     <div *ngIf="tshirtSize.errors.required">
                         T-shirt size is required.
-                    </div>
+                    </div>z
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="allergy">Allergies</label>
-                <input id="allergy" class="form-control" formControlName="allergy" type="text">
+                <label>Allergies</label>
+                <input class="form-control" formControlName="allergy" type="text">
             </div>
             <div class="form-group">
-                <label for="certification">Certifications</label>
-                <input id="certification" class="form-control" formControlName="certification" type="text">
+                <label>Certifications</label>
+                <input class="form-control" formControlName="certification" type="text">
             </div>
         </div>
     </div>

@@ -20,15 +20,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     UserProfileComponent,
     UserRegistrationComponent, 
     AccountFormComponent,
-    EmergencyContactFormComponent,
-    
+    EmergencyContactFormComponent 
   ],
   imports: [
     CommonModule,
     RouterModule,
     FormsModule,   
     ReactiveFormsModule,
-  ]
+  ],
+  exports: [UserFormComponent, EmergencyContactFormComponent],
+
 })
 
 export class UserModule { }

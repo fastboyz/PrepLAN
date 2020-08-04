@@ -4,7 +4,8 @@ import { FormValidators } from '../../shared/validators/formValidators'
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { CombinedUser, Profile } from 'src/app/shared/models/user';
+import { CombinedUser, Profile, User } from 'src/app/shared/models/user';
+import * as moment from 'moment';
 
 @Component({
   selector: 'user-form',
@@ -12,13 +13,14 @@ import { CombinedUser, Profile } from 'src/app/shared/models/user';
   styleUrls: ['./user-form.component.scss']
 })
 export class UserFormComponent implements OnInit {
-  @Input() profileData: Profile;
+  @Input("profileData") profileData: Profile;
   @Output() onSubmit = new EventEmitter();
   @Output() onCancel = new EventEmitter();
 
   userForm: FormGroup;
   namePattern = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
   submitted: boolean = false;
+  userProfile: Profile;
   user: CombinedUser;
 
   tshirtSizeOptions: any = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
@@ -31,13 +33,6 @@ export class UserFormComponent implements OnInit {
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    // if (this.authService.currentUserValue) {
-    //   this.userService.getProfile(this.authService.currentUserValue.id).subscribe(user => {
-    //     this.user = user;
-    //     this.userForm.patchValue(user)
-    //   });
-    // }
-
     this.userForm = this.formBuilder.group({
       firstName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
       lastName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
@@ -49,6 +44,24 @@ export class UserFormComponent implements OnInit {
       allergy: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
       certification: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
     })
+
+    if (this.authService.currentUserValue) {
+      this.userService.getProfile(this.authService.currentUserValue.id).subscribe(profile => {
+        this.userProfile = profile;
+        this.userForm.setValue({
+          firstName: this.userProfile.user.firstName,
+          lastName: this.userProfile.user.lastName,
+          pronoun: this.userProfile.user.pronoun,
+          phoneNumber: this.userProfile.user.phoneNumber,
+          birthday: moment.utc(this.userProfile.user.birthday).format('YYYY-MM-DD'),
+          discord: this.userProfile.user.discord,
+          tshirtSize: this.userProfile.tshirtSize, 
+          allergy: this.userProfile.allergy,
+          certification: this.userProfile.certification,
+        });
+      });
+    }
+
   }
 
   onSubmitForm() {
@@ -56,12 +69,32 @@ export class UserFormComponent implements OnInit {
     if (this.userForm.invalid) return;
 
     let formData = (this.userForm.value as FormData);
-    formData['idAccount'] =  this.user?.idAccount;
-    formData['idUser'] = this.user?.idUser;
-    formData['idProfile'] = this.user?.idProfile;
-    formData['idEmergencyContact'] = this.user?.idEmergencyContact;
+    // formData['idAccount'] =  this.user?.idAccount;
+    // formData['idUser'] = this.user?.idUser;
+    // formData['idProfile'] = this.user?.idProfile;
+    // formData['idEmergencyContact'] = this.user?.idEmergencyContact;
+    let newUser: User = {
+      id: this.userProfile.user.id,
+      firstName: this.firstName.value,
+      lastName: this.lastName.value,
+      birthday: this.birthday.value,
+      pronoun: this.pronoun.value,
+      phoneNumber: this.phoneNumber.value,
+      discord: this.discord.value,
+      account: this.userProfile.user.account
+    }
 
-    this.onSubmit.emit(formData);
+    let newUserProfile: Profile = {
+      id: this.userProfile.id,
+      user: newUser,
+      allergy: this.allergy.value,
+      certification: this.certification.value,
+      tshirtSize: this.tshirtSize.value,
+      emergencyContact: this.userProfile.emergencyContact
+    }
+    
+    // this.onSubmit.emit(formData);
+    this.onSubmit.emit(newUserProfile);
   }
 
   onCancelForm() {
