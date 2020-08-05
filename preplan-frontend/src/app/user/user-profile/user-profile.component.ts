@@ -1,10 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Profile, EmergencyContact, Account, User } from 'src/app/shared/models/user';
+
 import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
+
+import { Profile, EmergencyContact, Account, User } from 'src/app/shared/models/user';
+
 import { UserFormComponent } from '../user-form/user-form.component';
 import { AccountFormComponent } from '../account-form/account-form.component';
 import { EmergencyContactFormComponent } from '../emergency-contact-form/emergency-contact-form.component';
-import { AuthService } from 'src/app/services/auth.service';
+
 
 @Component({
   selector: 'profile',
@@ -87,9 +91,5 @@ export class UserProfileComponent implements OnInit {
 
       this.userService.updateEmergencyContact(emergencyContact).subscribe();
     }
-  }
-
-  cancel() {
-
   }
 }

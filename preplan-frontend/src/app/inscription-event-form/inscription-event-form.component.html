@@ -1,8 +1,40 @@
-<div>
+<div *ngIf="step == 1" class="user-info">
     <div class="section">
-        <user-form ></user-form>
+        <user-form></user-form>
     </div>
     <div class="section">
-        <emergency-contact-form ></emergency-contact-form>
+        <emergency-contact-form></emergency-contact-form>
+    </div>
+</div>
+
+<div *ngIf="step == 2" class="availabilities">
+    <div class="section">
+        
+    </div>
+</div>
+
+<div *ngIf="step == 3" class="preferences">
+    <div class="section">
+        <form [formGroup]="preferencesForm" #formDir="ngForm">
+            <label>How many hours maximum per day? </label>
+            
+            <select class="form-control" formControlName="hoursPreference">
+                <option *ngFor="let hours of hoursContract" [ngValue]="dept">{{hours}}</option>
+            </select>
+            <label>Choose your 1st preferred department </label>
+            <select class="form-control" formControlName="firstPreference">
+                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
+            </select>
+
+            <label>Choose your 2nd preferred department </label>
+            <select class="form-control" formControlName="secondPreference">
+                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
+            </select>
+
+            <label>Choose your 3rd preferred department</label>
+            <select class="form-control" formControlName="thirdPreference">
+                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
+            </select>
+        </form>
     </div>
 </div>
