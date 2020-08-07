@@ -1,40 +1,63 @@
-<div *ngIf="step == 1" class="user-info">
-    <div class="section">
-        <user-form></user-form>
+<div>
+    <div *ngIf="step == 1" class="user-info">
+        <div class="section">
+            <user-form></user-form>
+        </div>
+        <div class="section">
+            <emergency-contact-form></emergency-contact-form>
+        </div>
     </div>
-    <div class="section">
-        <emergency-contact-form></emergency-contact-form>
-    </div>
-</div>
 
-<div *ngIf="step == 2" class="availabilities">
-    <div class="section">
-        
-    </div>
-</div>
+    <div *ngIf="step == 2" class="section">
+        <h4>Availabilities</h4>
+        <div class="days" *ngFor="let a of availabilities">
+            <h5>{{a.date.format("dddd, MMMM Do YYYY")}}</h5>
+            <div class="form-check form-check-inline col-2" *ngFor="let shift of a.shiftsInDay">
+                <input class="form-check-input" type="checkbox" [value]="shift.value" [(ngModel)]="shift.checked">
+                <label class="form-check-label">{{shift.name}}</label>
+            </div>
+        </div>
 
-<div *ngIf="step == 3" class="preferences">
-    <div class="section">
+    </div>
+
+    <div *ngIf="step == 3">
         <form [formGroup]="preferencesForm" #formDir="ngForm">
-            <label>How many hours maximum per day? </label>
-            
-            <select class="form-control" formControlName="hoursPreference">
-                <option *ngFor="let hours of hoursContract" [ngValue]="dept">{{hours}}</option>
-            </select>
-            <label>Choose your 1st preferred department </label>
-            <select class="form-control" formControlName="firstPreference">
-                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
-            </select>
-
-            <label>Choose your 2nd preferred department </label>
-            <select class="form-control" formControlName="secondPreference">
-                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
-            </select>
-
-            <label>Choose your 3rd preferred department</label>
-            <select class="form-control" formControlName="thirdPreference">
-                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
-            </select>
+            <div class="section">
+                <h4>Preferred Max Hours</h4>
+                <div class="form-group">
+                    <label>How many hours maximum per day? </label>
+                    <select class="form-control" formControlName="hoursPreference">
+                        <option *ngFor="let hours of hoursContract" [ngValue]="hours">{{hours}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="section">
+                <h4>Preferred Departments</h4>
+                <div class="form-group">
+                    <label>Choose your 1st preferred department </label>
+                    <select class="form-control" formControlName="firstPreference">
+                        <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Choose your 2nd preferred department </label>
+                    <select class="form-control" formControlName="secondPreference">
+                        <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Choose your 3rd preferred department</label>
+                    <select class="form-control" formControlName="thirdPreference">
+                        <option *ngFor="let dept of departments" [ngValue]="dept">{{dept}}</option>
+                    </select>
+                </div>
+            </div>
         </form>
+    </div>
+
+    <div class="">
+        <button *ngIf="step == 3" class="btn btn-primary" (click)="submit()">Submit </button>
+        <button *ngIf="step !== 3" class="btn btn-primary" (click)="goToNextStep()">Next</button>
+        <button *ngIf="step !== 1" class="btn btn-primary" (click)="goToLastStep()">Back</button>
     </div>
 </div>

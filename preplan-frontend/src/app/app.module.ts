@@ -22,6 +22,8 @@ import { RoleGuard } from './helpers/role.guard';
 import { AuthGuard } from './helpers/auth.guard';
 import { UserModule } from './user/user.module';
 import { InscriptionEventFormComponent } from './inscription-event-form/inscription-event-form.component';
+import { jqxGridModule } from 'jqwidgets-ng/jqxgrid';
+import { jqxSchedulerModule } from 'jqwidgets-ng/jqxscheduler';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { InscriptionEventFormComponent } from './inscription-event-form/inscript
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    jqxSchedulerModule,
+    
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
