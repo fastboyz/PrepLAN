@@ -26,6 +26,7 @@ const routes: Routes = [
   },
   // {path: 'edition/:id', component: EditionDetailsComponent, canActivate: [AuthGuard]},
   { path: 'test', component: InscriptionEventFormComponent, canActivate: [AuthGuard] },
+  {path: 'inscription/:id', component: InscriptionEventFormComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: '' }
 ];
 

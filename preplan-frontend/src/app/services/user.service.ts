@@ -81,7 +81,7 @@ export class UserService {
   updateAccount(account: Account) {
     console.log("Updated Account");
     return this.http
-      .put<Account[]>(`${environment.apiUrl}/api/users/account`, account, {
+      .put<Account>(`${environment.apiUrl}/api/users/account`, account, {
         headers: {
           'x-access-token': this.authService.getToken(),
         },
@@ -97,7 +97,7 @@ export class UserService {
   updateUserProfile(profile: Profile) {
     console.log("Updated User Profile");
     return this.http
-      .put<Account[]>(`${environment.apiUrl}/api/users/profile`, profile, {
+      .put<Profile>(`${environment.apiUrl}/api/users/profile`, profile, {
         headers: {
           'x-access-token': this.authService.getToken(),
         },
@@ -113,7 +113,7 @@ export class UserService {
   updateEmergencyContact(contact: EmergencyContact) {
     console.log("Updated Contact");
     return this.http
-      .put<Account[]>(`${environment.apiUrl}/api/users/contact`, contact, {
+      .put<EmergencyContact>(`${environment.apiUrl}/api/users/contact`, contact, {
         headers: {
           'x-access-token': this.authService.getToken(),
         },

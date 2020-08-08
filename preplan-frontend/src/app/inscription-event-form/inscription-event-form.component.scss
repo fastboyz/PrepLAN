@@ -14,8 +14,12 @@ input[type="checkbox"] {
 }
 
 .btn-primary {
-    // margin-top: 1rem;
     margin-left: 1rem;
     float: right;
     padding: 0.5rem 2rem;
+}
+
+.error{
+    color: red;
+    font-size: 20px;
 }

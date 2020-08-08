@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Edition } from '../shared/models/event';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'event-tile',
@@ -10,7 +11,7 @@ export class EventTileComponent implements OnInit {
   @Input() edition: Edition;
   @Input() isEnrollable:boolean;
   @Output() onClick = new EventEmitter <Edition>();
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -21,5 +22,6 @@ export class EventTileComponent implements OnInit {
 
   onEnrollClick(event:Event){
     console.log('Enroll at edition '+ this.edition.name + " of event "+ this.edition.event.title);
+    this.router.navigate(['/inscription', this.edition.id]);
   }
 }
