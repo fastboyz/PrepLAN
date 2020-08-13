@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Account, User, Profile, EmergencyContact } from 'src/app/shared/models/user';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserFormComponent } from '../user-form/user-form.component';
+import { AccountFormComponent } from '../account-form/account-form.component';
+import { EmergencyContactFormComponent } from '../emergency-contact-form/emergency-contact-form.component';
 
 @Component({
   selector: 'user-registration',
@@ -10,17 +13,24 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./user-registration.component.scss']
 })
 export class UserRegistrationComponent implements OnInit {
+  @ViewChild(AccountFormComponent) accountFormComponent: AccountFormComponent;
+  @ViewChild(UserFormComponent) userFormComponent: UserFormComponent;
+  @ViewChild(EmergencyContactFormComponent) contactFormComponent: EmergencyContactFormComponent;
+
   error: string;
-  formData: FormData;
-  constructor(private router:Router,
+  profileData: Profile;
+  contactData: EmergencyContact;
+  accountData: Account;
+
+  constructor(private router: Router,
     private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.formData = null;
   }
+/*
+  addUser(data: FormData) {
 
-  addUser(data: FormData){
-    /*var userAccount:Account = {
+    var userAccount:Account = {
       username: data.get("username").value,
       password: data.get("password").value,
       email: data.get("email").value
@@ -52,10 +62,10 @@ export class UserRegistrationComponent implements OnInit {
     }
 
     var profileJson = JSON.stringify(profile);
-    console.log(profileJson);*/
+    console.log(profileJson);
 
     this.authService.signup(data).subscribe(
-      data =>{
+      data => {
         this.router.navigate(['login']);
       },
       error => {
@@ -64,9 +74,61 @@ export class UserRegistrationComponent implements OnInit {
       }
     )
 
+  }*/
+
+  onSubmitForm() {
+    if (this.accountFormComponent.accountForm.valid &&
+      this.userFormComponent.userForm.valid &&
+      this.contactFormComponent.contactForm.valid) {
+        let accountForm = this.accountFormComponent.accountForm;
+        let userForm =  this.userFormComponent.userForm;
+        let contactForm =  this.contactFormComponent.contactForm;
+
+      var userAccount: Account = {
+        username: accountForm.get("username").value,
+        password: accountForm.get("password").value,
+        email: accountForm.get("email").value,
+        role: accountForm.get("role").value
+      };
+
+      var userInfo: User = {
+        account: userAccount,
+        firstName: userForm.get("firstName").value,
+        lastName: userForm.get("lastName").value,
+        pronoun: userForm.get("pronoun").value,
+        birthday: userForm.get("birthday").value,
+        discord: userForm.get("discord").value,
+        phoneNumber: userForm.get("phoneNumber").value
+      };
+
+      var emergencyContactInfo: EmergencyContact = {
+        firstName: contactForm.get("firstNameEmergency").value,
+        lastName: contactForm.get("lastNameEmergency").value,
+        relationship: contactForm.get("relationshipEmergency").value,
+        phoneNumber: contactForm.get("emergencyNumber").value
+      }
+
+      var profile: Profile = {
+        user: userInfo,
+        tshirtSize: null,
+        allergy: userForm.get("allergy").value,
+        certification: userForm.get("certification").value,
+        emergencyContact: emergencyContactInfo
+      }
+
+      this.authService.signUp(profile).subscribe(
+        data => {
+          this.router.navigate(['login']);
+        },
+        error => {
+          this.error = error;
+          //TODO add logger
+        }
+      )
+    }
   }
 
-  cancel(){
+  onCancelForm() {
     this.router.navigate(['login']);
   }
 }

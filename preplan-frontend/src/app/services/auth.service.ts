@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Account } from '../shared/models/user';
+import { Account, Profile } from '../shared/models/user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -37,6 +37,13 @@ export class AuthService {
 
     signup(userRegistration: FormData) {
         return this.http.post<any>(`${environment.apiUrl}/api/auth/signup`, userRegistration)
+            .pipe(map(response => {
+                return response
+            }));
+    }
+
+    signUp(userProfile: Profile) {
+        return this.http.post<any>(`${environment.apiUrl}/api/auth/signup`, userProfile)
             .pipe(map(response => {
                 return response
             }));

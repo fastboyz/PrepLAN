@@ -49,6 +49,7 @@ export class EditionDetailsComponent implements OnInit {
       this.edition.event.title +
       ' from detail modal'
     );
+    this.router.navigate(['/inscription', this.edition.id]);
   }
 
   updateEdition(event: any) {

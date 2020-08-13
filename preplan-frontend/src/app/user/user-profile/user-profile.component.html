@@ -1,4 +1,16 @@
 <div class="container form">
     <h1>Profile</h1>
-    <user-form [formData]="formData" (onSubmit)="editUser($event)" (onCancel)="cancel()"></user-form>
+    <!-- <user-form [profileData]="profileData" (onSubmit)="editUser($event)" (onCancel)="cancel()"></user-form> -->
+    <div class="section">
+        <account-form [accountData]="accountData"></account-form>
+        <div><button class="btn btn-primary" (click)="updateAccount()">Update</button></div>
+    </div>
+    <div class="section">
+        <user-form [profileData]="profileData"></user-form>
+        <div><button class="btn btn-primary" (click)="updateUserProfile()">Update</button></div>
+    </div>
+    <div class="section">
+        <emergency-contact-form [contactData]="contactData"></emergency-contact-form>
+        <div><button class="btn btn-primary" (click)="updateContact()">Update</button></div>
+    </div>
 </div>

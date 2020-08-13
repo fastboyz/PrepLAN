@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { User, Profile, Account, EmergencyContact } from '../models';
+import { User, Profile, Account, EmergencyContact, Role } from '../models';
 import bcrypt from 'bcryptjs';
 import { authJwt } from '../middlewares'
 import { Mongoose } from 'mongoose';
@@ -51,6 +51,84 @@ router.get('/profile/:id', [authJwt.verifyToken], (req, res) => {
         });
 });
 
+router.put('/account', [authJwt.verifyToken], (req, res) => {
+    var account = req.body;
+    Account.findById(account.id).exec((err, acc) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return
+        }
+        acc.username = account.username;
+        acc.password = bcrypt.hashSync(account.password, 8);
+        acc.email = account.email;
+        Role.findOne({ name: account.role }).exec((err, r) => {
+            acc.role = r.id;
+        });
+
+        acc.save((err, account) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            res.status(200).json(account);
+        });
+    });
+});
+
+router.put('/profile', [authJwt.verifyToken], (req, res) => {
+    var profile = req.body;
+    var user = profile.user;
+    User.findById(user.id).exec((err, usr) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+        }
+        usr.firstName = user.firstName;
+        usr.lastName = user.lastName;
+        usr.pronoun = user.pronoun;
+        usr.birthday = user.birthday;
+        usr.phoneNumber = user.phoneNumber;
+        usr.discord = user.discord;
+
+        usr.save((err, updatedUsr) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            Profile.findById(profile.id).exec((err, prof) => {
+                prof.tshirtSize = profile.tshirtSize
+                prof.allergy = profile.allergy
+                prof.certification = profile.certification
+                prof.save((err, updatedProfile) => {
+                    if (err) {
+                        res.status(500).send({ message: err });
+                        return;
+                    }
+                    res.status(200).send();
+                })
+            })
+        })
+    })
+});
+
+router.put('/contact', [authJwt.verifyToken], (req, res) => {
+    let contact = req.body;
+
+    EmergencyContact.findById(contact.id).exec((err, cont) => {
+        cont.firstName = contact.firstName;
+        cont.lastName = contact.lastName;
+        cont.relationship = contact.relationship;
+        cont.phoneNumber = contact.phoneNumber;
+        cont.save((err, updatedContact) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            res.status(200).send();
+        })
+    });
+});
+/*
 router.put('/profile', (req, res) => {
     var cUser = req.body;
 
@@ -119,6 +197,7 @@ router.put('/profile', (req, res) => {
         })
     })
 });
+*/
 
 const UserController = router;
 export { UserController }

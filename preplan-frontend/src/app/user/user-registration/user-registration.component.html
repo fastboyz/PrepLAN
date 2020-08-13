@@ -1,4 +1,17 @@
 <div class="container form col-8">
     <h1>Registration</h1>
-    <user-form [formData]="formData" (onSubmit)="addUser($event)" (onCancel)="cancel()"></user-form>
+    <div class="section">
+        <account-form [accountData]="accountData"></account-form>
+    </div>
+    <div class="section">
+        <user-form [profileData]="profileData"></user-form>
+    </div>
+    <div class="section">
+        <emergency-contact-form [contactData]="contactData"></emergency-contact-form>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-lg btn-primary" (click)="onSubmitForm()">Submit</button>
+        <button class="btn btn-lg btn-primary" (click)="onCancelForm()">Cancel</button>
+    </div>
 </div>
