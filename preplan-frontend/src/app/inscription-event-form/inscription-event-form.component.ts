@@ -85,9 +85,10 @@ export class InscriptionEventFormComponent implements OnInit {
         edition: this.edition,
         profile: this.profileData,
         availability: this.selectedAvailabilities,
-        preference: this.selectedPreferences
+        preference: this.selectedPreferences,
+        isApproved: false
       }
-
+      // Call service to send object to backend
       console.log(JSON.stringify(newInscription));
     }
   }
