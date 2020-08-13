@@ -28,7 +28,7 @@ export class EditionDetailsComponent implements OnInit {
     private router: Router,
     private eventService: EventService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.isEditable = false;
@@ -40,13 +40,14 @@ export class EditionDetailsComponent implements OnInit {
       }
     });
   }
+
   onEnrollClick(event: any) {
     console.log(
       'Enroll at edition ' +
-        this.edition.name +
-        ' of event ' +
-        this.edition.event.title +
-        ' from detail modal'
+      this.edition.name +
+      ' of event ' +
+      this.edition.event.title +
+      ' from detail modal'
     );
     this.router.navigate(['/inscription', this.edition.id]);
   }

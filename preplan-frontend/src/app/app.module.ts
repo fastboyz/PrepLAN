@@ -24,6 +24,7 @@ import { UserModule } from './user/user.module';
 import { InscriptionEventFormComponent } from './inscription-event-form/inscription-event-form.component';
 import { jqxGridModule } from 'jqwidgets-ng/jqxgrid';
 import { jqxSchedulerModule } from 'jqwidgets-ng/jqxscheduler';
+import { EditionManagerComponent } from './edition-manager/edition-manager.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { jqxSchedulerModule } from 'jqwidgets-ng/jqxscheduler';
     EventTileComponent,
     EventEditionFormComponent,
     EventListComponent,
+    EditionManagerComponent,
     InscriptionEventFormComponent
   ],
   imports: [
