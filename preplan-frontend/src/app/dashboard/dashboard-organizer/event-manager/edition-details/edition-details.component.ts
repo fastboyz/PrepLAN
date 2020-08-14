@@ -19,6 +19,8 @@ export class EditionDetailsComponent implements OnInit {
   @Input() edition: Edition;
   @Input() positionList: Position[];
   @Input() isEnrollable: boolean;
+  @Input() isEnrolled: boolean;
+  @Input() isEditableOption: boolean;
   @Output() onUpdate = new EventEmitter<boolean>();
   isEditable: boolean;
   isOrganizer: boolean;

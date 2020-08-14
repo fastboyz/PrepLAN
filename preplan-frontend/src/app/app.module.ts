@@ -25,6 +25,8 @@ import { InscriptionEventFormComponent } from './inscription-event-form/inscript
 import { jqxGridModule } from 'jqwidgets-ng/jqxgrid';
 import { jqxSchedulerModule } from 'jqwidgets-ng/jqxscheduler';
 import { EditionManagerComponent } from './edition-manager/edition-manager.component';
+import { ProfileInscriptionComponent } from './profile/profile-inscription/profile-inscription.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { EditionManagerComponent } from './edition-manager/edition-manager.compo
     EventEditionFormComponent,
     EventListComponent,
     EditionManagerComponent,
-    InscriptionEventFormComponent
+    InscriptionEventFormComponent,
+    ProfileComponent,
+    ProfileInscriptionComponent,
   ],
   imports: [
     UserModule,

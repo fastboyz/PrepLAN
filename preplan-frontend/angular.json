@@ -28,10 +28,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css",
-              "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.bootstrap.css",
-              "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.light.css"
+              "src/styles.scss"
             ],
             "scripts": [
                 "./node_modules/jqwidgets-ng/jqwidgets/jqxcore.js",
@@ -114,10 +111,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css",
-              "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.bootstrap.css",
-              "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.light.css"
+              "src/styles.scss"
             ],
             "scripts": [
                 "./node_modules/jqwidgets-ng/jqwidgets/jqxcore.js",

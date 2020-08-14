@@ -28,7 +28,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,   
     ReactiveFormsModule,
   ],
-  exports: [UserFormComponent, EmergencyContactFormComponent],
+  exports: [UserFormComponent, EmergencyContactFormComponent, UserProfileComponent],
 
 })
 

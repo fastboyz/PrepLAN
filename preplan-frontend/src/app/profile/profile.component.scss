@@ -1,0 +1,19 @@
+ul {
+    background-color: #222;
+    padding: 1rem;
+    border-radius: 15px;
+
+    li {
+        a {
+            color: #fff;
+        }
+    }
+}
+
+.pills{
+    margin: 2rem 0px;
+}
+
+.nav-pills .nav-link.active{
+    background-color: #FF741F;
+}

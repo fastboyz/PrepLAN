@@ -104,8 +104,8 @@ export class EventService {
         }).pipe(map(response => {
             return response;
         }));
-    } 
-    
+    }
+
     createPositions(positions: Position[]) {
         return this.http.post<Edition>(`${environment.apiUrl}/api/dashboard/positions/`, positions, {
             headers: {
@@ -139,5 +139,9 @@ export class EventService {
         }).pipe(map(response => {
             return response;
         }));
+    }
+
+    getInscriptionByUserId(id: string) {
+        return null;
     }
 }
