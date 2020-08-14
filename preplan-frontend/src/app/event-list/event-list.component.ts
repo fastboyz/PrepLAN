@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { Edition, Position } from '../shared/models/event';
 import { Router } from '@angular/router';
@@ -9,25 +9,29 @@ import { Router } from '@angular/router';
   styleUrls: ['./event-list.component.scss']
 })
 export class EventListComponent implements OnInit {
-
-  editionList:Edition[];
+  @Input() preparedData: Edition[];
+  editionList: Edition[];
   editionDetails: Edition;
-  positionList:Position[];
+  positionList: Position[];
 
-  constructor(private router:Router,
-    private eventService:EventService) { }
+  constructor(private router: Router,
+    private eventService: EventService) { }
 
   ngOnInit(): void {
-    this.loadAllEditions();
+    if (this.preparedData == null) {
+      this.loadAllEditions();
+    } else {
+      this.editionList = this.preparedData;
+    }
   }
 
-  loadAllEditions(){
+  loadAllEditions() {
     this.eventService.getAllEditions().subscribe(data => {
       this.editionList = data;
     });
   }
-  
-  openDetails(data: Edition){
+
+  openDetails(data: Edition) {
     this.editionDetails = data;
     this.eventService.getPositionsbyEditionId(this.editionDetails.id).subscribe(data => {
       this.positionList = data;

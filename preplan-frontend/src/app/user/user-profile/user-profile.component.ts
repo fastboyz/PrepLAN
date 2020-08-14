@@ -11,7 +11,7 @@ import { EmergencyContactFormComponent } from '../emergency-contact-form/emergen
 
 
 @Component({
-  selector: 'profile',
+  selector: 'user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss']
 })

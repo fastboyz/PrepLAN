@@ -1,8 +1,9 @@
-<h1>Active Events</h1>
+<h1>My Inscriptions</h1>
+
 <div class="">
     <ul class="list-unstyled" >
         <li class="media" *ngFor="let edition of editionList">     
-            <event-tile [edition]="edition" (onClick)="openDetails($event)" [isEnrollable]="true"></event-tile>
+            <event-tile [edition]="edition" (onClick)="openDetails($event)" [isEnrollable]="false" [isEnrolled]="true"></event-tile>
         </li>
     </ul>
 </div>
@@ -18,7 +19,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                   <edition-details [edition]="editionDetails" [positionList]="positionList"  [isEnrollable]="true" [isEditableOption]="false"></edition-details>
+                   <edition-details [edition]="editionDetails" [positionList]="positionList"  [isEnrollable]="false" [isEnrolled]="true" [isEditableOption]="false"></edition-details>
                 </div>
             </div>
     </div>
