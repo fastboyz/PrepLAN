@@ -11,7 +11,6 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { DashboardSidebarComponent } from './dashboard/dashboard-sidebar/dashboard-sidebar.component';
 import { EventManagerComponent } from './dashboard/dashboard-organizer/event-manager/event-manager.component';
-import { EventVolunteerListComponent } from './dashboard/dashboard-organizer/event-volunteer-list/event-volunteer-list.component';
 import { EditionDetailsComponent } from './dashboard/dashboard-organizer/event-manager/edition-details/edition-details.component';
 import { EventFormComponent } from './event-form/event-form.component';
 import { EditionFormComponent } from './edition-form/edition-form.component';
@@ -27,6 +26,7 @@ import { jqxSchedulerModule } from 'jqwidgets-ng/jqxscheduler';
 import { EditionManagerComponent } from './edition-manager/edition-manager.component';
 import { ProfileInscriptionComponent } from './profile/profile-inscription/profile-inscription.component';
 import { ProfileComponent } from './profile/profile.component';
+import { VolunteerListComponent } from './volunteer-list/volunteer-list.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +34,6 @@ import { ProfileComponent } from './profile/profile.component';
     DashboardHomeComponent,
     DashboardSidebarComponent,
     EventManagerComponent,
-    EventVolunteerListComponent,
     EditionDetailsComponent,
     EventFormComponent,
     EditionFormComponent,
@@ -45,6 +44,7 @@ import { ProfileComponent } from './profile/profile.component';
     InscriptionEventFormComponent,
     ProfileComponent,
     ProfileInscriptionComponent,
+    VolunteerListComponent,
   ],
   imports: [
     UserModule,

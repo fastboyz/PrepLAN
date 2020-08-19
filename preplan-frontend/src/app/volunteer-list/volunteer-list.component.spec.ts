@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EventVolunteerListComponent } from './event-volunteer-list.component';
+import { VolunteerListComponent } from './volunteer-list.component';
 
-describe('EventVolunteerListComponent', () => {
-  let component: EventVolunteerListComponent;
-  let fixture: ComponentFixture<EventVolunteerListComponent>;
+describe('VolunteerListComponent', () => {
+  let component: VolunteerListComponent;
+  let fixture: ComponentFixture<VolunteerListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EventVolunteerListComponent ]
+      declarations: [ VolunteerListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EventVolunteerListComponent);
+    fixture = TestBed.createComponent(VolunteerListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
