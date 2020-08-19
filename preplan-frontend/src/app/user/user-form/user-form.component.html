@@ -53,7 +53,7 @@
 
             <div class="form-group">
                 <label>Birthday*</label>
-                <input class="form-control" formControlName="birthday" type="date" required placeholder="dd/MM/yyyy">
+                <input class="form-control" formControlName="birthday" type="date" required placeholder="YYYY-MM-DD">
 
                 <div *ngIf="birthday.invalid && (birthday.dirty || birthday.touched)" class="alert alert-danger">
                     <div *ngIf="birthday.errors.required">

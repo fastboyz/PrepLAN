@@ -27,54 +27,6 @@ export class UserRegistrationComponent implements OnInit {
 
   ngOnInit(): void {
   }
-/*
-  addUser(data: FormData) {
-
-    var userAccount:Account = {
-      username: data.get("username").value,
-      password: data.get("password").value,
-      email: data.get("email").value
-    };
-
-    var userInfo: User = {
-      account: userAccount,
-      firstName: data.get("firstName").value,
-      lastName: data.get("lastName").value,
-      pronoun: data.get("pronoun").value,
-      birthday: data.get("birthday").value,
-      discord: data.get("discord").value,
-      phoneNumber: data.get("phoneNumber").value
-    };
-
-    var emergencyContactInfo: EmergencyContact = {
-      firstName: data.get("firstNameEmergency").value,
-      lastName: data.get("lastNameEmergency").value,
-      relationship: data.get("relationshipEmergency").value,
-      phoneNumber: data.get("emergencyNumber").value
-    }
-
-    var profile: Profile = {
-      user: userInfo,
-      tshirtSize: null,
-      allergy: data.get("allergy").value,
-      certification: data.get("certification").value,
-      emergencyContact: emergencyContactInfo
-    }
-
-    var profileJson = JSON.stringify(profile);
-    console.log(profileJson);
-
-    this.authService.signup(data).subscribe(
-      data => {
-        this.router.navigate(['login']);
-      },
-      error => {
-        this.error = error;
-        //TODO add logger
-      }
-    )
-
-  }*/
 
   onSubmitForm() {
     if (this.accountFormComponent.accountForm.valid &&
@@ -102,15 +54,15 @@ export class UserRegistrationComponent implements OnInit {
       };
 
       var emergencyContactInfo: EmergencyContact = {
-        firstName: contactForm.get("firstNameEmergency").value,
-        lastName: contactForm.get("lastNameEmergency").value,
-        relationship: contactForm.get("relationshipEmergency").value,
-        phoneNumber: contactForm.get("emergencyNumber").value
+        firstName: contactForm.get("firstName").value,
+        lastName: contactForm.get("lastName").value,
+        relationship: contactForm.get("relationship").value,
+        phoneNumber: contactForm.get("phoneNumber").value
       }
 
       var profile: Profile = {
         user: userInfo,
-        tshirtSize: null,
+        tshirtSize:userForm.get("tshirtSize").value,
         allergy: userForm.get("allergy").value,
         certification: userForm.get("certification").value,
         emergencyContact: emergencyContactInfo
