@@ -1,10 +1,9 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Input } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EmergencyContact, Profile, User } from '../shared/models/user';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { jqxSchedulerComponent } from 'jqwidgets-ng/jqxscheduler';
 import { EventService } from '../services/event.service';
 import { Edition } from '../shared/models/event';
 import * as moment from 'moment';
@@ -20,8 +19,9 @@ import { EmergencyContactFormComponent } from '../user/emergency-contact-form/em
 export class InscriptionEventFormComponent implements OnInit {
   @ViewChild(UserFormComponent) userFormComponent: UserFormComponent;
   @ViewChild(EmergencyContactFormComponent) contactFormComponent: EmergencyContactFormComponent;
-
-  @ViewChild("schedulerReference") scheduler: jqxSchedulerComponent;
+  @Input() viewOnly: boolean;
+  @Input() inscriptionEvent: InscriptionEvent;
+  edition: Edition;
   profileData: Profile;
   contactData: EmergencyContact;
   departments: any = [
@@ -36,7 +36,6 @@ export class InscriptionEventFormComponent implements OnInit {
   hoursContract: any = ['4h', '8h', '12h'];
   preferencesForm: FormGroup;
   step: number;
-  edition: Edition;
   availabilities: any = [];
   selectedAvailabilities: Availability[] = [];
   selectedPreferences: Preference;
@@ -54,23 +53,29 @@ export class InscriptionEventFormComponent implements OnInit {
     let editionId = this.route.snapshot.paramMap.get('id');
     this.step = 1;
     this.preferencesForm = this.formBuilder.group({
-      hoursPreference: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      firstPreference: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      secondPreference: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      thirdPreference: ['', { validators: [Validators.required], updateOn: 'blur' }],
+      hoursPreference: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
+      firstPreference: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
+      secondPreference: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
+      thirdPreference: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
     });
 
-    if (this.authService.currentUserValue) {
-      this.userService.getProfile(this.authService.currentUserValue.id).subscribe(user => {
-        this.profileData = user;
-        this.contactData = this.profileData.emergencyContact;
+    if (!this.viewOnly) {
+
+      if (this.authService.currentUserValue) {
+        this.userService.getProfile(this.authService.currentUserValue.id).subscribe(user => {
+          this.profileData = user;
+          this.contactData = this.profileData.emergencyContact;
+        });
+      }
+      this.eventService.getEditionById(editionId).subscribe(edition => {
+        this.edition = edition;
+        this.getEditionDays();
       });
+    } else {
+      if (this.inscriptionEvent != null) {
+        this.loadInscriptionValues(this.inscriptionEvent);
+      }
     }
-
-    this.eventService.getEditionById(editionId).subscribe(edition => {
-      this.edition = edition;
-      this.getEditionDays();
-    });
   }
 
   async submit() {
@@ -157,10 +162,26 @@ export class InscriptionEventFormComponent implements OnInit {
   async getPreferences() {
     this.selectedPreferences = {
       dailyMaxHours: this.hoursPreference.value,
-      departments:   this.getSelectedDepartments()
+      departments: this.getSelectedDepartments()
     }
   }
 
+  async loadInscriptionValues(inscription: InscriptionEvent) {
+    this.inscriptionEvent = inscription;
+    this.userFormComponent.setUserFormValues(this.inscriptionEvent.profile);
+    this.contactFormComponent.setContactFormValue(this.inscriptionEvent.profile.emergencyContact);
+
+    this.preferencesForm.setValue({
+      hoursPreference: this.inscriptionEvent.preference.dailyMaxHours,
+      firstPreference: this.inscriptionEvent.preference.departments[0],
+      secondPreference: this.inscriptionEvent.preference.departments[1],
+      thirdPreference: this.inscriptionEvent.preference.departments[2]
+    });
+    this.edition = this.inscriptionEvent.edition;
+    this.availabilities = [];
+    await this.getEditionDays();
+    this.setAvailability();
+  }
   getSelectedDepartments() {
     let depts: any[] = [];
     depts.push(this.firstPreference.value);
@@ -228,7 +249,21 @@ export class InscriptionEventFormComponent implements OnInit {
     return newAvailability;
   }
 
-  getEditionDays() {
+  setAvailability() {
+    let sameSize = this.inscriptionEvent.availability.length == (this.availabilities.length * this.availabilities[0].shiftsInDay.length);
+    if (sameSize) {
+      let index = 0;
+      for (let day = 0; day < this.availabilities.length; day++) {
+        for (let shift = 0; shift < this.availabilities[day].shiftsInDay.length; shift++) {
+          let isDesired = this.inscriptionEvent.availability[index].state == "DESIRED";
+          this.availabilities[day].shiftsInDay[shift].checked = isDesired;
+          index++;
+        }
+      }
+    }
+  }
+
+  async getEditionDays() {
     let startDate: moment.Moment = moment(this.edition.startDate);
     let endDate: moment.Moment = moment(this.edition.endDate);
 
@@ -245,6 +280,7 @@ export class InscriptionEventFormComponent implements OnInit {
       });
     }
   }
+
   get hoursPreference() {
     return this.preferencesForm.get('hoursPreference');
   }

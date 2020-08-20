@@ -5,10 +5,10 @@
     <div class="col-md-10">
         <div *ngIf="step == 1" class="user-info">
             <div class="section">
-                <user-form></user-form>
+                <user-form [viewOnly]="viewOnly"></user-form>
             </div>
             <div class="section">
-                <emergency-contact-form></emergency-contact-form>
+                <emergency-contact-form [viewOnly]="viewOnly"></emergency-contact-form>
             </div>
         </div>
 
@@ -89,7 +89,7 @@
         </div>
 
         <div class="">
-            <button *ngIf="step == 3" class="btn btn-primary" (click)="submit()">Submit </button>
+            <button *ngIf="step == 3 && !viewOnly" class="btn btn-primary" (click)="submit()">Submit </button>
             <button *ngIf="step !== 3" class="btn btn-primary" (click)="goToNextStep()">Next</button>
             <button *ngIf="step !== 1" class="btn btn-primary" (click)="goToLastStep()">Back</button>
         </div>

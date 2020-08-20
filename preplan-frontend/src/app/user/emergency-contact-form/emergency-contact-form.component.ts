@@ -12,27 +12,40 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class EmergencyContactFormComponent implements OnInit {
   @Input("contactData") contactData: EmergencyContact;
+  @Input() viewOnly: boolean;
   contactForm: FormGroup;
   constructor(private formBuilder: FormBuilder,
     private userService: UserService,
     private authService: AuthService,
-    ) { }
+  ) { }
 
   ngOnInit(): void {
 
     this.contactForm = this.formBuilder.group({
-      firstName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-      lastName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-      phoneNumber: ['', { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
-      relationship: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      firstName: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      lastName: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      phoneNumber: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
+      relationship: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
     })
+    if (this.viewOnly) {
+      if (this.contactData) {
+        this.contactForm.patchValue(this.contactData);
+      }
+    } else {
 
-    if (this.authService.currentUserValue) {
-      this.userService.getProfile(this.authService.currentUserValue.id).subscribe(profile => {
-        this.contactForm.patchValue(profile.emergencyContact);
-      });
+
+      if (this.authService.currentUserValue) {
+        this.userService.getProfile(this.authService.currentUserValue.id).subscribe(profile => {
+          this.contactForm.patchValue(profile.emergencyContact);
+        });
+      }
     }
 
+  }
+
+  setContactFormValue(contact: EmergencyContact){
+    this.contactData = contact;
+    this.contactForm.patchValue(contact);
   }
   onSubmitForm() {
   }

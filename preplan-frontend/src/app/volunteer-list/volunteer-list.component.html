@@ -23,11 +23,20 @@
                 <td>rawr@rawr.com</td>
                 <td>4</td>
                 <td>
-                    <button type="button" class="btn icon">
+                    <button type="button" class="btn icon"  data-toggle="modal" data-target=".bd-example-modal-lg" (click)="loadModal()">
                         <i class="fas fa-search-plus fa-lg"></i>
                     </button>
                 </td>
             </tr>
         </tbody>
     </table>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <inscription-event-form [viewOnly]="true"></inscription-event-form>
+    </div>
+  </div>
 </div>

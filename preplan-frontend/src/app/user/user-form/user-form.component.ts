@@ -16,7 +16,7 @@ export class UserFormComponent implements OnInit {
   @Input("profileData") profileData: Profile;
   @Output() onSubmit = new EventEmitter();
   @Output() onCancel = new EventEmitter();
-
+  @Input() viewOnly: boolean;
   userForm: FormGroup;
   namePattern = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
   submitted: boolean = false;
@@ -34,36 +34,46 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.userForm = this.formBuilder.group({
-      firstName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-      lastName: ['', { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-      pronoun: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      birthday: ['', { validators: [Validators.required, Validators.pattern(FormValidators.datePattern)], updateOn: 'blur' }],
-      phoneNumber: ['', { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
-      discord: ['', { validators: [Validators.pattern(FormValidators.discordPattern)], updateOn: 'blur' }],
-      tshirtSize: ['', { validators: [Validators.required], updateOn: 'blur' }],
-      allergy: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
-      certification: ['', { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      firstName: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      lastName: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      pronoun: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
+      birthday: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.pattern(FormValidators.datePattern)], updateOn: 'blur' }],
+      phoneNumber: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
+      discord: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.pattern(FormValidators.discordPattern)], updateOn: 'blur' }],
+      tshirtSize: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
+      allergy: [{ value: '', disabled: this.viewOnly }, { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      certification: [{ value: '', disabled: this.viewOnly }, { validators: [FormValidators.trimValue], updateOn: 'blur' }],
     })
 
-    if (this.authService.currentUserValue) {
-      this.userService.getProfile(this.authService.currentUserValue.id).subscribe(profile => {
-        this.userProfile = profile;
-        this.userForm.setValue({
-          firstName: this.userProfile.user.firstName,
-          lastName: this.userProfile.user.lastName,
-          pronoun: this.userProfile.user.pronoun,
-          phoneNumber: this.userProfile.user.phoneNumber,
-          birthday: moment.utc(this.userProfile.user.birthday).format('YYYY-MM-DD'),
-          discord: this.userProfile.user.discord,
-          tshirtSize: this.userProfile.tshirtSize, 
-          allergy: this.userProfile.allergy,
-          certification: this.userProfile.certification,
+    if (this.viewOnly) {
+      if (this.profileData) {
+        this.setUserFormValues(this.profileData);
+      }
+    } else {
+      if (this.authService.currentUserValue) {
+        this.userService.getProfile(this.authService.currentUserValue.id).subscribe(profile => {
+          this.setUserFormValues(profile);
         });
-      });
-    }
+      }
 
+    }
   }
 
+  setUserFormValues(profile: Profile) {
+    this.userProfile = profile;
+    this.userForm.setValue({
+      firstName: profile.user.firstName,
+      lastName: profile.user.lastName,
+      pronoun: profile.user.pronoun,
+      phoneNumber: profile.user.phoneNumber,
+      birthday: moment.utc(profile.user.birthday).format('YYYY-MM-DD'),
+      discord: profile.user.discord,
+      tshirtSize: profile.tshirtSize,
+      allergy: profile.allergy,
+      certification: profile.certification,
+    });
+
+  }
   onSubmitForm() {
     this.submitted = true;
     if (this.userForm.invalid) return;
@@ -92,7 +102,7 @@ export class UserFormComponent implements OnInit {
       tshirtSize: this.tshirtSize.value,
       emergencyContact: this.userProfile.emergencyContact
     }
-    
+
     // this.onSubmit.emit(formData);
     this.onSubmit.emit(newUserProfile);
   }

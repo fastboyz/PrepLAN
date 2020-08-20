@@ -146,7 +146,7 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
     });
 });
 
-router.get('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/edition/:id', [authJwt.verifyToken], (req, res) => {
     var id = req.params.id;
     Edition.findById(id)
         .populate('event')
