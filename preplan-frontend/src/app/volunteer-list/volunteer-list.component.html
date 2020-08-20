@@ -13,17 +13,17 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr *ngFor="let inscription of inscriptionList">
                 <td class="selection">
                     <input type="checkbox">
                 </td>
-                <td>{{inscriptionEvent.profile.user.firstName}}</td>
-                <td>{{inscriptionEvent.profile.user.lastName}}</td>
-                <td>{{getAge(inscriptionEvent.profile.user.birthday)}}</td>
-                <td>{{inscriptionEvent.profile.user.account.email}}</td>
-                <td>{{getShiftCount(inscriptionEvent.availability)}}</td>
+                <td>{{inscription.profile.user.firstName}}</td>
+                <td>{{inscription.profile.user.lastName}}</td>
+                <td>{{getAge(inscription.profile.user.birthday)}}</td>
+                <td>{{inscription.profile.user.account.email}}</td>
+                <td>{{getShiftCount(inscription.availability)}}</td>
                 <td>
-                    <button type="button" class="btn icon"  data-toggle="modal" data-target=".bd-example-modal-lg" (click)="loadModal(inscriptionEvent)">
+                    <button type="button" class="btn icon"  data-toggle="modal" data-target=".bd-example-modal-lg" (click)="loadModal(inscription)">
                         <i class="fas fa-search-plus fa-lg"></i>
                     </button>
                 </td>
