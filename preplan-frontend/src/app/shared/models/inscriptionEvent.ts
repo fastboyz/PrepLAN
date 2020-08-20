@@ -19,5 +19,5 @@ export class InscriptionEvent {
     profile: Profile;
     availability: Availability[];
     preference: Preference;
-    isApproved: boolean;
+    status: string;
 }

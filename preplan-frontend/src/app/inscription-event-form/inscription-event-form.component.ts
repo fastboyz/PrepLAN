@@ -91,7 +91,7 @@ export class InscriptionEventFormComponent implements OnInit {
         profile: this.profileData,
         availability: this.selectedAvailabilities,
         preference: this.selectedPreferences,
-        isApproved: false
+        status: "PENDING"
       }
       // Call service to send object to backend
       console.log(JSON.stringify(newInscription));
