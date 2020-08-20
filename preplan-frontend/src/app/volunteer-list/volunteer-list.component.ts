@@ -23,6 +23,7 @@ export class VolunteerListComponent implements OnInit {
     this.inscriptionEvent = JSON.parse(this.json);
     this.inscriptionList.push(this.inscriptionEvent);
     this.inscriptionList.push(temp);
+    //load all inscriptions order by status. 
   }
 
   loadModal(inscription: InscriptionEvent){

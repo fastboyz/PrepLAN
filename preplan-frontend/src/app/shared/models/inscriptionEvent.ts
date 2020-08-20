@@ -20,4 +20,5 @@ export class InscriptionEvent {
     availability: Availability[];
     preference: Preference;
     status: string;
+    inscriptionDate: Date;
 }
