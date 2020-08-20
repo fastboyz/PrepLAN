@@ -168,14 +168,16 @@ export class InscriptionEventFormComponent implements OnInit {
 
   async loadInscriptionValues(inscription: InscriptionEvent) {
     this.inscriptionEvent = inscription;
+    this.contactData= this.inscriptionEvent.profile.emergencyContact;
+    this.profileData = this.inscriptionEvent.profile;
     this.userFormComponent.setUserFormValues(this.inscriptionEvent.profile);
     this.contactFormComponent.setContactFormValue(this.inscriptionEvent.profile.emergencyContact);
 
     this.preferencesForm.setValue({
       hoursPreference: this.inscriptionEvent.preference.dailyMaxHours,
-      firstPreference: this.inscriptionEvent.preference.departments[0],
-      secondPreference: this.inscriptionEvent.preference.departments[1],
-      thirdPreference: this.inscriptionEvent.preference.departments[2]
+      firstPreference: '',
+      secondPreference: '',
+      thirdPreference: ''
     });
     this.edition = this.inscriptionEvent.edition;
     this.availabilities = [];

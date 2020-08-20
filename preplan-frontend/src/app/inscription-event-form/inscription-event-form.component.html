@@ -3,12 +3,12 @@
 </div>
 <div class=" row justify-content-md-center ">
     <div class="col-md-10">
-        <div *ngIf="step == 1" class="user-info">
+        <div [hidden]="step != 1" class="user-info">
             <div class="section">
-                <user-form [viewOnly]="viewOnly"></user-form>
+                <user-form  [viewOnly]="viewOnly"></user-form>
             </div>
             <div class="section">
-                <emergency-contact-form [viewOnly]="viewOnly"></emergency-contact-form>
+                <emergency-contact-form  [viewOnly]="viewOnly"></emergency-contact-form>
             </div>
         </div>
 
@@ -18,7 +18,7 @@
             <div class="days" *ngFor="let a of availabilities">
                 <h5>{{a.date.format("dddd, MMMM Do YYYY")}}</h5>
                 <div class="form-check form-check-inline col-2" *ngFor="let shift of a.shiftsInDay">
-                    <input class="form-check-input" type="checkbox" [value]="shift.value" [(ngModel)]="shift.checked">
+                    <input class="form-check-input" type="checkbox" [value]="shift.value" [(ngModel)]="shift.checked" [disabled]="viewOnly">
                     <label class="form-check-label">{{shift.name}}</label>
                 </div>
             </div>
@@ -47,41 +47,50 @@
                     </div>
                     <div class="section">
                         <h4>Preferred Departments</h4>
-                        <div class="form-group">
-                            <label>Choose your 1st preferred department </label>
-                            <select class="form-control" formControlName="firstPreference">
-                                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
-                            </select>
-                            <div *ngIf="firstPreference.invalid && (firstPreference.dirty || firstPreference.touched)"
-                                class="alert alert-danger">
-                                <div *ngIf="firstPreference.errors.required">
-                                    Department is required.
+                        <div *ngIf="!viewOnly">
+                            <div class="form-group">
+                                <label>Choose your 1st preferred department </label>
+                                <select class="form-control" formControlName="firstPreference">
+                                    <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
+                                </select>
+                                <div *ngIf="firstPreference.invalid && (firstPreference.dirty || firstPreference.touched)"
+                                    class="alert alert-danger">
+                                    <div *ngIf="firstPreference.errors.required">
+                                        Department is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Choose your 2nd preferred department </label>
+                                <select class="form-control" formControlName="secondPreference">
+                                    <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
+                                </select>
+                                <div *ngIf="secondPreference.invalid && (secondPreference.dirty || secondPreference.touched)"
+                                    class="alert alert-danger">
+                                    <div *ngIf="secondPreference.errors.required">
+                                        Department is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Choose your 3rd preferred department</label>
+                                <select class="form-control" formControlName="thirdPreference">
+                                    <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
+                                </select>
+                                <div *ngIf="thirdPreference.invalid && (thirdPreference.dirty || thirdPreference.touched)"
+                                    class="alert alert-danger">
+                                    <div *ngIf="thirdPreference.errors.required">
+                                        Department is required.
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Choose your 2nd preferred department </label>
-                            <select class="form-control" formControlName="secondPreference">
-                                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
-                            </select>
-                            <div *ngIf="secondPreference.invalid && (secondPreference.dirty || secondPreference.touched)"
-                                class="alert alert-danger">
-                                <div *ngIf="secondPreference.errors.required">
-                                    Department is required.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Choose your 3rd preferred department</label>
-                            <select class="form-control" formControlName="thirdPreference">
-                                <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
-                            </select>
-                            <div *ngIf="thirdPreference.invalid && (thirdPreference.dirty || thirdPreference.touched)"
-                                class="alert alert-danger">
-                                <div *ngIf="thirdPreference.errors.required">
-                                    Department is required.
-                                </div>
-                            </div>
+                        <div *ngIf="viewOnly">
+                            <ul>
+                                <li *ngFor="let dept of inscriptionEvent.preference.departments">
+                                    {{dept}}
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

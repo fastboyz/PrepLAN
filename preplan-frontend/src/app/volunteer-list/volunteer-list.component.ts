@@ -20,7 +20,7 @@ export class VolunteerListComponent implements OnInit {
     this.inscriptionEvent = JSON.parse(this.json);
   }
 
-  loadModal(){
+  loadModal(inscription: InscriptionEvent){
     this.inscriptionEvent = JSON.parse(this.json);
     this.inscriptionEventFormComponent.loadInscriptionValues(this.inscriptionEvent);
   }
