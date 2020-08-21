@@ -1,41 +1,79 @@
-version: '3'
-services: 
-    database:
-        image: mongo
-        restart: always
-        environment:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: example
-          # Create a new database. Please note, the
-          # /docker-entrypoint-initdb.d/init.js has to be executed
-          # in order for the database to be created
-          MONGO_INITDB_DATABASE: admin
-        volumes:
-          # Add the db-init.js file to the Mongo DB container
-          - ./db-init.js:/docker-entrypoint-initdb.d/init.js:ro
-        ports:
-          - '27017-27019:27017-27019'
+version: "3"
+services:
+  database:
+    container_name: preplan_database
+    hostname: mongo1
+    image: mongo
+    restart: always
+    expose:
+      - 27017
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      # Create a new database. Please note, the
+      # /docker-entrypoint-initdb.d/init.js has to be executed
+      # in order for the database to be created
+      MONGO_INITDB_DATABASE: admin
+    ports:
+      - "27017-27019:27017-27019"
 
-    frontend:
-        container_name: preplan-frontend
-        build:
-            context: ./preplan-frontend
-            dockerfile: Dockerfile
-        volumes: 
-            - './preplan-frontend:/app'
-            - '/app/node_modules'
-        ports:  
-            - '4200:4200'
+  replica1:
+    container_name: preplan_replica1
+    hostname: mongo2
+    image: mongo
+    restart: always
+    expose:
+      - 27017
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      # Create a new database. Please note, the
+      # /docker-entrypoint-initdb.d/init.js has to be executed
+      # in order for the database to be created
+      MONGO_INITDB_DATABASE: admin
+    ports:
+      - "27020-27022:27017-27019"
 
-    backend:
-        container_name: preplan-backend
-        build:
-            context: ./preplan-backend
-            dockerfile: Dockerfile
-        depends_on:
-            - database
-        volumes: 
-            - './preplan-backend:/usr/src/app'
-            - '/usr/src/app/node_modules'
-        ports:  
-            - '3000:3000'
+  replica2:
+    container_name: preplan_replica2
+    image: mongo
+    hostname: mongo3
+    restart: always
+    expose:
+      - 27017
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      # Create a new database. Please note, the
+      # /docker-entrypoint-initdb.d/init.js has to be executed
+      # in order for the database to be created
+      MONGO_INITDB_DATABASE: admin
+    ports:
+      - "27023-27025:27017-27019"
+
+  frontend:
+    container_name: preplan-frontend
+    build:
+      context: ./preplan-frontend
+      dockerfile: Dockerfile
+    volumes:
+      - "./preplan-frontend:/app"
+      - "/app/node_modules"
+    ports:
+      - "4200:4200"
+
+  backend:
+    container_name: preplan-backend
+    build:
+      context: ./preplan-backend
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    volumes:
+      - "./preplan-backend:/usr/src/app"
+      - "/usr/src/app/node_modules"
+    ports:
+      - "3030:3030"
