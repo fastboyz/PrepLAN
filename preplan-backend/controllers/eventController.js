@@ -1,6 +1,7 @@
-import e, { Router } from 'express';
+import { Router } from 'express';
+import mongoose from 'mongoose';
 import { authJwt } from '../middlewares'
-import { Event, Edition, Position } from '../models';
+import { Event, Edition, Position, Volunteer, Preference, Availability } from '../models';
 
 const router = Router();
 
@@ -247,7 +248,6 @@ router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
     } catch (e) { }
 });
 
-
 router.delete('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var elements = req.body;
     var BreakException = {};
@@ -289,7 +289,6 @@ router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
             res.status(200).json(poses);
         });
 });
-
 
 router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
     var editionId = req.params.editionId;
@@ -373,9 +372,149 @@ router.get('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, re
         });
 })
 
-router.post('/create/timeSlot', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
-
+router.get('/edition/:id/registered', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    const editionId = req.params.id;
+    Volunteer.findOne({ edition: editionId })
+        .populate([
+            {
+                path: 'profile',
+                model: 'Profile',
+                populate: [
+                    {
+                        path: 'user',
+                        model: 'User'
+                    },
+                    {
+                        path: 'emergencyContact',
+                        model: 'EmergencyContact'
+                    }
+                ]
+            },
+            {
+                path: 'edition',
+                model: 'Edition',
+                populate: {
+                    path: 'event',
+                    model: 'Event'
+                }
+            },
+            {
+                path: 'availabilities',
+                model: 'Availability'
+            },
+        ])
+        .exec((err, vol) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            const picked = (({ inscriptionDate, status, plannerId }) => ({ inscriptionDate, status, plannerId }))(vol);
+            picked['profile'] = sanitizeProfile(vol.profile);
+            picked['edition'] = sanitizeEdition(vol.edition);
+            picked['availabilities']
+            picked['id'] = vol['_id'];
+            res.status(200).json(picked);
+        })
 });
+
+router.post('/event/register', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var vol = req.body;
+    var { edition, profile, availabilities, preference } = vol;
+    delete vol.edition;
+    delete vol.profile;
+    delete vol.availabilities;
+    delete vol.preference;
+
+    vol['edition'] = edition.id;
+    vol['profile'] = profile.id;
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const createdAvs = createAvailabilities(availabilities, session);
+        const createdPref = createPreference(preference, session);
+
+        vol['availabilities'] = createdAvs;
+        vol['preference'] = createdPref;
+
+        Volunteer.create([vol], { session: session });
+
+        await session.commitTransaction();
+        session.endSession();
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).send({ message: error });
+    }
+});
+
+
+router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var vol = req.body;
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        var found = await Volunteer.findById(vol.id);
+        found.status = vol.status;
+        found.save();
+        //TODO-Steve: if new status is approved, add volunteer to the scheduler module, if previous status was approved, remove from scheduler
+        await session.commitTransaction();
+        session.endSession();
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).send({ message: error });
+    }
+});
+
+const createPreference = async (preference, session) => {
+    await Preference.create([preference], { session: session });
+    const created = await Preference.findOne({ Preference }).session(session);
+    return created._id;
+}
+
+const createAvailabilities = async (availabilities, session) => {
+    var createdAvs = [];
+    availabilities.forEach(element => {
+        Availability.create([element], { session: session });
+        const created = await Availability.findOne(element).session(session);
+        createdAvs.push(created._id);
+    });
+    return createdAvs;
+}
+
+
+const sanitizeProfile = (profile) => {
+
+    const picked = (({ tshirtSize, allergy, certification }) => ({ tshirtSize, allergy, certification }))(profile);
+    picked['id'] = profile._id;
+
+    const pickedUser = (({ firstName, lastName, birthday, phoneNumber, discord, pronoun }) => ({ firstName, lastName, birthday, phoneNumber, discord, pronoun }))(profile.user);
+    pickedUser['id'] = profile.user;
+    picked['user'] = pickedUser;
+
+    const eContactPicked = (({ firstName, lastName, phoneNumber, relationship }) => ({ firstName, lastName, phoneNumber, relationship }))(profile.emergencyContact)
+    eContactPicked['id'] = profile.emergencyContact._id;
+    picked['emergencyContact'] = eContactPicked;
+
+    return picked;
+}
+
+const sanitizeEdition = (edition) => {
+    const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edition);
+    picked['id'] = edition['_id'];
+}
+
+const sanitizeAvailibilities = (availabilities) => {
+    var pickedAvailabilities = [];
+    availabilities.forEach(element => {
+        const picked = (({ startDate, endDate, state }) => ({ startDate, endDate, state }))(element);
+        picked['id'] = element._id;
+        pickedAvailabilities.push(picked);
+    });
+    return pickedAvailabilities;
+}
 
 const EventController = router;
 export { EventController };

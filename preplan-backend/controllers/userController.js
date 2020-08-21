@@ -17,8 +17,7 @@ router.get('/profile/:id', [authJwt.verifyToken], (req, res) => {
             path: 'role',
             model: 'Role'
         }
-    })
-        .exec((err, user) => {
+    }).exec((err, user) => {
             if (err) {
                 res.status(500).send({ message: err });
             }

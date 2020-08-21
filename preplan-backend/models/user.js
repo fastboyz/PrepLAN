@@ -5,7 +5,8 @@ const User = mongoose.model(
     new mongoose.Schema({
         account: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Account"
+            ref: "Account",
+            unique: true
         },
         firstName: {
             type: String,
