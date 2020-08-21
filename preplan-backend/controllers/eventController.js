@@ -430,32 +430,36 @@ router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
 
     const session = await mongoose.startSession();
 
-    //session.startTransaction();
-    await session.withTransaction(async() => {
-        try {
-            var createdAvs = [];
-            availabilities.forEach(async (element) => {
-                await Availability.create([element], { session: session });
-                const created = await Availability.findOne(element).session(session);
-                createdAvs.push(created._id);
-            });
-            await Preference.create([preference], { session: session });
-            const createdPref = await Preference.findOne({ Preference }).session(session);
-
-            vol['availabilities'] = createdAvs;
-            vol['preference'] = createdPref._id;
-            console.log(createdAvs);
-            await Volunteer.create([vol], { session: session });
-
-            await session.commitTransaction();
-           // session.endSession();
-        } catch (error) {
-            await session.abortTransaction();
-            session.endSession();
-            res.status(500).send({ message: error });
+    session.startTransaction();
+    try {
+        var createdAvs = [];
+        var i;
+        for (i = 0; i < availabilities.length; i++) {
+            var element = availabilities[i];
+            console.log(element);
+            await Availability.create([element], { session: session });
+            const created = await Availability.findOne(element).session(session);
+            createdAvs.push(created._id);
         }
-    })
-    session.endSession();
+
+        await Preference.create([preference], { session: session });
+        const createdPref = await Preference.findOne({ Preference }).session(session);
+
+        vol['availabilities'] = createdAvs;
+        vol['preference'] = createdPref._id;
+        console.log(createdAvs);
+        await Volunteer.create([vol], { session: session });
+
+        await session.commitTransaction();
+        session.endSession();
+        res.status(200).send({ message: "Registration sucessful" });
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).send({ message: error });
+    }
+
+    // session.endSession();
 });
 
 
