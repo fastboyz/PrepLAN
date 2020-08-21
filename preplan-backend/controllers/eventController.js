@@ -482,23 +482,6 @@ router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], a
     }
 });
 
-const createPreference = async (preference, session) => {
-    await Preference.create([preference], { session: session });
-    const created = await Preference.findOne({ Preference }).session(session);
-    return created._id;
-}
-
-const createAvailabilities = async (availabilities, session) => {
-    var createdAvs = [];
-    availabilities.forEach(async (element) => {
-        await Availability.create([element], { session: session });
-        const created = await Availability.findOne(element).session(session);
-        createdAvs.push(created._id);
-    });
-    return createdAvs;
-}
-
-
 const sanitizeProfile = (profile) => {
 
     const picked = (({ tshirtSize, allergy, certification }) => ({ tshirtSize, allergy, certification }))(profile);
@@ -518,16 +501,6 @@ const sanitizeProfile = (profile) => {
 const sanitizeEdition = (edition) => {
     const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edition);
     picked['id'] = edition['_id'];
-}
-
-const sanitizeAvailibilities = (availabilities) => {
-    var pickedAvailabilities = [];
-    availabilities.forEach(element => {
-        const picked = (({ startDate, endDate, state }) => ({ startDate, endDate, state }))(element);
-        picked['id'] = element._id;
-        pickedAvailabilities.push(picked);
-    });
-    return pickedAvailabilities;
 }
 
 const EventController = router;
