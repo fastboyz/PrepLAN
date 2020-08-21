@@ -1,4 +1,7 @@
-<h1>volunteer-list works!</h1>
+<div class="btn-section">
+    <button class="btn btn-primary">Approve Selected</button>
+    <button class="btn btn-danger">Disapprove Selected</button>
+</div>
 <div class="table-responsive">
     <table class="table table-striped table-hover table-dark">
         <thead>
@@ -23,7 +26,8 @@
                 <td>{{inscription.profile.user.account.email}}</td>
                 <td>{{getShiftCount(inscription.availability)}}</td>
                 <td>
-                    <button type="button" class="btn icon"  data-toggle="modal" data-target=".bd-example-modal-lg" (click)="loadModal(inscription)">
+                    <button type="button" class="btn icon" data-toggle="modal" data-target=".bd-example-modal-lg"
+                        (click)="loadModal(inscription)">
                         <i class="fas fa-search-plus fa-lg"></i>
                     </button>
                 </td>
@@ -33,10 +37,11 @@
 </div>
 
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <inscription-event-form [viewOnly]="true"></inscription-event-form>
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <inscription-event-form [viewOnly]="true"></inscription-event-form>
+        </div>
     </div>
-  </div>
 </div>

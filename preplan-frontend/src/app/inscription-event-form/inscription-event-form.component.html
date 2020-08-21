@@ -1,5 +1,6 @@
 <div>
-    <h1>Inscription to {{edition?.event?.title}}-{{edition?.name}}</h1>
+    <h1 *nfIf="!viewOnly">Inscription to {{edition?.event?.title}}-{{edition?.name}}</h1>
+    <h1 *nfIf="viewOnly">Inscription of {{inscriptionEvent.profile.user.firstName}} {{inscriptionEvent.profile.user.lastName}}</h1>
 </div>
 <div class=" row justify-content-md-center ">
     <div class="col-md-10">

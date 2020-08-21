@@ -9,6 +9,7 @@ export class Availability {
 }
 
 export class Preference {
+    id?: string;
     dailyMaxHours: string;
     departments: string[];
 }
