@@ -417,7 +417,7 @@ router.get('/edition/:id/registered', [authJwt.verifyToken, authJwt.isOrganizer]
         })
 });
 
-router.post('/event/inscription', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
     var vol = req.body;
     var { edition, profile, availabilities, preference } = vol;
     delete vol.edition;
@@ -429,23 +429,33 @@ router.post('/event/inscription', [authJwt.verifyToken, authJwt.isOrganizer], as
     vol['profile'] = profile.id;
 
     const session = await mongoose.startSession();
-    session.startTransaction();
-    try {
-        const createdAvs = createAvailabilities(availabilities, session);
-        const createdPref = createPreference(preference, session);
 
-        vol['availabilities'] = createdAvs;
-        vol['preference'] = createdPref;
+    //session.startTransaction();
+    await session.withTransaction(async() => {
+        try {
+            var createdAvs = [];
+            availabilities.forEach(async (element) => {
+                await Availability.create([element], { session: session });
+                const created = await Availability.findOne(element).session(session);
+                createdAvs.push(created._id);
+            });
+            await Preference.create([preference], { session: session });
+            const createdPref = await Preference.findOne({ Preference }).session(session);
 
-        Volunteer.create([vol], { session: session });
+            vol['availabilities'] = createdAvs;
+            vol['preference'] = createdPref._id;
+            console.log(createdAvs);
+            await Volunteer.create([vol], { session: session });
 
-        await session.commitTransaction();
-        session.endSession();
-    } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
-        res.status(500).send({ message: error });
-    }
+            await session.commitTransaction();
+           // session.endSession();
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            res.status(500).send({ message: error });
+        }
+    })
+    session.endSession();
 });
 
 
@@ -476,8 +486,8 @@ const createPreference = async (preference, session) => {
 
 const createAvailabilities = async (availabilities, session) => {
     var createdAvs = [];
-    availabilities.forEach(async(element) => {
-        Availability.create([element], { session: session });
+    availabilities.forEach(async (element) => {
+        await Availability.create([element], { session: session });
         const created = await Availability.findOne(element).session(session);
         createdAvs.push(created._id);
     });

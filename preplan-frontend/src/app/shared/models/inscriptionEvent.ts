@@ -18,7 +18,7 @@ export class InscriptionEvent {
     id?: string;
     edition: Edition;
     profile: Profile;
-    availability: Availability[];
+    availabilities: Availability[];
     preference: Preference;
     status: string;
     inscriptionDate: Date;

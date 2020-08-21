@@ -89,13 +89,14 @@ export class InscriptionEventFormComponent implements OnInit {
       let newInscription: InscriptionEvent = {
         edition: this.edition,
         profile: this.profileData,
-        availability: this.selectedAvailabilities,
+        availabilities: this.selectedAvailabilities,
         preference: this.selectedPreferences,
         status: "PENDING",
         inscriptionDate: moment().toDate()
       }
+      this.eventService.createInscriptionEvent(newInscription).subscribe();
       // Call service to send object to backend
-      console.log(JSON.stringify(newInscription));
+      //console.log(JSON.stringify(newInscription));
     }
   }
 
@@ -253,12 +254,12 @@ export class InscriptionEventFormComponent implements OnInit {
   }
 
   setAvailability() {
-    let sameSize = this.inscriptionEvent.availability.length == (this.availabilities.length * this.availabilities[0].shiftsInDay.length);
+    let sameSize = this.inscriptionEvent.availabilities.length == (this.availabilities.length * this.availabilities[0].shiftsInDay.length);
     if (sameSize) {
       let index = 0;
       for (let day = 0; day < this.availabilities.length; day++) {
         for (let shift = 0; shift < this.availabilities[day].shiftsInDay.length; shift++) {
-          let isDesired = this.inscriptionEvent.availability[index].state == "DESIRED";
+          let isDesired = this.inscriptionEvent.availabilities[index].state == "DESIRED";
           this.availabilities[day].shiftsInDay[shift].checked = isDesired;
           index++;
         }

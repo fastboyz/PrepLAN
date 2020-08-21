@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Edition, Event, Position } from '../shared/models/event';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { InscriptionEvent } from '../shared/models/inscriptionEvent';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
@@ -133,6 +134,26 @@ export class EventService {
     updateEvent(event: Event) {
         let id = event.id;
         return this.http.put<Event>(`${environment.apiUrl}/api/dashboard/event/${id}`, event, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    createInscriptionEvent(inscription: InscriptionEvent){
+        return this.http.post<InscriptionEvent>(`${environment.apiUrl}/api/dashboard/event/inscription`, inscription, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    getAllInscriptionByEditionId(id:String){
+        return this.http.get<InscriptionEvent[]>(`${environment.apiUrl}/api/dashboard/event/${id}/registered`, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
