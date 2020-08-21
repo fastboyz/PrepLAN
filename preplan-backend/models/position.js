@@ -12,7 +12,14 @@ const positionSchema = mongoose.Schema({
     edition: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Edition"
+    },
+    skillId:  {
+        type: Number
+    },
+    spotId: {
+        type: Number
     }
+
 });
 const Position = mongoose.model('Position', positionSchema);
 export { Position };

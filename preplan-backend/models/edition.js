@@ -30,6 +30,9 @@ const editionSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    tenantId: {
+        type: Number
+    }
 });
 
 const Edition = mongoose.model('Edition', editionSchema);
