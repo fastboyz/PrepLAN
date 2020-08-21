@@ -8,6 +8,10 @@ import { Position } from './position';
 import { ShiftRequirement } from './shiftRequiremnet';
 import { TimeSlot } from './timeSlots';
 import { Role } from './role';
+import { Volunteer } from './volunteer';
+import { Preference } from './preference';
+import { Skill } from './skill';
+import { Availability } from './availability';
 
 
 export {
@@ -20,5 +24,9 @@ export {
     Position,
     ShiftRequirement,
     TimeSlot,
-    Role
+    Role,
+    Volunteer,
+    Preference,
+    Skill,
+    Availability
 };
