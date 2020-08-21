@@ -417,7 +417,7 @@ router.get('/edition/:id/registered', [authJwt.verifyToken, authJwt.isOrganizer]
         })
 });
 
-router.post('/event/register', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+router.post('/event/inscription', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var vol = req.body;
     var { edition, profile, availabilities, preference } = vol;
     delete vol.edition;
