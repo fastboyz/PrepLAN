@@ -15,18 +15,18 @@ import { Availability } from './availability';
 
 
 export {
-    Account,
-    Profile,
-    User,
-    EmergencyContact,
-    Event,
-    Edition,
-    Position,
-    ShiftRequirement,
-    TimeSlot,
-    Role,
-    Volunteer,
-    Preference,
-    Skill,
-    Availability
+  Account,
+  Profile,
+  User,
+  EmergencyContact,
+  Event,
+  Edition,
+  Position,
+  ShiftRequirement,
+  TimeSlot,
+  Role,
+  Volunteer,
+  Preference,
+  Skill,
+  Availability
 };
