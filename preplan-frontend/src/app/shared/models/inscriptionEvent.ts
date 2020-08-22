@@ -30,8 +30,7 @@ export class Shift {
     endDateTime: Date;
 
     shiftId?: number;
-    tenantId?: number;
-    employeeId?: number;
+    volunteerId?: number;
 }
 
 export class InscriptionEvent {
@@ -46,5 +45,5 @@ export class InscriptionEvent {
     lastUpdated: Date;
 
     tenantId?: number;
-    employeeId?: number;
+    volunteerId?: number;
 }

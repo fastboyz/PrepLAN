@@ -1,4 +1,4 @@
-import { Role, Skill } from '../models';
+import { Role } from '../models';
 
 const initDB = () => {
   Role.estimatedDocumentCount((err, count) => {

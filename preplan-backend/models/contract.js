@@ -10,6 +10,10 @@ const contractSchema = mongoose.Schema({
   },
   contractId: {
     type: String
+  },
+  name: {
+    type: String,
+    required: true,
   }
 });
 
