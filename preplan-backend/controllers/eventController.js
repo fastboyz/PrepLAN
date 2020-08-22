@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import { authJwt } from '../middlewares'
-import { Event, Edition, Position, Volunteer, Preference, Availability } from '../models';
-import { createTenantInScheduler, createSkillAndSpot } from '.';
+import { Event, Edition, Position, Volunteer, Availability } from '../models';
+import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot } from '.';
+import { Contract } from '../models/contract';
 
 const router = Router();
 
@@ -222,15 +223,14 @@ router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req
           spotId: createdSkillAndSpot.spot.id,
         }).save((err, pos) => {
           if (err) {
-            res.status(500).send({ message: err });
-            throw BreakException;
+            throw err;
           }
           const picked = (({ title, description, edition, skillId, spotId }) => ({ title, description, edition, skillId, spotId }))(pos);
           picked['id'] = pos['_id'];
           data.push(picked);
         });
       } else {
-        break;
+        throw `Could not create Position ${elements[i].title}`;
       }
     }
     res.status(200).json(data);
@@ -242,59 +242,70 @@ router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req
 router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
   var elements = req.body;
   var data = [];
-  var BreakException = {};
   try {
-    elements.forEach(element => {
-      Position.findById(element.id).exec((err, pos) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          throw BreakException;
-        }
-        pos.title = element.title;
-        pos.description = element.description;
-        pos.save((err, saved) => {
+    var i;
+    for (i = 0; i < elements.length; i++) {
+      const updatedSkillAndSpot = await updateSkillAndSpot(elements[i]);
+      if (updatedSkillAndSpot) {
+        Position.findById(elements[i].id).exec((err, pos) => {
           if (err) {
             res.status(500).send({ message: err });
+            throw err;
           }
-          const picked = (({ title, description, edition, skillId, spotId }) => ({ title, description, edition, skillId, spotId }))(saved);
-          picked['id'] = pos['_id'];
-          Edition.findById(saved.edition).exec((err, edt) => {
+          pos.title = elements[i].title;
+          pos.description = elements[i].description;
+          pos.save((err, saved) => {
             if (err) {
-              res.status(500).send({ message: err });
-              throw BreakException;
+              throw err
             }
-            const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
-            pickedEdt['id'] = edt['_id'];
+            const picked = (({ title, description, edition, skillId, spotId }) => ({ title, description, edition, skillId, spotId }))(saved);
+            picked['id'] = pos['_id'];
+            Edition.findById(saved.edition).exec((err, edt) => {
+              if (err) {
+                throw err;
+              }
+              const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
+              pickedEdt['id'] = edt['_id'];
 
-            var evt = pickedEdt.event;
-            const event = (({ title, description }) => ({ title, description }))(evt);
-            event['id'] = evt['_id'];
+              var evt = pickedEdt.event;
+              const event = (({ title, description }) => ({ title, description }))(evt);
+              event['id'] = evt['_id'];
 
-            pickedEdt.event = event;
-            picked.edition = pickedEdt;
-            data.push(picked);
+              pickedEdt.event = event;
+              picked.edition = pickedEdt;
+              data.push(picked);
+            });
           });
         });
-      });
-    });
-  } catch (e) { }
+      } else {
+        throw `Could not Update Position ${elements[i].title}`;
+      }
+    }
+  } catch (err) {
+    res.status(500).send({ message: err });
+  }
 });
 
 router.delete('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
   var elements = req.body;
-  var BreakException = {};
   try {
-    elements.forEach(element => {
-      Position.findById(element.id).exec((err, pos) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          throw BreakException;
-        }
-        pos.deleteOne();
-
-      })
-    });
-  } catch (error) { }
+    var i;
+    for (i = 0; i < elements.length; i++) {
+      const deleted = deleteSkillAndSpot(elements[i]);
+      if (deleted.skill && deleted.spot) {
+        Position.findById(elements[i].id).exec((err, pos) => {
+          if (err) {
+            throw err;
+          }
+          pos.deleteOne();
+        })
+      } else {
+        throw `Could not delete Position ${elements[i]}`
+      }
+    }
+  } catch (error) {
+    res.status(500).send({ message: err });
+  }
 
 });
 
@@ -630,6 +641,95 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
   }
 });
 
+router.post('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+  var elements = req.body;
+  var data = [];
+  var BreakException = {};
+  try {
+    var i;
+    for (i = 0; i < elements.length; i++) {
+      const createdContract = await createContract(elements[i]);
+      if (createdContract) {
+        await new Contract({
+          maximumMinutesPerDay: elements[i].maximumMinutesPerDay,
+          tenantId: createdContract.tenantId,
+          contractId: createdContract.id,
+        }).save((err, contract) => {
+          if (err) {
+            throw BreakException;
+          }
+          const picked = sanitizeContract(contract);
+          data.push(picked);
+        });
+      } else {
+        break;
+      }
+    }
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).send({ message: err });
+  }
+});
+
+router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+  var elements = req.body;
+  var data = [];
+  var BreakException = {};
+  try {
+    var i;
+    for (i = 0; i < elements.length; i++) {
+      const updated = await updateContract(elements[i]);
+      if (updated) {
+        Contract.findById(elements[i].id).exec((err, contract) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+          contract.maximumMinutesPerDay = elements[i].maximumMinutesPerDay;
+          contract.save((err, saved) => {
+            if (err) {
+              throw BreakException;
+            }
+            const picked = sanitizeContract(saved);
+            data.push(picked);
+          });
+        });
+      } else {
+        break;
+      }
+    }
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).send({ message: err });
+  }
+});
+
+router.delete('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+  var elements = req.body;
+  var BreakException = {};
+  try {
+    var i;
+    for (i = 0; i < elements.length; i++) {
+      var isDeleted = await deleteContract(elements[i]);
+      if (isDeleted) {
+        Contract.findById(elements[i].id).exec((err, contract) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            throw BreakException;
+          }
+          contract.deleteOne();
+        })
+      } else {
+        throw BreakException;
+      }
+    };
+    res.status(200).send(true);
+  } catch (error) {
+    res.status(500).send({ message: "Error deleting some contracts" });
+  }
+
+})
+
 const sanitizeProfile = (profile) => {
 
   const picked = (({ tshirtSize, allergy, certification }) => ({ tshirtSize, allergy, certification }))(profile);
@@ -679,7 +779,7 @@ const sanitizePositions = (positions, edition) => {
 }
 
 const sanitizeContract = (data) => {
-  const picked = (({ maximumMinutesPerDay, tenantId }) => ({ maximumMinutesPerDay, tenantId }))(data);
+  const picked = (({ maximumMinutesPerDay, tenantId, contractId }) => ({ maximumMinutesPerDay, tenantId, contractId }))(data);
   picked['id'] = data['_id'];
   return picked;
 }

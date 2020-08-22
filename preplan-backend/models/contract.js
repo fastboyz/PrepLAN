@@ -7,6 +7,9 @@ const contractSchema = mongoose.Schema({
   },
   tenantId: {
     type: Number,
+  },
+  contractId: {
+    type: String
   }
 });
 
