@@ -372,7 +372,7 @@ router.get('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, re
         });
 })
 
-router.get('/edition/:id/registered', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/edition/:id/inscriptions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     const editionId = req.params.id;
     Volunteer.find({ edition: editionId })
         .populate([
@@ -481,7 +481,7 @@ router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
 });
 
 
-router.post('/event/updateStatus', [authJwt.verifyToken], async (req, res) => {
+router.put('/inscription/updateStatus', [authJwt.verifyToken], async (req, res) => {
     var vol = req.body;
 
     const session = await mongoose.startSession();
@@ -502,7 +502,7 @@ router.post('/event/updateStatus', [authJwt.verifyToken], async (req, res) => {
 });
 
 
-router.post('/event/updateAllStatus', [authJwt.verifyToken], async (req, res) => {
+router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, res) => {
     var vols = req.body;
 
     const session = await mongoose.startSession();

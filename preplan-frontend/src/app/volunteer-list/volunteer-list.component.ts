@@ -53,19 +53,28 @@ export class VolunteerListComponent implements OnInit {
     selected.forEach(opt => opt.status = approvedStatus);
     console.log("Approving: " + JSON.stringify(selected));
     this.eventService.updateAllInscriptionStatus(selected).subscribe();
+    this.clearSelection();
   }
+  
   async disapproveSelected() {
     const disapprovedStatus = "DISAPPROVED";
     let selected: InscriptionEvent[] = await this.getSelectedOptions();
     selected.forEach(opt => opt.status = disapprovedStatus);
     console.log("Disapproving: " + JSON.stringify(selected));
     this.eventService.updateAllInscriptionStatus(selected).subscribe();
+    this.clearSelection();
   }
 
   getSelectedOptions() {
     return this.inscriptionCheckboxes
       .filter(opt => opt.checked)
       .map(opt => opt.inscriptionEvent);
+  }
+
+  clearSelection() {
+    this.inscriptionCheckboxes
+      .filter(opt => opt.checked)
+      .forEach(opt => opt.checked = false);
   }
 
   getAge(date: Date) {
