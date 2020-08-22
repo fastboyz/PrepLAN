@@ -239,7 +239,7 @@ router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req
   }
 });
 
-router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
   var elements = req.body;
   var data = [];
   try {
@@ -671,7 +671,7 @@ router.post('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req
   }
 });
 
-router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
   var elements = req.body;
   var data = [];
   var BreakException = {};
@@ -704,7 +704,7 @@ router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
   }
 });
 
-router.delete('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.delete('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async  (req, res) => {
   var elements = req.body;
   var BreakException = {};
   try {
