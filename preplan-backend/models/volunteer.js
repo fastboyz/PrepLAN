@@ -9,13 +9,17 @@ const volunteerSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Edition'
   },
-  preference: {
+  contract: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Preference'
+    ref: 'Contract'
   },
   availabilities: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Availability'
+  }],
+  positions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Position'
   }],
   inscriptionDate: {
     type: Date,
