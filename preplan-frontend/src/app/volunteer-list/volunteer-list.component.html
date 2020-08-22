@@ -1,6 +1,6 @@
 <div class="btn-section">
-    <button class="btn btn-primary">Approve Selected</button>
-    <button class="btn btn-danger">Disapprove Selected</button>
+    <button class="btn btn-primary" (click)="approveSelected()">Approve Selected</button>
+    <button class="btn btn-danger" (click)="disapproveSelected()">Disapprove Selected</button>
 </div>
 <div class="table-responsive">
     <table class="table table-striped table-hover table-dark">
@@ -12,22 +12,24 @@
                 <th scope="col">Age</th>
                 <th scope="col">Email</th>
                 <th scope="col"># Free Shifts</th>
+                <th scope="col">Status</th>
                 <th scope="col">View More</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let inscription of inscriptionList">
+            <tr *ngFor="let i of inscriptionCheckboxes">
                 <td class="selection">
-                    <input type="checkbox">
+                    <input type="checkbox" [(ngModel)]="i.checked">
                 </td>
-                <td>{{inscription.profile.user.firstName}}</td>
-                <td>{{inscription.profile.user.lastName}}</td>
-                <td>{{getAge(inscription.profile.user.birthday)}}</td>
-                <td>{{inscription.profile.user.account.email}}</td>
-                <td>{{getShiftCount(inscription.availability)}}</td>
+                <td>{{i.inscriptionEvent.profile.user.firstName}}</td>
+                <td>{{i.inscriptionEvent.profile.user.lastName}}</td>
+                <td>{{getAge(i.inscriptionEvent.profile.user.birthday)}}</td>
+                <td>{{i.inscriptionEvent.profile.user.account.email}}</td>
+                <td>{{getShiftCount(i.inscriptionEvent.availabilities)}}</td>
+                <td>{{i.inscriptionEvent.status}}</td>
                 <td>
                     <button type="button" class="btn icon" data-toggle="modal" data-target=".bd-example-modal-lg"
-                        (click)="loadModal(inscription)">
+                        (click)="loadModal(i.inscriptionEvent)">
                         <i class="fas fa-search-plus fa-lg"></i>
                     </button>
                 </td>
