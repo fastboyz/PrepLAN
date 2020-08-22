@@ -70,15 +70,14 @@ const createSkillAndSpot = async (position) => {
 
   skill["name"] = position.title;
   skill["tenantId"] = tenantId;
-  const createdSKill = axios
+  const createdSKill = await axios
     .post(`${SCHEDULER}/tenant/${tenantId}/skill/add`, skill)
     .then((res) => {
-      return res;
+      return res.data;
     })
     .catch((error) => {
       return false;
     });
-
   spot["name"] = position.title;
   spot["tenantId"] = tenantId;
   spot["requiredSkillSet"] = [createdSKill];
@@ -89,7 +88,7 @@ const createSkillAndSpot = async (position) => {
     );
     return {
       skill: createdSKill,
-      spot: res_1,
+      spot: res_1.data,
     };
   } catch (error_1) {
     return false;
@@ -104,10 +103,10 @@ const updateSkillAndSpot = async (position) => {
   skill["name"] = position.title;
   skill["tenantId"] = tenantId;
   skill["id"] = position.skillId;
-  const updatedSKill = axios
+  const updatedSKill = await axios
     .post(`${SCHEDULER}/tenant/${tenantId}/skill/update`, skill)
     .then((res) => {
-      return res;
+      return res.data;
     })
     .catch((error) => {
       return false;
@@ -124,7 +123,7 @@ const updateSkillAndSpot = async (position) => {
     );
     return {
       skill: updatedSKill,
-      spot: updatedSpot,
+      spot: updatedSpot.data,
     };
   } catch (error_1) {
     return false;
@@ -132,9 +131,10 @@ const updateSkillAndSpot = async (position) => {
 };
 
 const deleteSkillAndSpot = async (position) => {
-  const deletedSkill = axios.delete(`${SCHEDULER}/tenant/${tenantId}/skill/${position.skillId}`)
+  var tenantId = position.edition.tenantId;
+  const deletedSkill = await axios.delete(`${SCHEDULER}/tenant/${tenantId}/skill/${position.skillId}`)
     .then((res) => {
-      return res;
+      return res.data;
     })
     .catch((error) => {
       return false;
@@ -142,7 +142,7 @@ const deleteSkillAndSpot = async (position) => {
 
   try {
     const res_1 = await axios.delete(`${SCHEDULER}/tenant/${tenantId}/spot/${position.spotId}`);
-    return { skill: deletedSkill, spot: res_1 };
+    return { skill: deletedSkill, spot: res_1.data };
   }
   catch (error_1) {
     return false;
@@ -150,6 +150,7 @@ const deleteSkillAndSpot = async (position) => {
 };
 
 const createContract = async (data) => {
+  var tenantId = data.edition.tenantId;
   var contract = {
     maximumMinutesPerDay: 0,
     maximumMinutesPerMonth: null,
@@ -159,18 +160,20 @@ const createContract = async (data) => {
     tenantId: 0,
   };
   contract.tenantId = data.edition.tenantId;
-  contract.name = data.name;
-  contract.maximumMinutesPerDay = data.maximumMinutesPerDay;
+  contract.name = data.contract.name;
+  contract.maximumMinutesPerDay = data.contract.maximumMinutesPerDay;
 
   try {
     const response = await axios.post(`${SCHEDULER}/tenant/${tenantId}/contract/add`, contract);
     return response.data;
   } catch (error) {
+    console.log(error)
     return false;
   }
 };
 
 const updateContract = async (data) => {
+  var tenantId = data.edition.tenantId;
   var contract = {
     id: 0,
     maximumMinutesPerDay: 0,
@@ -194,6 +197,7 @@ const updateContract = async (data) => {
 };
 
 const deleteContract = async (data) => {
+  var tenantId = data.edition.tenantId;
   try {
     const response = await axios.delete(`${SCHEDULER}/tenant/${tenantId}/contract/${data.contractId}`);
     return response.data;
@@ -203,8 +207,8 @@ const deleteContract = async (data) => {
 };
 
 const addVolunteerInScheduler = async (data) => {
-  
- };
+
+};
 
 const deleteVolunteerInScheduler = async (data) => { };
 

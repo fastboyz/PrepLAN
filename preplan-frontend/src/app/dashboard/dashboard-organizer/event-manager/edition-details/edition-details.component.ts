@@ -70,6 +70,7 @@ export class EditionDetailsComponent implements OnInit {
       location: editionForm.get('editionLocation').value,
       event: newEvent,
       isActive: false,
+      tenantId: this.edition.tenantId,
       isRegistering: false,
     };
 

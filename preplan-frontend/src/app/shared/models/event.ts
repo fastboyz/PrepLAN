@@ -13,6 +13,7 @@ export class Edition {
     isActive: boolean;
     isRegistering: boolean;
     location: string;
+    tenantId?: number;
 }
 
 export class Position {

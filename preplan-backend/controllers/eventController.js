@@ -209,16 +209,15 @@ router.post('/position', [authJwt.verifyToken, authJwt.isOrganizer], async (req,
 router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
   var elements = req.body;
   var data = [];
-  var BreakException = {};
   try {
     var i;
     for (i = 0; i < elements.length; i++) {
       const createdSkillAndSpot = await createSkillAndSpot(elements[i]);
       if (createdSkillAndSpot) {
         await new Position({
-          title: element.title,
-          description: element.description,
-          edition: element.edition.id,
+          title: elements[i].title,
+          description: elements[i].description,
+          edition: elements[i].edition.id,
           skillId: createdSkillAndSpot.skill.id,
           spotId: createdSkillAndSpot.spot.id,
         }).save((err, pos) => {
@@ -239,7 +238,7 @@ router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req
   }
 });
 
-router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
   var elements = req.body;
   var data = [];
   try {
@@ -644,25 +643,26 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
 router.post('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
   var elements = req.body;
   var data = [];
-  var BreakException = {};
   try {
     var i;
     for (i = 0; i < elements.length; i++) {
       const createdContract = await createContract(elements[i]);
       if (createdContract) {
         await new Contract({
-          maximumMinutesPerDay: elements[i].maximumMinutesPerDay,
+          maximumMinutesPerDay: elements[i].contract.maximumMinutesPerDay,
           tenantId: createdContract.tenantId,
           contractId: createdContract.id,
+          name: elements[i].contract.name,
         }).save((err, contract) => {
           if (err) {
-            throw BreakException;
+            throw err;
           }
-          const picked = sanitizeContract(contract);
+          const picked = (({ maximumMinutesPerDay, tenantId, contractId, name }) => ({ maximumMinutesPerDay, tenantId, contractId, name }))(contract);
+          picked['id'] = contract['_id'];
           data.push(picked);
         });
       } else {
-        break;
+        throw "Could not create Contract";
       }
     }
     res.status(200).json(data);
@@ -671,7 +671,7 @@ router.post('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req
   }
 });
 
-router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
   var elements = req.body;
   var data = [];
   var BreakException = {};
@@ -704,7 +704,7 @@ router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
   }
 });
 
-router.delete('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.delete('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
   var elements = req.body;
   var BreakException = {};
   try {
