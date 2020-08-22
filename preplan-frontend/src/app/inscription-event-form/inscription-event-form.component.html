@@ -46,13 +46,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="section">
+                    <div class="section" *ngIf="positions != null">
                         <h4>Preferred Departments</h4>
                         <div *ngIf="!viewOnly">
                             <div class="form-group">
                                 <label>Choose your 1st preferred department </label>
-                                <select class="form-control" formControlName="firstPreference">
-                                    <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
+                                <select class="form-control" formControlName="firstPreference" [(ngModel)]="firstPosition">
+                                    <option *ngFor="let pos of positions" [ngValue]="pos">{{pos.title}}</option>
                                 </select>
                                 <div *ngIf="firstPreference.invalid && (firstPreference.dirty || firstPreference.touched)"
                                     class="alert alert-danger">
@@ -63,8 +63,8 @@
                             </div>
                             <div class="form-group">
                                 <label>Choose your 2nd preferred department </label>
-                                <select class="form-control" formControlName="secondPreference">
-                                    <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
+                                <select class="form-control" formControlName="secondPreference" [(ngModel)]="secondPosition">
+                                    <option *ngFor="let pos of positions" [ngValue]="pos">{{pos.title}}</option>
                                 </select>
                                 <div *ngIf="secondPreference.invalid && (secondPreference.dirty || secondPreference.touched)"
                                     class="alert alert-danger">
@@ -75,8 +75,8 @@
                             </div>
                             <div class="form-group">
                                 <label>Choose your 3rd preferred department</label>
-                                <select class="form-control" formControlName="thirdPreference">
-                                    <option *ngFor="let dept of departments" [ngValue]="dept">{{dept.name}}</option>
+                                <select class="form-control" formControlName="thirdPreference" [(ngModel)]="thirdPosition">
+                                    <option *ngFor="let pos of positions" [ngValue]="pos">{{pos.title}}</option>
                                 </select>
                                 <div *ngIf="thirdPreference.invalid && (thirdPreference.dirty || thirdPreference.touched)"
                                     class="alert alert-danger">
@@ -88,8 +88,8 @@
                         </div>
                         <div *ngIf="viewOnly">
                             <ul>
-                                <li *ngFor="let dept of inscriptionEvent.preference.departments">
-                                    {{dept}}
+                                <li *ngFor="let pos of inscriptionEvent.positions">
+                                    {{pos}}
                                 </li>
                             </ul>
                         </div>

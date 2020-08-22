@@ -5,9 +5,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { EmergencyContact, Profile, User } from '../shared/models/user';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EventService } from '../services/event.service';
-import { Edition } from '../shared/models/event';
+import { Edition, Position } from '../shared/models/event';
 import * as moment from 'moment';
-import { Availability, InscriptionEvent, Preference } from '../shared/models/inscriptionEvent';
+import { Availability, InscriptionEvent, Contract } from '../shared/models/inscriptionEvent';
 import { UserFormComponent } from '../user/user-form/user-form.component';
 import { EmergencyContactFormComponent } from '../user/emergency-contact-form/emergency-contact-form.component';
 
@@ -24,21 +24,27 @@ export class InscriptionEventFormComponent implements OnInit {
   edition: Edition;
   profileData: Profile;
   contactData: EmergencyContact;
-  departments: any = [
-    { name: 'Any department', value: 0 },
-    { name: 'Cashier', value: 1 },
-    { name: 'Patrol', value: 2 },
-    { name: 'Logistic', value: 3 },
-    { name: 'Construction', value: 4 },
-    { name: 'Tech Support', value: 5 },
-    { name: 'Vendor', value: 6 }
-  ];
+  positions: Position[];
+  contracts: Contract[];
+  firstPosition: Position;
+  secondPosition: Position;
+  thirdPosition: Position;
+  // departments: any = [
+  //   { name: 'Any department', value: 0 },
+  //   { name: 'Cashier', value: 1 },
+  //   { name: 'Patrol', value: 2 },
+  //   { name: 'Logistic', value: 3 },
+  //   { name: 'Construction', value: 4 },
+  //   { name: 'Tech Support', value: 5 },
+  //   { name: 'Vendor', value: 6 }
+  // ];
   hoursContract: any = ['4h', '8h', '12h'];
+  anyDeptId: string = "any-departements-id";
   preferencesForm: FormGroup;
   step: number;
   availabilities: any = [];
   selectedAvailabilities: Availability[] = [];
-  selectedPreferences: Preference;
+  // selectedPreferences: Preference;
   errorNoChecked: boolean = false;
 
   constructor(
@@ -70,6 +76,10 @@ export class InscriptionEventFormComponent implements OnInit {
       this.eventService.getEditionById(editionId).subscribe(edition => {
         this.edition = edition;
         this.getEditionDays();
+        this.eventService.getPositionsbyEditionId(this.edition.id).subscribe(data => {
+          this.positions = data;
+        });
+        // getContracts
       });
     } else {
       if (this.inscriptionEvent != null) {
@@ -84,23 +94,25 @@ export class InscriptionEventFormComponent implements OnInit {
       await this.updateContact;
 
       await this.getSelectedOptions();
-      await this.getPreferences();
 
       let newInscription: InscriptionEvent = {
         edition: this.edition,
         profile: this.profileData,
         availabilities: this.selectedAvailabilities,
-        preference: this.selectedPreferences,
+        positions: this.getSelectedPositions(),
+        contract: this.getSelectedContract(),
         status: "PENDING",
-        inscriptionDate: moment().toDate()
+        inscriptionDate: moment().toDate(),
+        lastUpdated: moment().toDate()
       }
-      this.eventService.createInscriptionEvent(newInscription).subscribe(data=>{
-        if(data.message.includes('success')){
-          let navigationExtras  = {state: {successs: true}};
+
+      this.eventService.createInscriptionEvent(newInscription).subscribe(data => {
+        if (data.message.includes('success')) {
+          let navigationExtras = { state: { successs: true } };
           this.router.navigate(['profile'], navigationExtras)
         }
       });
-      
+
     }
   }
 
@@ -165,51 +177,69 @@ export class InscriptionEventFormComponent implements OnInit {
     }
     this.step++;
   }
-  async getPreferences() {
-    this.selectedPreferences = {
-      dailyMaxHours: this.hoursPreference.value,
-      departments: this.getSelectedDepartments()
-    }
-  }
 
   async loadInscriptionValues(inscription: InscriptionEvent) {
     this.inscriptionEvent = inscription;
-    this.contactData= this.inscriptionEvent.profile.emergencyContact;
+    this.contactData = this.inscriptionEvent.profile.emergencyContact;
     this.profileData = this.inscriptionEvent.profile;
     this.userFormComponent.setUserFormValues(this.inscriptionEvent.profile);
     this.contactFormComponent.setContactFormValue(this.inscriptionEvent.profile.emergencyContact);
 
     this.preferencesForm.setValue({
-      hoursPreference: this.inscriptionEvent.preference.dailyMaxHours,
+      hoursPreference: this.inscriptionEvent.contract.maximumMinutesPerDay,
       firstPreference: '',
       secondPreference: '',
       thirdPreference: ''
     });
     this.edition = this.inscriptionEvent.edition;
+
+    this.eventService.getPositionsbyEditionId(this.edition.id).subscribe(data => {
+      this.positions = data;
+    });
+    // this.eventService.getAllContracts().subscribe(data=>{
+    //   this.contracts = data;
+    // })
+
+    // getContracts
     this.availabilities = [];
     await this.getEditionDays();
     this.setAvailability();
   }
-  getSelectedDepartments() {
-    let depts: any[] = [];
-    depts.push(this.firstPreference.value);
-    depts.push(this.secondPreference.value);
-    depts.push(this.thirdPreference.value);
 
-    let allDeptOption = depts.filter(choice => choice.value == 0);
-    let selectedDepartments: string[];
-    if (allDeptOption && allDeptOption.length > 0) {
-      selectedDepartments = this.departments.filter(d => d.value !== 0).map(d => {
-        return d.name;
-      });
-    } else {
-      selectedDepartments = depts.filter((v, i, a) => a.indexOf(v) === i).map(d => {
-        return d.name;
-      });
+  getPositions(edition: Edition) {
+    this.eventService.getPositionsbyEditionId(edition.id).subscribe(data => {
+      this.positions = data;
+    });
+    let position: Position = {
+      id: this.anyDeptId,
+      title: "Any Departments",
+      edition: edition,
+      description: "All and any the departments"
     }
-    return selectedDepartments;
+    this.positions.unshift(position);
+  }
+  getSelectedPositions() {
+    if (this.firstPreference.value == this.anyDeptId ||
+      this.secondPreference.value == this.anyDeptId ||
+      this.thirdPreference.value == this.anyDeptId) {
+        return this.positions;
+    }
+
+    let selectedPositions: Position[] = this.positions
+      .filter(pos =>
+        pos.id == this.firstPreference.value ||
+        pos.id == this.secondPreference.value ||
+        pos.id == this.thirdPreference.value
+      )
+    return selectedPositions;
   }
 
+  getSelectedContract() {
+    let selectedContract: Contract = this.contracts.find(contract => {
+      contract.name == this.hoursPreference.value
+    })
+    return selectedContract;
+  }
 
   async getSelectedOptions() {
     this.selectedAvailabilities = []
