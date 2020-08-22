@@ -561,6 +561,7 @@ router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
   for (i = 0; i < positions.length; i++) {
     positionIds.push(positions[i].id);
   }
+  vol['positions'] = positionIds;
 
   const session = await mongoose.startSession();
 
@@ -570,14 +571,12 @@ router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
     var i;
     for (i = 0; i < availabilities.length; i++) {
       var element = availabilities[i];
-      console.log(element);
       await Availability.create([element], { session: session });
       const created = await Availability.findOne(element).session(session);
       createdAvs.push(created._id);
     }
 
     vol['availabilities'] = createdAvs;
-    console.log(createdAvs);
     await Volunteer.create([vol], { session: session });
 
     await session.commitTransaction();
