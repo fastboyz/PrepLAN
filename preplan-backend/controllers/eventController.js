@@ -640,6 +640,23 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
   }
 });
 
+router.get('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+  var edition = req.body
+  Contract.find({}).exec((err, contracts) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return
+    }
+    var contractList = [];
+    contracts.forEach(contract => {
+      const picked = (({ maximumMinutesPerDay, tenantId, contractId, name }) => ({ maximumMinutesPerDay, tenantId, contractId, name }))(contract);
+      picked['id'] = contract['_id'];
+      contractList.push(picked);
+    });
+    res.status(200).json(contractList);
+  });
+});
+
 router.post('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
   var elements = req.body;
   var data = [];
