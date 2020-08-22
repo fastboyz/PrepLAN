@@ -44,6 +44,5 @@ export class InscriptionEvent {
     inscriptionDate: Date;
     lastUpdated: Date;
 
-    tenantId?: number;
     volunteerId?: number;
 }
