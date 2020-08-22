@@ -94,9 +94,13 @@ export class InscriptionEventFormComponent implements OnInit {
         status: "PENDING",
         inscriptionDate: moment().toDate()
       }
-      this.eventService.createInscriptionEvent(newInscription).subscribe();
-      // Call service to send object to backend
-      //console.log(JSON.stringify(newInscription));
+      this.eventService.createInscriptionEvent(newInscription).subscribe(data=>{
+        if(data.message.includes('success')){
+          let navigationExtras  = {state: {successs: true}};
+          this.router.navigate(['profile'], navigationExtras)
+        }
+      });
+      
     }
   }
 

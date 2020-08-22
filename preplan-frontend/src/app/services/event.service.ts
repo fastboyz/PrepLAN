@@ -143,7 +143,7 @@ export class EventService {
     }
 
     createInscriptionEvent(inscription: InscriptionEvent){
-        return this.http.post<InscriptionEvent>(`${environment.apiUrl}/api/dashboard/event/inscription`, inscription, {
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/event/inscription`, inscription, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -153,7 +153,7 @@ export class EventService {
     }
 
     getAllInscriptionByEditionId(id:String){
-        return this.http.get<InscriptionEvent[]>(`${environment.apiUrl}/api/dashboard/event/${id}/registered`, {
+        return this.http.get<InscriptionEvent[]>(`${environment.apiUrl}/api/dashboard/edition/${id}/registered`, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -164,5 +164,26 @@ export class EventService {
 
     getInscriptionByUserId(id: string) {
         return null;
+    }
+
+    updateInscriptionStatus(inscription :InscriptionEvent){
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/event/updateStatus`, status, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    
+    updateAllInscriptionStatus(inscription :InscriptionEvent[]){
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/event/updateAllStatus`, status, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
     }
 }

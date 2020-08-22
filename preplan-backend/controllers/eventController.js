@@ -374,7 +374,7 @@ router.get('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, re
 
 router.get('/edition/:id/registered', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     const editionId = req.params.id;
-    Volunteer.findOne({ edition: editionId })
+    Volunteer.find({ edition: editionId })
         .populate([
             {
                 path: 'profile',
@@ -382,7 +382,11 @@ router.get('/edition/:id/registered', [authJwt.verifyToken, authJwt.isOrganizer]
                 populate: [
                     {
                         path: 'user',
-                        model: 'User'
+                        model: 'User',
+                        populate: {
+                            path: 'account',
+                            model: 'Account'
+                        }
                     },
                     {
                         path: 'emergencyContact',
@@ -399,21 +403,35 @@ router.get('/edition/:id/registered', [authJwt.verifyToken, authJwt.isOrganizer]
                 }
             },
             {
+                path: 'preference',
+                model: 'Preference',
+                populate: {
+                    path: 'skills',
+                    model: 'Skill'
+                }
+            },
+            {
                 path: 'availabilities',
                 model: 'Availability'
             },
         ])
-        .exec((err, vol) => {
+        .exec((err, vols) => {
+
             if (err) {
                 res.status(500).send({ message: err });
                 return
             }
-            const picked = (({ inscriptionDate, status, plannerId }) => ({ inscriptionDate, status, plannerId }))(vol);
-            picked['profile'] = sanitizeProfile(vol.profile);
-            picked['edition'] = sanitizeEdition(vol.edition);
-            picked['availabilities']
-            picked['id'] = vol['_id'];
-            res.status(200).json(picked);
+            var volunteerList = [];
+            vols.forEach(vol => {
+                const picked = (({ inscriptionDate, status, lastUpdated, plannerId }) => ({ inscriptionDate, status, lastUpdated, plannerId }))(vol);
+                picked['profile'] = sanitizeProfile(vol.profile);
+                picked['edition'] = sanitizeEdition(vol.edition);
+                picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
+                picked['preference'] = sanitizePreference(vol.preference);
+                picked['id'] = vol['_id'];
+                volunteerList.push(picked);
+            })
+            res.status(200).json(volunteerList);
         })
 });
 
@@ -452,7 +470,7 @@ router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
 
         await session.commitTransaction();
         session.endSession();
-        res.status(200).send({ message: "Registration sucessful" });
+        res.status(200).send({ message: "Registration successful" });
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
@@ -463,7 +481,7 @@ router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
 });
 
 
-router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+router.post('/event/updateStatus', [authJwt.verifyToken], async (req, res) => {
     var vol = req.body;
 
     const session = await mongoose.startSession();
@@ -475,6 +493,31 @@ router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], a
         //TODO-Steve: if new status is approved, add volunteer to the scheduler module, if previous status was approved, remove from scheduler
         await session.commitTransaction();
         session.endSession();
+        res.status(200).send({ message: "success" });
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).send({ message: error });
+    }
+});
+
+
+router.post('/event/updateAllStatus', [authJwt.verifyToken], async (req, res) => {
+    var vols = req.body;
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        var i;
+        for (i = 0; i < vols.length; i++) {
+            var found = await Volunteer.findById(vols[i].id);
+            found.status = vols[i].status;
+            found.save();
+        }
+        //TODO-Steve: if new status is approved, add volunteer to the scheduler module, if previous status was approved, remove from scheduler
+        await session.commitTransaction();
+        session.endSession();
+        res.status(200).send({ message: "success" });
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
@@ -487,8 +530,12 @@ const sanitizeProfile = (profile) => {
     const picked = (({ tshirtSize, allergy, certification }) => ({ tshirtSize, allergy, certification }))(profile);
     picked['id'] = profile._id;
 
+    const pickedAccount = (({ email }) => ({ email }))(profile.user.account);
+    pickedAccount['id'] = profile.user.account._id;
+
     const pickedUser = (({ firstName, lastName, birthday, phoneNumber, discord, pronoun }) => ({ firstName, lastName, birthday, phoneNumber, discord, pronoun }))(profile.user);
-    pickedUser['id'] = profile.user;
+    pickedUser['id'] = profile.user._id;
+    pickedUser['account'] = pickedAccount;
     picked['user'] = pickedUser;
 
     const eContactPicked = (({ firstName, lastName, phoneNumber, relationship }) => ({ firstName, lastName, phoneNumber, relationship }))(profile.emergencyContact)
@@ -501,6 +548,29 @@ const sanitizeProfile = (profile) => {
 const sanitizeEdition = (edition) => {
     const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edition);
     picked['id'] = edition['_id'];
+    return picked;
+}
+
+const sanitizeAvailibilities = (availabilities) => {
+    var pickedAvailabilities = [];
+    availabilities.forEach(element => {
+        const picked = (({ startDate, endDate, state }) => ({ startDate, endDate, state }))(element);
+        picked['id'] = element._id;
+        pickedAvailabilities.push(picked);
+    });
+    return pickedAvailabilities;
+}
+
+const sanitizePreference = (preference) => {
+    var pickedSkills = [];
+    const picked = (({ dailyMaxHours }) => ({ dailyMaxHours }))(preference);
+    preference.skills.forEach(element => {
+        const pickedSkill = (({ name, value }) => ({ name, value }))(element);
+        pickedSkill['id'] = element._id;
+        pickedSkills.push(pickedSkill);
+    });
+    picked['skills'] = pickedSkills;
+    return picked;
 }
 
 const EventController = router;
