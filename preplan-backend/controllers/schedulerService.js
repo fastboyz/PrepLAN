@@ -160,14 +160,12 @@ const createContract = async (data) => {
     tenantId: 0,
   };
   contract.tenantId = data.edition.tenantId;
-  contract.name = data.contract.name;
-  contract.maximumMinutesPerDay = data.contract.maximumMinutesPerDay;
-
+  contract.name = data.name;
+  contract.maximumMinutesPerDay = data.maximumMinutesPerDay;
   try {
     const response = await axios.post(`${SCHEDULER}/tenant/${tenantId}/contract/add`, contract);
     return response.data;
   } catch (error) {
-    console.log(error)
     return false;
   }
 };

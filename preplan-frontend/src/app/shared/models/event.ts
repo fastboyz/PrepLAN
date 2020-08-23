@@ -21,4 +21,7 @@ export class Position {
     title: string;
     description: string;
     edition: Edition;
+
+    skillId?: number;
+    spotId?: number;
 }

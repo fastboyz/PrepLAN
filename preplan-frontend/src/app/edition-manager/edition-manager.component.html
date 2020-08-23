@@ -9,6 +9,10 @@
             aria-controls="volunteer-list" aria-selected="false">Volunteer Lists</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" id="generator-settings-tab" data-toggle="pill" href="#generator-settings" role="tab"
+            aria-controls="generator-settings" aria-selected="false">Generator Settings</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" id="schedule-generator-tab" data-toggle="pill" href="#schedule-generator" role="tab"
             aria-controls="schedule-generator" aria-selected="false">Schedule Generator</a>
     </li>
@@ -18,8 +22,8 @@
 <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane fade show active" id="edition-home" role="tabpanel" aria-labelledby="edition-home-tab">
         <div class="">
-        <edition-details [edition]="edition" [positionList]="positionList" [isEnrollable]="false" [isEditableOption]="true"
-            (onUpdate)="onUpdate($event)"></edition-details>
+            <edition-details [edition]="edition" [positionList]="positionList" [isEnrollable]="false"
+                [isEditableOption]="true" (onUpdate)="onUpdate($event)"></edition-details>
         </div>
     </div>
 
@@ -28,7 +32,9 @@
             <volunteer-list [edition]="edition"></volunteer-list>
         </div>
     </div>
-
+    <div class="tab-pane fade" id="generator-settings" role="tabpanel" aria-labelledby="generator-settings-tab">
+        <generator-settings [edition]="edition"></generator-settings>
+    </div>
     <div class="tab-pane fade" id="schedule-generator" role="tabpanel" aria-labelledby="schedule-generator-tab">
 
     </div>

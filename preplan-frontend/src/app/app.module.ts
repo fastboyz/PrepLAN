@@ -27,6 +27,7 @@ import { EditionManagerComponent } from './edition-manager/edition-manager.compo
 import { ProfileInscriptionComponent } from './profile/profile-inscription/profile-inscription.component';
 import { ProfileComponent } from './profile/profile.component';
 import { VolunteerListComponent } from './volunteer-list/volunteer-list.component';
+import { GeneratorSettingsComponent } from './generator-settings/generator-settings.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { VolunteerListComponent } from './volunteer-list/volunteer-list.componen
     ProfileComponent,
     ProfileInscriptionComponent,
     VolunteerListComponent,
+    GeneratorSettingsComponent,
   ],
   imports: [
     UserModule,
