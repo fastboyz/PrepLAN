@@ -8,6 +8,10 @@ const contractSchema = mongoose.Schema({
   tenantId: {
     type: Number,
   },
+  edition: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Edition"
+  },
   contractId: {
     type: String
   },

@@ -29,22 +29,12 @@ export class InscriptionEventFormComponent implements OnInit {
   firstPosition: Position;
   secondPosition: Position;
   thirdPosition: Position;
-  // departments: any = [
-  //   { name: 'Any department', value: 0 },
-  //   { name: 'Cashier', value: 1 },
-  //   { name: 'Patrol', value: 2 },
-  //   { name: 'Logistic', value: 3 },
-  //   { name: 'Construction', value: 4 },
-  //   { name: 'Tech Support', value: 5 },
-  //   { name: 'Vendor', value: 6 }
-  // ];
-  hoursContract: any = ['4h', '8h', '12h'];
+  selectedContract: Contract;
   anyDeptId: string = "any-departements-id";
   preferencesForm: FormGroup;
   step: number;
   availabilities: any = [];
   selectedAvailabilities: Availability[] = [];
-  // selectedPreferences: Preference;
   errorNoChecked: boolean = false;
 
   constructor(
@@ -79,7 +69,9 @@ export class InscriptionEventFormComponent implements OnInit {
         this.eventService.getPositionsbyEditionId(this.edition.id).subscribe(data => {
           this.positions = data;
         });
-        // getContracts
+        this.eventService.getAllContracts(this.edition.id).subscribe(data=>{
+          this.contracts= data;
+        });
       });
     } else {
       if (this.inscriptionEvent != null) {
@@ -196,11 +188,10 @@ export class InscriptionEventFormComponent implements OnInit {
     this.eventService.getPositionsbyEditionId(this.edition.id).subscribe(data => {
       this.positions = data;
     });
-    // this.eventService.getAllContracts().subscribe(data=>{
-    //   this.contracts = data;
-    // })
+    this.eventService.getAllContracts(this.edition.id).subscribe(data=>{
+      this.contracts= data;
+    });
 
-    // getContracts
     this.availabilities = [];
     await this.getEditionDays();
     this.setAvailability();

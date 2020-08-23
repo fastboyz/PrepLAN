@@ -1,0 +1,40 @@
+<!-- <div class="container" *ngIf="!contracts.length"> -->
+<h4>Contracts</h4>
+<div class="contracts container">
+    <div class="">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Max Minutes Per Days</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of contracts">
+                    <td>{{c.name}}</td>
+                    <td>{{c.maximumMinutesPerDay}}</td>
+                    <td>
+                        <button class="btn" type="button" (click)="deleteContract(c)"><i
+                                class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="">Name</span>
+            <input type="text" class="form-control" placeholder="Contract Name" [(ngModel)]="newContract.name">
+        </div>
+
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="">Max Minutes per Days</span>
+            <input type="text" class="form-control" placeholder="Max Minutes per Days"  [(ngModel)]="newContract.maximumMinutesPerDay">
+        </div>
+
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" (click)="addContract()">Add Contract</button>
+        </div>
+    </div>
+</div>

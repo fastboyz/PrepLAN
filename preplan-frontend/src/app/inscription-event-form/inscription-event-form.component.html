@@ -35,8 +35,8 @@
                         <h4>Preferred Max Hours</h4>
                         <div class="form-group">
                             <label>How many hours maximum per day? </label>
-                            <select class="form-control" formControlName="hoursPreference">
-                                <option *ngFor="let hours of hoursContract" [ngValue]="hours">{{hours}}</option>
+                            <select class="form-control" formControlName="hoursPreference" [(ngModel)]="selectedContract">
+                                <option *ngFor="let c of contracts" [ngValue]="c">{{c.name}}</option>
                             </select>
                             <div *ngIf="hoursPreference.invalid && (hoursPreference.dirty || hoursPreference.touched)"
                                 class="alert alert-danger">

@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Edition, Event, Position } from '../shared/models/event';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { InscriptionEvent } from '../shared/models/inscriptionEvent';
+import { InscriptionEvent, Contract } from '../shared/models/inscriptionEvent';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
@@ -142,7 +142,7 @@ export class EventService {
         }));
     }
 
-    createInscriptionEvent(inscription: InscriptionEvent){
+    createInscriptionEvent(inscription: InscriptionEvent) {
         return this.http.post<any>(`${environment.apiUrl}/api/dashboard/event/inscription`, inscription, {
             headers: {
                 "x-access-token": this.authService.getToken()
@@ -152,7 +152,7 @@ export class EventService {
         }));
     }
 
-    getAllInscriptionByEditionId(id:String){
+    getAllInscriptionByEditionId(id: String) {
         return this.http.get<InscriptionEvent[]>(`${environment.apiUrl}/api/dashboard/edition/${id}/inscriptions`, {
             headers: {
                 "x-access-token": this.authService.getToken()
@@ -166,7 +166,7 @@ export class EventService {
         return null;
     }
 
-    updateInscriptionStatus(inscription :InscriptionEvent){
+    updateInscriptionStatus(inscription: InscriptionEvent) {
         return this.http.put<any>(`${environment.apiUrl}/api/dashboard/inscription/updateStatus`, inscription, {
             headers: {
                 "x-access-token": this.authService.getToken()
@@ -176,9 +176,39 @@ export class EventService {
         }));
     }
 
-    
-    updateAllInscriptionStatus(inscriptions :InscriptionEvent[]){
+
+    updateAllInscriptionStatus(inscriptions: InscriptionEvent[]) {
         return this.http.put<any>(`${environment.apiUrl}/api/dashboard/inscription/updateAllStatus`, inscriptions, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    getAllContracts(id:string) {
+        return this.http.get<Contract[]>(`${environment.apiUrl}/api/dashboard/contracts/${id}`, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    createContract(contract:Contract[]){
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/contracts/`, contract, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    deleteContract(contract :Contract[]){
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/contracts/delete`,contract, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }

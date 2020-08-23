@@ -14,7 +14,7 @@ export class Availability {
 export class Contract {
     id?: string;
     contractId?: number;
-    maximumMinutesPerDay: number;
+    maximumMinutesPerDay: string;
     name: string;
 
     edition?: Edition;
