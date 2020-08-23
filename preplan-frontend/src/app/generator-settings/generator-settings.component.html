@@ -38,7 +38,7 @@
         </div>
     </div>
 </div>
-<!-- 
+
 <h4>Shifts</h4>
 <div class="shifts container">
     <div class="">
@@ -60,7 +60,7 @@
                     <td>{{s.endDateTime}}</td>
                     <td>{{s.position}}</td>
                     <td>
-                        <button class="btn" type="button" (click)=""><i
+                        <button class="btn" type="button" (click)="deleteShift(s)"><i
                                 class="fas fa-trash-alt"></i></button>
                     </td>
                 </tr>
@@ -69,17 +69,31 @@
     </div>
     <div class="input-group">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="">Name</span>
-            <input type="text" class="form-control" placeholder="Contract Name" [(ngModel)]="newContract.name">
+            <span class="input-group-text" id="">Start Date Time</span>
+            <input type="text" class="form-control" placeholder="Contract Name" [(ngModel)]="newShift.startDateTime">
         </div>
 
         <div class="input-group-prepend">
-            <span class="input-group-text" id="">Max Minutes per Days</span>
-            <input type="text" class="form-control" placeholder="Max Minutes per Days"  [(ngModel)]="newContract.maximumMinutesPerDay">
+            <span class="input-group-text" id="">End Date Time</span>
+            <input type="text" class="form-control" placeholder="Max Minutes per Days"  [(ngModel)]="newShift.startDateTime">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="">Position</span>
+            <select class="form-control" [(ngModel)]="newShift.position">
+                <option *ngFor="let pos of positions" [ngValue]="pos">{{pos.title}}</option>
+            </select>
+        </div>
+
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="">Number of volunteers</span>
+            <input type="number" class="form-control" placeholder="Number of volunteers"  [(ngModel)]="numVolunteers">
         </div>
 
         <div class="input-group-append">
-            <button class="btn btn-primary" type="button" (click)="">Add Contract</button>
+            <button class="btn btn-primary" type="button" (click)="addShift()">Add Shift</button>
         </div>
     </div>
-</div> -->
+</div> 
