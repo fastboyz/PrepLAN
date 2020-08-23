@@ -204,8 +204,96 @@ const deleteContract = async (data) => {
   }
 };
 
-const addVolunteerInScheduler = async (data) => {
+const createShiftInScheduler = async (data) => {
+  var shift = {
+    tenantId: null,
+    pinnedByUser: false,
+    spotId: null,
+    requiredSkillSetIdList: [],
+    employeeId: null,
+    originalEmployeeId: null,
+    rotationEmployeeId: null,
+    startDateTime: null,
+    endDateTime: null
+  }
 
+  shift.tenantId = data.edition.tenantId;
+  shift.spotId = data.position.spotId;
+  shift.startDateTime = data.startDateTime;
+  shift.endDateTime = data.endDateTime;
+
+  try {
+    const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/shift/add`, shift);
+    const picked = (({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }) =>
+      ({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }))(response.data);
+    return picked;
+  } catch (error) {
+    return false;
+  }
+};
+
+const updateShiftInScheduler = async (data) => {
+  var shift = {
+    id: data.shiftId,
+    tenantId: data.edition.tenantId,
+    pinnedByUser: false,
+    spotId: data.position.spotId,
+    requiredSkillSetIdList: [],
+    employeeId: data.volunteerId,
+    originalEmployeeId: null,
+    rotationEmployeeId: null,
+    startDateTime: data.startDateTime,
+    endDateTime: data.endDateTime
+  }
+
+  try {
+    const response = await axios.put(`${SCHEDULER}/tenant/${data.edition.tenantId}/shift/update`, shift);
+    const picked = (({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }) =>
+      ({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }))(response.data);
+    picked['volunteerId'] = response.data.employeeId;
+    return picked;
+  } catch (error) {
+    return false;
+  }
+};
+
+const deleteShiftInScheduler = async (data) => {
+  try {
+    const response = await axios.delete(`${SCHEDULER}/tenant/${data.edition.tenantId}/shift/${data.shiftId}`);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
+
+const addVolunteerInScheduler = async (data) => {
+  var randomColor = Math.floor(Math.random()*16777215).toString(16)
+  var volunteer = {
+    skillProficiencySet: [],
+    color: `#${randomColor}`,
+    name: `${data.profile.user.firstName} ${data.profile.user.lastName}`,
+    shortId: `${data.profile.user.firstName.charAt(0)}${data.profile.user.lastName}`,
+    contract: {
+      id: data.contract.contractId,
+      tenantId: data.edition.tenantId,
+      version: 0,
+      name: data.contract.name,
+      maximumMinutesPerDay: data.contract.maximumMinutesPerDay,
+      maximumMinutesPerWeek: null,
+      maximumMinutesPerMonth: null,
+      maximumMinutesPerYear: null
+    },
+    tenantId: data.edition.tenantId
+  }
+  data.positions.forEach(element => {
+    var skill = {
+      id: element.skillId,
+      tenantId: data.edition.tenantId,
+      version: 0,
+      name: element.title
+    };
+    volunteer.skillProficiencySet.push(skill);
+  });
 };
 
 const deleteVolunteerInScheduler = async (data) => { };
@@ -233,4 +321,7 @@ export {
   updateContract,
   updateSkillAndSpot,
   updateVolunteerInScheduler,
+  createShiftInScheduler,
+  updateShiftInScheduler,
+  deleteShiftInScheduler,
 };

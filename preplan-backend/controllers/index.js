@@ -15,8 +15,10 @@ import {
     updateAvailabilityInScheduler,
     updateContract,
     updateSkillAndSpot,
-    updateTenantInScheduler,
     updateVolunteerInScheduler,
+    createShiftInScheduler,
+    deleteShiftInScheduler,
+    updateShiftInScheduler
 } from "./schedulerService";
 
 export {
@@ -36,6 +38,8 @@ export {
     updateAvailabilityInScheduler,
     updateContract,
     updateSkillAndSpot,
-    updateTenantInScheduler,
     updateVolunteerInScheduler,
+    createShiftInScheduler,
+    deleteShiftInScheduler,
+    updateShiftInScheduler
 };

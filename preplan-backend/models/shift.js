@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const timeSlotsSchema = mongoose.Schema({
+const shiftSchema = mongoose.Schema({
   startDate: {
     type: Date,
     required: true,
@@ -17,8 +17,14 @@ const timeSlotsSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Edition'
   },
+  shiftId: {
+    type: Number
+  }, 
+  volunteerId: {
+    type: Number
+  }, 
 });
 
-const TimeSlot = mongoose.model('TimeSlot', timeSlotsSchema);
+const Shift = mongoose.model('Shift', shiftSchema);
 
-export { TimeSlot }
+export { Shift }

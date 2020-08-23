@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import { authJwt } from '../middlewares'
-import { Event, Edition, Position, Volunteer, Availability } from '../models';
-import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot } from '.';
+import { Event, Edition, Position, Volunteer, Availability, Shift } from '../models';
+import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler } from '.';
 import { Contract } from '../models/contract';
+import { createShiftInScheduler, updateShiftInScheduler } from './schedulerService';
 
 const router = Router();
 
@@ -754,6 +755,90 @@ router.post('/contracts/delete', [authJwt.verifyToken, authJwt.isOrganizer], asy
 
 });
 
+router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var element = req.body;
+    try {
+        const createdShift = await createShiftInScheduler(element);
+        if (createdShift) {
+            await new Shift({
+                startDate: element.startDate,
+                endDate: element.endDate,
+                edition: element.edition.id,
+                position: element.position.id,
+                shiftId: createdShift.id
+            }).save((err, shift) => {
+                if (err) {
+                    throw err;
+                }
+                const picked = (({ startDate, endDate, shiftId }) => ({ startDate, endDate, shiftId }))(shift);
+                picked['id'] = shift['_id'];
+                picked['edition'] = element.edition;
+                picked['position'] = element.position;
+                res.status(200).json(picked);
+            });
+        } else {
+            throw "Could not create Shift";
+        }
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
+router.put('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var element = req.body;
+    try {
+        const updatedShift = await updateShiftInScheduler(element);
+
+        if (updatedShift) {
+            Shift.findById(element.id).exec((err, data) => {
+                if (err) {
+                    throw err
+                }
+                data.startDate = element.startDate;
+                data.endDate = element.endDate;
+                data.edition = element.edition.id;
+                data.position = element.position.id;
+                data.shiftId = updatedShift.id;
+                data.volunteerId = element.volunteerId;
+                data.save((err, shift) => {
+                    if (err) {
+                        throw err;
+                    }
+                    const picked = (({ startDate, endDate, shiftId, volunteerId }) => ({ startDate, endDate, shiftId, volunteerId }))(shift);
+                    picked['id'] = shift['_id'];
+                    picked['edition'] = element.edition;
+                    picked['position'] = element.position;
+                    res.status(200).json(picked);
+                })
+            })
+        } else {
+            throw "Could not update Shift";
+        }
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
+router.delete('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var element = req.body;
+    try {
+        const isDelete = await deleteShiftInScheduler(element);
+
+        if (isDelete) {
+            Shift.findByIdAndDelete(element.id).exec((err, data) => {
+                if (err) {
+                    throw err
+                }
+                res.status(200).json(data);
+            })
+        } else {
+            throw "Could not update Shift";
+        }
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
 const sanitizeProfile = (profile) => {
 
     const picked = (({ tshirtSize, allergy, certification }) => ({ tshirtSize, allergy, certification }))(profile);
@@ -775,7 +860,7 @@ const sanitizeProfile = (profile) => {
 }
 
 const sanitizeEdition = (edition) => {
-    const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId}))(edition);
+    const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }))(edition);
     picked['id'] = edition['_id'];
     return picked;
 }
