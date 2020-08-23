@@ -195,9 +195,7 @@ const updateContract = async (data) => {
 };
 
 const deleteContract = async (data) => {
-  console.log("Data:" + data)
   var tenantId = data.edition.tenantId;
-  console.log(data.edition.tenantId);
   try {
     const response = await axios.delete(`${SCHEDULER}/tenant/${tenantId}/contract/${data.contractId}`);
     return response.data;

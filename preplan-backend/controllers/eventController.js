@@ -641,19 +641,28 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
 
 router.get('/contracts/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var id = req.params.id;
-    Contract.find({ edition: id }).exec((err, contracts) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return
-        }
-        var contractList = [];
-        contracts.forEach(contract => {
-            const picked = (({ maximumMinutesPerDay, edition, tenantId, contractId, name }) => ({ maximumMinutesPerDay, edition, tenantId, contractId, name }))(contract);
-            picked['id'] = contract['_id'];
-            contractList.push(picked);
+    Contract.find({ edition: id }).populate([
+        {
+            path: 'edition',
+            model: 'Edition',
+            populate: {
+                path: 'event',
+                model: 'Event'
+            }
+        }]).exec((err, contracts) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var contractList = [];
+            contracts.forEach(contract => {
+                const picked = (({ maximumMinutesPerDay, tenantId, contractId, name }) => ({ maximumMinutesPerDay, tenantId, contractId, name }))(contract);
+                picked['edition'] = sanitizeEdition(contract.edition);
+                picked['id'] = contract['_id'];
+                contractList.push(picked);
+            });
+            res.status(200).json(contractList);
         });
-        res.status(200).json(contractList);
-    });
 });
 
 router.post('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
@@ -721,17 +730,22 @@ router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req,
         res.status(500).send({ message: err });
     }
 });
+
 router.post('/contracts/delete', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var elements = req.body;
-    console.log(elements);
     var BreakException = {};
     try {
         var i;
         for (i = 0; i < elements.length; i++) {
-            console.log(elements[i]);
             var isDeleted = await deleteContract(elements[i]);
             if (isDeleted) {
-                Contract.findOneAndDelete({ id: element.id });
+                Contract.findById(elements[i].id).exec((err, contract) => {
+                    if (err) {
+                        res.status(500).send({ message: err });
+                        throw BreakException;
+                    }
+                    contract.deleteOne();
+                })
             } else {
                 throw BreakException;
             }
@@ -742,48 +756,6 @@ router.post('/contracts/delete', [authJwt.verifyToken, authJwt.isOrganizer], asy
     }
 
 });
-router.post('/contracts/delete/test', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
-    var element = req.body;
-    console.log("Body: " + req.body);
-    var BreakException = {};
-    try {
-        console.log("Element:" + element);
-
-        var isDeleted = await deleteContract(element);
-        if (isDeleted) {
-            Contract.findOneAndDelete({ id: element.id });
-            /*.exec((err, contract) => {
-                console.log("Contract:" +contract);
-                if (err) {
-                    res.status(500).send({ message: err });
-                    throw BreakException;
-                }
-                contract.deleteOne();
-            })*/
-        } else {
-            throw BreakException;
-        }
-        /* var i;
-         for (i = 0; i < elements.length; i++) {
-             var isDeleted = await deleteContract(elements[i]);
-             if (isDeleted) {
-                 Contract.findById(elements[i].id).exec((err, contract) => {
-                     if (err) {
-                         res.status(500).send({ message: err });
-                         throw BreakException;
-                     }
-                     contract.deleteOne();
-                 })
-             } else {
-                 throw BreakException;
-             }
-         };*/
-        res.status(200).send(true);
-    } catch (error) {
-        res.status(500).send({ message: "Error deleting some contracts" });
-    }
-
-})
 
 const sanitizeProfile = (profile) => {
 
@@ -806,7 +778,7 @@ const sanitizeProfile = (profile) => {
 }
 
 const sanitizeEdition = (edition) => {
-    const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edition);
+    const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId}))(edition);
     picked['id'] = edition['_id'];
     return picked;
 }
