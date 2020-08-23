@@ -28,6 +28,7 @@ export class Shift {
     position: Position;
     startDateTime: Date;
     endDateTime: Date;
+    numberVolunteers?: number;
 
     shiftId?: number;
     volunteerId?: number;

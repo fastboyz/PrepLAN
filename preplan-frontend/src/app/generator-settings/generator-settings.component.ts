@@ -30,7 +30,7 @@ export class GeneratorSettingsComponent implements OnInit {
     this.newShift = new Shift();
   }
 
-  async loadData(id: string){
+  async loadData(id: string) {
     await this.loadContracts(id);
     this.edition = this.contracts[0]?.edition;
     this.eventService.getPositionsbyEditionId(id).subscribe(data => {
@@ -44,13 +44,17 @@ export class GeneratorSettingsComponent implements OnInit {
     });
   }
 
+  async loadShifts(){
+    
+  }
+
   addContract() {
     if (this.newContract.name != null && this.newContract.maximumMinutesPerDay != null) {
       this.newContract.edition = this.edition;
       let newContracts: Contract[] = [];
       newContracts.push(this.newContract);
       this.eventService.createContract(newContracts).subscribe(data => {
-        this.loadContracts(this.edition.id);
+        this.contracts.push(data);
         this.newContract = new Contract();
       });
       console.log("Added Contract:\nName: " + this.newContract.name + " . Max Min per Day: " + this.newContract.maximumMinutesPerDay)
@@ -69,12 +73,28 @@ export class GeneratorSettingsComponent implements OnInit {
   }
 
   addShift() {
-    
-    console.log("Add Shift :\n Start: " + this.newShift.startDateTime + " . End: " + this.newShift.endDateTime + "Position: " + this.newShift.position);
-
-
+    if (
+      this.newShift.startDateTime != null &&
+      this.newShift.endDateTime != null &&
+      this.newShift.position != null &&
+      this.newShift.numberVolunteers > 0
+    ) {
+      this.newShift.edition = this.edition;
+      this.eventService.addShift(this.newShift).subscribe(data => {
+        this.shifts.push(data);
+        this.newShift = new Shift();
+      })
+      console.log("Add Shift :\n Start: " + this.newShift.startDateTime + " . End: " + this.newShift.endDateTime + "Position: " + this.newShift.position);
+    }
   }
   deleteShift(shift: Shift) {
+    this.eventService.deleteShift(shift).subscribe(data => {
+      console.log(this.shifts.length);
+      this.shifts = this.shifts.filter(s => {
+        s.id != data.id
+      });
+      console.log(this.shifts.length);
+    })
     console.log("Delete Shift :\n Start: " + shift.startDateTime + " . End: " + shift.endDateTime + "Position: " + shift.position);
   }
 }

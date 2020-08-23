@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Edition, Event, Position } from '../shared/models/event';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { InscriptionEvent, Contract } from '../shared/models/inscriptionEvent';
+import { InscriptionEvent, Contract, Shift } from '../shared/models/inscriptionEvent';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
@@ -198,7 +198,7 @@ export class EventService {
     }
 
     createContract(contract:Contract[]){
-        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/contracts/`, contract, {
+        return this.http.post<Contract>(`${environment.apiUrl}/api/dashboard/contracts/`, contract, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -209,6 +209,26 @@ export class EventService {
 
     deleteContract(contract :Contract[]){
         return this.http.post<any>(`${environment.apiUrl}/api/dashboard/contracts/delete`,contract, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    addShift(shift:Shift){
+        return this.http.post<Shift>(`${environment.apiUrl}/api/dashboard/shift`,shift, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    deleteShift(shift:Shift){
+        return this.http.post<Shift>(`${environment.apiUrl}/api/dashboard/shift/delete`,shift, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }

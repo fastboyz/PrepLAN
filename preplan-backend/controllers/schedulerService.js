@@ -205,6 +205,7 @@ const deleteContract = async (data) => {
 };
 
 const createShiftInScheduler = async (data) => {
+  console.log(data);
   var shift = {
     tenantId: null,
     pinnedByUser: false,
@@ -221,13 +222,13 @@ const createShiftInScheduler = async (data) => {
   shift.spotId = data.position.spotId;
   shift.startDateTime = data.startDateTime;
   shift.endDateTime = data.endDateTime;
-
   try {
     const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/shift/add`, shift);
     const picked = (({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }) =>
       ({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }))(response.data);
     return picked;
   } catch (error) {
+    console.log(error);
     return false;
   }
 };

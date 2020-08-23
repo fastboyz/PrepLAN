@@ -319,7 +319,7 @@ router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
             }
             var poses = [];
             positions.forEach((pos) => {
-                const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+                const picked = (({ title, description, edition, spotId, skillId }) => ({ title, description, edition, spotId, skillId }))(pos);
                 picked['id'] = pos['_id'];
 
                 var edt = picked.edition;
@@ -344,7 +344,7 @@ router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isVolunteer], 
             }
             var poses = [];
             positions.forEach((pos) => {
-                const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+                const picked = (({ title, description, edition, spotId, skillId }) => ({ title, description, edition, spotId, skillId }))(pos);
                 picked['id'] = pos['_id'];
 
                 var edt = picked.edition;
@@ -758,27 +758,32 @@ router.post('/contracts/delete', [authJwt.verifyToken, authJwt.isOrganizer], asy
 router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var element = req.body;
     try {
-        const createdShift = await createShiftInScheduler(element);
-        if (createdShift) {
-            await new Shift({
-                startDate: element.startDate,
-                endDate: element.endDate,
-                edition: element.edition.id,
-                position: element.position.id,
-                shiftId: createdShift.id
-            }).save((err, shift) => {
-                if (err) {
-                    throw err;
-                }
-                const picked = (({ startDate, endDate, shiftId }) => ({ startDate, endDate, shiftId }))(shift);
-                picked['id'] = shift['_id'];
-                picked['edition'] = element.edition;
-                picked['position'] = element.position;
-                res.status(200).json(picked);
-            });
-        } else {
-            throw "Could not create Shift";
+        var shifts = [];
+        var i;
+        for (i = 0; i < element.numberVolunteers; i++) {
+            const createdShift = await createShiftInScheduler(element);
+            if (createdShift) {
+                await new Shift({
+                    startDate: element.startDateTime,
+                    endDate: element.endDateTime,
+                    edition: element.edition.id,
+                    position: element.position.id,
+                    shiftId: createdShift.id
+                }).save((err, shift) => {
+                    if (err) {
+                        throw err;
+                    }
+                    const picked = (({ startDate, endDate, shiftId }) => ({ startDate, endDate, shiftId }))(shift);
+                    picked['id'] = shift['_id'];
+                    picked['edition'] = element.edition;
+                    picked['position'] = element.position;
+                    shifts.push(picked);
+                });
+            } else {
+                throw "Could not create Shift";
+            }
         }
+        res.status(200).json(shifts);
     } catch (err) {
         res.status(500).send({ message: err });
     }
@@ -819,7 +824,7 @@ router.put('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res
     }
 });
 
-router.delete('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+router.post('/shift/delete', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var element = req.body;
     try {
         const isDelete = await deleteShiftInScheduler(element);
@@ -832,7 +837,7 @@ router.delete('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, 
                 res.status(200).json(data);
             })
         } else {
-            throw "Could not update Shift";
+            throw "Could not delete Shift";
         }
     } catch (err) {
         res.status(500).send({ message: err });
