@@ -864,6 +864,43 @@ router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, re
     }
 });
 
+router.get('/shift/get/:id', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var edition = req.params.id;
+    var shifts = []
+    try {
+        Shift.find({ edition: edition.id })
+            .populate([
+                {
+                    path: 'edition',
+                    model: 'Edition',
+                    populate: {
+                        path: 'event',
+                        model: 'Event'
+                    }
+                },
+                {
+                    path: 'position',
+                    model: 'Position',
+                },
+            ])
+            .exec((err, datas) => {
+                if (err) {
+                    throw err;
+                }
+                for (var i = 0; i < datas.length; i++) {
+                    const picked = (({ startDate, endDate, shiftId }) => ({ startDate, endDate, shiftId }))(datas[i]);
+                    picked['id'] = shift['_id'];
+                    picked['edition'] = sanitizeEdition(datas[i].edition);
+                    picked['position'] = sanitizePosition(datas[i].position, picked.edition);
+                    shifts.push(picked);
+                }
+            });
+        res.status(200).json(shifts);
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
 router.put('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var element = req.body;
     try {
@@ -958,13 +995,16 @@ const sanitizeAvailibilities = (availabilities) => {
 const sanitizePositions = (positions, edition) => {
     var pickedPositions = [];
     positions.forEach(element => {
-
-        const picked = (({ title, description }) => ({ title, description }))(element);
-        picked['id'] = element['_id'];;
-        picked.edition = edition;
-        pickedPositions.push(picked);
+        pickedPositions.push(sanitizePosition(element, edition));
     });
     return pickedPositions;
+}
+
+const sanitizePosition = (position, edition) => {
+    const picked = (({ title, description }) => ({ title, description }))(position);
+    picked['id'] = position['_id'];;
+    picked['edition'] = edition;
+    return picked
 }
 
 const sanitizeContract = (data) => {
