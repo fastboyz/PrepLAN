@@ -701,7 +701,6 @@ router.post('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req
 router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var elements = req.body;
     var data = [];
-    var BreakException = {};
     try {
         var i;
         for (i = 0; i < elements.length; i++) {
@@ -715,14 +714,14 @@ router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req,
                     contract.maximumMinutesPerDay = elements[i].maximumMinutesPerDay;
                     contract.save((err, saved) => {
                         if (err) {
-                            throw BreakException;
+                            throw err;
                         }
                         const picked = sanitizeContract(saved);
                         data.push(picked);
                     });
                 });
             } else {
-                break;
+                throw "Error updating contract";
             }
         }
         res.status(200).json(data);
@@ -733,7 +732,6 @@ router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req,
 
 router.post('/contracts/delete', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var elements = req.body;
-    var BreakException = {};
     try {
         var i;
         for (i = 0; i < elements.length; i++) {
@@ -741,18 +739,17 @@ router.post('/contracts/delete', [authJwt.verifyToken, authJwt.isOrganizer], asy
             if (isDeleted) {
                 Contract.findById(elements[i].id).exec((err, contract) => {
                     if (err) {
-                        res.status(500).send({ message: err });
-                        throw BreakException;
+                        throw err;
                     }
                     contract.deleteOne();
                 })
             } else {
-                throw BreakException;
+                throw "Error deleting some contracts";
             }
         }
         res.status(200).send(true);
     } catch (error) {
-        res.status(500).send({ message: "Error deleting some contracts" });
+        res.status(500).send({ message: error });
     }
 
 });
