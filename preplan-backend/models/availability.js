@@ -12,6 +12,12 @@ const availabilitySchema = mongoose.Schema({
   state: {
     type: String,
     required: true,
+  }, 
+  tenantId: {
+    type: Number
+  }, 
+  availabilityId: {
+    type: Number
   }
 });
 

@@ -33,7 +33,7 @@ const volunteerSchema = mongoose.Schema({
     required: true,
     trim: true
   },
-  plannerId: {
+  volunteerId: {
     type: Number,
   }
 });
