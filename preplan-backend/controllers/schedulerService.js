@@ -267,7 +267,7 @@ const deleteShiftInScheduler = async (data) => {
 };
 
 const addVolunteerInScheduler = async (data) => {
-  var randomColor = Math.floor(Math.random()*16777215).toString(16)
+  var randomColor = Math.floor(Math.random() * 16777215).toString(16)
   var volunteer = {
     skillProficiencySet: [],
     color: `#${randomColor}`,
@@ -294,17 +294,64 @@ const addVolunteerInScheduler = async (data) => {
     };
     volunteer.skillProficiencySet.push(skill);
   });
+
+  try {
+    const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/employee/add`);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
 };
 
-const deleteVolunteerInScheduler = async (data) => { };
+const deleteVolunteerInScheduler = async (data) => {
+  try {
+    const response = await axios.delete(`${SCHEDULER}/tenant/${data.edition.tenantId}/employee/${data.volunteerId}`);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
 
 const updateVolunteerInScheduler = async (data) => { };
 
-const addAvailabilityInScheduler = async (data) => { };
+const addAvailabilityInScheduler = async (data, volunteerId, tenantId) => {
+  var availability = data;
+  data['tenantId'] = tenantId;
+  data['employeeId'] = volunteerId;
 
-const deleteAvailabilityInScheduler = async (data) => { };
+  try {
+    const response = await axios.post(`${SCHEDULER}/tenant/${tenantId}/employee/availability/add`, availability);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
 
-const updateAvailabilityInScheduler = async (data) => { };
+const deleteAvailabilityInScheduler = async (data) => {
+  try {
+    const response = await axios.delete(`${SCHEDULER}/tenant/${data.tenantId}/employee/availability/${data.availabilityId}`);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
+
+const updateAvailabilityInScheduler = async (data,) => {
+  var availability = {
+    tenantId: data.tenantId,
+    state: data.state,
+    employeeId: data.volunteerId,
+    startDateTime: data.startDateTime,
+    endDateTime: data.endDateTime
+  };
+
+  try {
+    const response = await axios.put(`${SCHEDULER}/tenant/${tenantId}/employee/availability/update`, availability);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
 
 export {
   addAvailabilityInScheduler,

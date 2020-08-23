@@ -18,6 +18,9 @@ const availabilitySchema = mongoose.Schema({
   }, 
   availabilityId: {
     type: Number
+  }, 
+  volunteerId: {
+    type: Number
   }
 });
 

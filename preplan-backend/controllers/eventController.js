@@ -2,7 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import { authJwt } from '../middlewares'
 import { Event, Edition, Position, Volunteer, Availability, Shift } from '../models';
-import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler } from '.';
+import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler } from '.';
 import { Contract } from '../models/contract';
 import { createShiftInScheduler, updateShiftInScheduler } from './schedulerService';
 
@@ -598,15 +598,52 @@ router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], a
     session.startTransaction();
     try {
         var found = await Volunteer.findById(vol.id);
+        var response;
+        var msg;
         if (vol.status === inscriptionStatus.APPROVED) {
-            // sent requuest toopta planer to create
+            response = await addVolunteerInScheduler(vol);
+            if (response) {
+                found.volunteerId = response.id;
+            } else {
+                msg = "Could Not complete the approbation"
+            }
+            for (var i = 0; i < vol.availabilities.length; i++) {
+                const createdAv = await addAvailabilityInScheduler(vol.availabilities[i], response.id, vol.edition.tenantId);
+                if (createdAv) {
+                    var foundAv = await Availability.findById(vol.availabilities[i].id);
+                    foundAv.tenantId = createdAv.tenantId;
+                    foundAv.availabilityId = createdAv.id;
+                    foundAv.volunteerId = createdAv.employeeId;
+                } else {
+                    throw "Could not update availabilities during approbation process"
+                }
+            }
         }
-
         if (found.status === inscriptionStatus.APPROVED) {
-            // send reques to optaplaner to delete
+            response = await deleteVolunteerInScheduler(vol);
+            if (response) {
+                found.volunteerId = null;
+            } else {
+                msg = "Could Not complete Remove the approbation"
+            }
+            for (var i = 0; i < vol.availabilities.length; i++) {
+                const isDeleted = await deleteAvailabilityInScheduler(vol.availabilities[i]);
+                if (isDeleted) {
+                    var foundAv = await Availability.findById(vol.availabilities[i].id);
+                    foundAv.tenantId = null;
+                    foundAv.availabilityId = null;
+                    foundAv.volunteerId = null;
+                } else {
+                    throw "Could not update availabilities during disapprobation process"
+                }
+            }
         }
-        found.status = vol.status;
-        found.save();
+        if (!msg) {
+            found.status = vol.status;
+            found.save();
+        } else {
+            throw msg
+        }
         await session.commitTransaction();
         session.endSession();
     } catch (error) {
@@ -626,10 +663,53 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
         var i;
         for (i = 0; i < vols.length; i++) {
             var found = await Volunteer.findById(vols[i].id);
-            found.status = vols[i].status;
-            found.save();
+            var response;
+            var msg;
+            if (vols[i].status === inscriptionStatus.APPROVED) {
+                response = await addVolunteerInScheduler(vols[i]);
+                if (response) {
+                    found.volunteerId = response.id;
+                } else {
+                    msg = "Could Not complete the approbation"
+                }
+                for (var j = 0; i < vols[i].availabilities.length; i++) {
+                    const createdAv = await addAvailabilityInScheduler(vols[i].availabilities[j], response.id, vols[i].edition.tenantId);
+                    if (createdAv) {
+                        var foundAv = await Availability.findById(vols[i].availabilities[j].id);
+                        foundAv.tenantId = createdAv.tenantId;
+                        foundAv.availabilityId = createdAv.id;
+                        foundAv.volunteerId = createdAv.employeeId;
+                    } else {
+                        throw "Could not update availabilities during approbation process"
+                    }
+                }
+            }
+            if (found.status === inscriptionStatus.APPROVED) {
+                response = await deleteVolunteerInScheduler(vols[i]);
+                if (response) {
+                    found.volunteerId = null;
+                } else {
+                    msg = "Could Not complete Remove the approbation"
+                }
+                for (var j = 0; i < vols[i].availabilities.length; i++) {
+                    const isDeleted = await deleteAvailabilityInScheduler(vols[i].availabilities[j]);
+                    if (isDeleted) {
+                        var foundAv = await Availability.findById(vols[i].availabilities[j].id);
+                        foundAv.tenantId = null;
+                        foundAv.availabilityId = null;
+                        foundAv.volunteerId = null;
+                    } else {
+                        throw "Could not update availabilities during approbation process"
+                    }
+                }
+            }
+            if (!msg) {
+                found.status = vols[i].status;
+                found.save();
+            } else {
+                throw msg
+            }
         }
-        //TODO-Steve: if new status is approved, add volunteer to the scheduler module, if previous status was approved, remove from scheduler
         await session.commitTransaction();
         session.endSession();
         res.status(200).send({ message: "success" });
