@@ -220,8 +220,8 @@ const createShiftInScheduler = async (data) => {
 
   shift.tenantId = data.edition.tenantId;
   shift.spotId = data.position.spotId;
-  shift.startDateTime = data.startDateTime;
-  shift.endDateTime = data.endDateTime;
+  shift.startDateTime = data.startDate;
+  shift.endDateTime = data.endDate;
   try {
     const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/shift/add`, shift);
     const picked = (({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }) =>

@@ -26,8 +26,8 @@ export class Shift {
     edition: Edition;
     pinnedByUser?: boolean;
     position: Position;
-    startDateTime: Date;
-    endDateTime: Date;
+    startDate: Date;
+    endDate: Date;
     numberVolunteers?: number;
 
     shiftId?: number;

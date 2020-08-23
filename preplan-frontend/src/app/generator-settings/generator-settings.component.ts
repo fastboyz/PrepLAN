@@ -3,6 +3,7 @@ import { Contract, Shift } from '../shared/models/inscriptionEvent';
 import { EventService } from '../services/event.service';
 import { Edition, Position } from '../shared/models/event';
 import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'generator-settings',
@@ -32,6 +33,7 @@ export class GeneratorSettingsComponent implements OnInit {
 
   async loadData(id: string) {
     await this.loadContracts(id);
+    await this.loadShifts(id);
     this.edition = this.contracts[0]?.edition;
     this.eventService.getPositionsbyEditionId(id).subscribe(data => {
       this.positions = data;
@@ -44,8 +46,21 @@ export class GeneratorSettingsComponent implements OnInit {
     });
   }
 
-  async loadShifts(){
-    
+  async loadShifts(id: string) {
+    this.eventService.getAllShifts(id).subscribe(data => {
+      this.shifts = data;
+    })
+  }
+
+  getDate(date: Date) {
+    return moment(date).format('YYYY-MM-DDTHH:mm');
+  }
+  getDateName(date: Date) {
+    return moment(date).format("MMM Do YYYY");
+  }
+
+  getTime(date: Date) {
+    return moment(date).format("HH:mm");
   }
 
   addContract() {
@@ -54,7 +69,7 @@ export class GeneratorSettingsComponent implements OnInit {
       let newContracts: Contract[] = [];
       newContracts.push(this.newContract);
       this.eventService.createContract(newContracts).subscribe(data => {
-        this.contracts.push(data);
+        this.loadContracts(this.edition.id);
         this.newContract = new Contract();
       });
       console.log("Added Contract:\nName: " + this.newContract.name + " . Max Min per Day: " + this.newContract.maximumMinutesPerDay)
@@ -74,8 +89,8 @@ export class GeneratorSettingsComponent implements OnInit {
 
   addShift() {
     if (
-      this.newShift.startDateTime != null &&
-      this.newShift.endDateTime != null &&
+      this.newShift.startDate != null &&
+      this.newShift.endDate != null &&
       this.newShift.position != null &&
       this.newShift.numberVolunteers > 0
     ) {
@@ -84,17 +99,13 @@ export class GeneratorSettingsComponent implements OnInit {
         this.shifts.push(data);
         this.newShift = new Shift();
       })
-      console.log("Add Shift :\n Start: " + this.newShift.startDateTime + " . End: " + this.newShift.endDateTime + "Position: " + this.newShift.position);
+      console.log("Add Shift :\n Start: " + this.newShift.startDate + " . End: " + this.newShift.endDate + "Position: " + this.newShift.position);
     }
   }
   deleteShift(shift: Shift) {
     this.eventService.deleteShift(shift).subscribe(data => {
-      console.log(this.shifts.length);
-      this.shifts = this.shifts.filter(s => {
-        s.id != data.id
-      });
-      console.log(this.shifts.length);
+      this.loadShifts(this.edition.id);
     })
-    console.log("Delete Shift :\n Start: " + shift.startDateTime + " . End: " + shift.endDateTime + "Position: " + shift.position);
+    console.log("Delete Shift :\n Start: " + shift.startDate + " . End: " + shift.endDate + "Position: " + shift.position);
   }
 }

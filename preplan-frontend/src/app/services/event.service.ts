@@ -187,8 +187,8 @@ export class EventService {
         }));
     }
 
-    getAllContracts(id:string) {
-        return this.http.get<Contract[]>(`${environment.apiUrl}/api/dashboard/contracts/${id}`, {
+    getAllContracts(id: string) {
+        return this.http.get<Contract[]>(`${environment.apiUrl}/api/dashboard/contracts/get/${id}`, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -197,7 +197,7 @@ export class EventService {
         }));
     }
 
-    createContract(contract:Contract[]){
+    createContract(contract: Contract[]) {
         return this.http.post<Contract>(`${environment.apiUrl}/api/dashboard/contracts/`, contract, {
             headers: {
                 "x-access-token": this.authService.getToken()
@@ -207,8 +207,8 @@ export class EventService {
         }));
     }
 
-    deleteContract(contract :Contract[]){
-        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/contracts/delete`,contract, {
+    deleteContract(contract: Contract[]) {
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/contracts/delete`, contract, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -217,8 +217,18 @@ export class EventService {
         }));
     }
 
-    addShift(shift:Shift){
-        return this.http.post<Shift>(`${environment.apiUrl}/api/dashboard/shift`,shift, {
+    getAllShifts(id: string) {
+        return this.http.get<Shift[]>(`${environment.apiUrl}/api/dashboard/shift/get/${id}`, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+    
+    addShift(shift: Shift) {
+        return this.http.post<Shift>(`${environment.apiUrl}/api/dashboard/shift`, shift, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -227,8 +237,8 @@ export class EventService {
         }));
     }
 
-    deleteShift(shift:Shift){
-        return this.http.post<Shift>(`${environment.apiUrl}/api/dashboard/shift/delete`,shift, {
+    deleteShift(shift: Shift) {
+        return this.http.post<Shift>(`${environment.apiUrl}/api/dashboard/shift/delete`, shift, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }

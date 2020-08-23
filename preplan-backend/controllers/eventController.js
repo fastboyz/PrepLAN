@@ -720,7 +720,7 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
     }
 });
 
-router.get('/contracts/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/contracts/get/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var id = req.params.id;
     Contract.find({ edition: id }).populate([
         {
@@ -870,10 +870,11 @@ router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, re
 });
 
 router.get('/shift/get/:id', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
-    var edition = req.params.id;
-    var shifts = []
+    var id = req.params.id;
+
     try {
-        Shift.find({ edition: edition.id })
+        var shifts = [];
+        await Shift.find({ edition: id })
             .populate([
                 {
                     path: 'edition',
@@ -893,14 +894,15 @@ router.get('/shift/get/:id', [authJwt.verifyToken, authJwt.isOrganizer], async (
                     throw err;
                 }
                 for (var i = 0; i < datas.length; i++) {
-                    const picked = (({ startDate, endDate, shiftId }) => ({ startDate, endDate, shiftId }))(datas[i]);
-                    picked['id'] = shift['_id'];
+                    const picked = (({ startDate, endDate, spotId, shiftId }) => ({ startDate, endDate, spotId, shiftId }))(datas[i]);
+                    picked['id'] = datas[i]['_id'];
                     picked['edition'] = sanitizeEdition(datas[i].edition);
                     picked['position'] = sanitizePosition(datas[i].position, picked.edition);
                     shifts.push(picked);
                 }
+                console.log(JSON.stringify(shifts));
+                res.status(200).json(shifts);
             });
-        res.status(200).json(shifts);
     } catch (err) {
         res.status(500).send({ message: err });
     }
