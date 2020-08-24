@@ -599,13 +599,12 @@ router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], a
     try {
         var found = await Volunteer.findById(vol.id);
         var response;
-        var msg;
         if (vol.status === inscriptionStatus.APPROVED) {
             response = await addVolunteerInScheduler(vol);
             if (response) {
                 found.volunteerId = response.id;
             } else {
-                msg = "Could Not complete the approbation"
+                throw "Could Not complete the approbation";
             }
             for (var i = 0; i < vol.availabilities.length; i++) {
                 const createdAv = await addAvailabilityInScheduler(vol.availabilities[i], response.id, vol.edition.tenantId);
@@ -614,6 +613,7 @@ router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], a
                     foundAv.tenantId = createdAv.tenantId;
                     foundAv.availabilityId = createdAv.id;
                     foundAv.volunteerId = createdAv.employeeId;
+                    await foundAv.save();
                 } else {
                     throw "Could not update availabilities during approbation process"
                 }
@@ -624,7 +624,7 @@ router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], a
             if (response) {
                 found.volunteerId = null;
             } else {
-                msg = "Could Not complete Remove the approbation"
+                throw "Could Not complete Remove the approbation";
             }
             for (var i = 0; i < vol.availabilities.length; i++) {
                 const isDeleted = await deleteAvailabilityInScheduler(vol.availabilities[i]);
@@ -633,17 +633,14 @@ router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], a
                     foundAv.tenantId = null;
                     foundAv.availabilityId = null;
                     foundAv.volunteerId = null;
+                    await foundAv.save();
                 } else {
                     throw "Could not update availabilities during disapprobation process"
                 }
             }
         }
-        if (!msg) {
-            found.status = vol.status;
-            found.save();
-        } else {
-            throw msg
-        }
+        found.status = vol.status;
+        await found.save();
         await session.commitTransaction();
         session.endSession();
     } catch (error) {
@@ -678,12 +675,13 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                         foundAv.tenantId = createdAv.tenantId;
                         foundAv.availabilityId = createdAv.id;
                         foundAv.volunteerId = createdAv.employeeId;
+                        await foundAv.save();
                     } else {
                         throw "Could not update availabilities during approbation process";
                     }
                 }
             }
-            if (found.status === inscriptionStatus.APPROVED) {
+            else if (vols[i].status !== inscriptionStatus.APPROVED && found.status === inscriptionStatus.APPROVED) {
                 response = await deleteVolunteerInScheduler(vols[i]);
                 if (response) {
                     found.volunteerId = null;
@@ -697,13 +695,14 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                         foundAv.tenantId = null;
                         foundAv.availabilityId = null;
                         foundAv.volunteerId = null;
+                        await foundAv.save();
                     } else {
                         throw "Could not update availabilities during approbation process"
                     }
                 }
             }
             found.status = vols[i].status;
-            found.save();
+            await found.save();
         }
         await session.commitTransaction();
         session.endSession();

@@ -218,8 +218,8 @@ const createShiftInScheduler = async (data) => {
 
   shift.tenantId = data.edition.tenantId;
   shift.spotId = data.position.spotId;
-  shift.startDateTime = moment(data.startDateTime).toISOString();
-  shift.endDateTime = moment(data.endDateTime).toISOString();
+  shift.startDateTime = moment(data.startDateTime).format('YYYY-MM-DDTHH:mm');
+  shift.endDateTime = moment(data.endDateTime).format('YYYY-MM-DDTHH:mm');
   try {
     const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/shift/add`, shift);
     const picked = (({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }) =>
@@ -240,8 +240,8 @@ const updateShiftInScheduler = async (data) => {
     employeeId: data.volunteerId,
     originalEmployeeId: null,
     rotationEmployeeId: null,
-    startDateTime: moment(data.startDateTime).toISOString(),
-    endDateTime: moment(data.endDateTime).toISOString()
+    startDateTime: moment(data.startDateTime).format('YYYY-MM-DDTHH:mm'),
+    endDateTime: moment(data.endDateTime).format('YYYY-MM-DDTHH:mm')
   }
 
   try {
@@ -316,12 +316,13 @@ const deleteVolunteerInScheduler = async (data) => {
 const updateVolunteerInScheduler = async (data) => { };
 
 const addAvailabilityInScheduler = async (data, volunteerId, tenantId) => {
-  data.startDateTime = moment(data.startDateTime).toISOString();
-  data.endDateTime = moment(data.endDateTime).toISOString();
+  data.startDateTime = moment(data.startDateTime).format('YYYY-MM-DDTHH:mm');
+  data.endDateTime = moment(data.endDateTime).format('YYYY-MM-DDTHH:mm');
   const picked = (({ startDateTime, endDateTime, state }) => ({ startDateTime, endDateTime, state }))(data);
   picked['tenantId'] = tenantId;
   picked['employeeId'] = volunteerId;
   try {
+    console.log(picked);
     const response = await axios.post(`${SCHEDULER}/tenant/${tenantId}/employee/availability/add`, picked);
     return response.data;
   } catch (error) {
@@ -344,8 +345,8 @@ const updateAvailabilityInScheduler = async (data,) => {
     tenantId: data.tenantId,
     state: data.state,
     employeeId: data.volunteerId,
-    startDateTime: moment(data.startDateTime).toISOString(),
-    endDateTime: moment(data.endDateTime).toISOString()
+    startDateTime: moment(data.startDateTime).format('YYYY-MM-DDTHH:mm'),
+    endDateTime: moment(data.endDateTime).format('YYYY-MM-DDTHH:mm')
   };
 
   try {
