@@ -466,7 +466,7 @@ router.get('/edition/:id/inscriptions', [authJwt.verifyToken, authJwt.isOrganize
             }
             var volunteerList = [];
             vols.forEach(vol => {
-                const picked = (({ inscriptionDate, status, lastUpdated, plannerId }) => ({ inscriptionDate, status, lastUpdated, plannerId }))(vol);
+                const picked = (({ inscriptionDate, status, lastUpdated, volunteerId }) => ({ inscriptionDate, status, lastUpdated, volunteerId }))(vol);
                 picked['profile'] = sanitizeProfile(vol.profile);
                 picked['edition'] = sanitizeEdition(vol.edition);
                 picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
@@ -530,7 +530,7 @@ router.get('/profile/incriptions', [authJwt.verifyToken, authJwt.isOrganizer], (
             }
             var volunteerList = [];
             vols.forEach(vol => {
-                const picked = (({ inscriptionDate, status, lastUpdated, plannerId }) => ({ inscriptionDate, status, lastUpdated, plannerId }))(vol);
+                const picked = (({ inscriptionDate, status, lastUpdated, volunteerId }) => ({ inscriptionDate, status, lastUpdated, volunteerId }))(vol);
                 picked['profile'] = sanitizeProfile(vol.profile);
                 picked['edition'] = sanitizeEdition(vol.edition);
                 picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
