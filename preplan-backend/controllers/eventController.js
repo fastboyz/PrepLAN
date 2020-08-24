@@ -671,7 +671,7 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                 } else {
                     throw "Could Not complete the approbation";
                 }
-                for (var j = 0; i < vols[i].availabilities.length; i++) {
+                for (var j = 0; j < vols[i].availabilities.length; j++) {
                     const createdAv = await addAvailabilityInScheduler(vols[i].availabilities[j], response.id, vols[i].edition.tenantId);
                     if (createdAv) {
                         var foundAv = await Availability.findById(vols[i].availabilities[j].id);
@@ -690,7 +690,7 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                 } else {
                     throw "Could Not complete Remove the approbation";
                 }
-                for (var j = 0; i < vols[i].availabilities.length; i++) {
+                for (var j = 0; j < vols[i].availabilities.length; j++) {
                     const isDeleted = await deleteAvailabilityInScheduler(vols[i].availabilities[j]);
                     if (isDeleted) {
                         var foundAv = await Availability.findById(vols[i].availabilities[j].id);
@@ -702,12 +702,8 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                     }
                 }
             }
-            if (!msg) {
-                found.status = vols[i].status;
-                found.save();
-            } else {
-                throw msg
-            }
+            found.status = vols[i].status;
+            found.save();
         }
         await session.commitTransaction();
         session.endSession();
@@ -899,7 +895,6 @@ router.get('/shift/get/:id', [authJwt.verifyToken, authJwt.isOrganizer], async (
                     picked['position'] = sanitizePosition(datas[i].position, picked.edition);
                     shifts.push(picked);
                 }
-                console.log(JSON.stringify(shifts));
                 res.status(200).json(shifts);
             });
     } catch (err) {

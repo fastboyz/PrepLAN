@@ -218,8 +218,8 @@ const createShiftInScheduler = async (data) => {
 
   shift.tenantId = data.edition.tenantId;
   shift.spotId = data.position.spotId;
-  shift.startDateTime = data.startDateTime;
-  shift.endDateTime = data.endDateTime;
+  shift.startDateTime = moment(data.startDateTime).toISOString();
+  shift.endDateTime = moment(data.endDateTime).toISOString();
   try {
     const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/shift/add`, shift);
     const picked = (({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }) =>
@@ -240,8 +240,8 @@ const updateShiftInScheduler = async (data) => {
     employeeId: data.volunteerId,
     originalEmployeeId: null,
     rotationEmployeeId: null,
-    startDateTime: data.startDateTime,
-    endDateTime: data.endDateTime
+    startDateTime: moment(data.startDateTime).toISOString(),
+    endDateTime: moment(data.endDateTime).toISOString()
   }
 
   try {
@@ -296,7 +296,7 @@ const addVolunteerInScheduler = async (data) => {
   });
 
   try {
-    const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/employee/add`,volunteer);
+    const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/employee/add`, volunteer);
     return response.data;
   } catch (error) {
     console.log(error)
@@ -316,15 +316,13 @@ const deleteVolunteerInScheduler = async (data) => {
 const updateVolunteerInScheduler = async (data) => { };
 
 const addAvailabilityInScheduler = async (data, volunteerId, tenantId) => {
-  console.log(JSON.stringify(data));
-  console.log(volunteerId);
-  console.log(tenantId);
-  var availability = data;
-  availability['tenantId'] = tenantId;
-  availability['employeeId'] = volunteerId;
-  console.log(JSON.stringify(availability));
+  data.startDateTime = moment(data.startDateTime).toISOString();
+  data.endDateTime = moment(data.endDateTime).toISOString();
+  const picked = (({ startDateTime, endDateTime, state }) => ({ startDateTime, endDateTime, state }))(data);
+  picked['tenantId'] = tenantId;
+  picked['employeeId'] = volunteerId;
   try {
-    const response = await axios.post(`${SCHEDULER}/tenant/${tenantId}/employee/availability/add`, availability);
+    const response = await axios.post(`${SCHEDULER}/tenant/${tenantId}/employee/availability/add`, picked);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -346,8 +344,8 @@ const updateAvailabilityInScheduler = async (data,) => {
     tenantId: data.tenantId,
     state: data.state,
     employeeId: data.volunteerId,
-    startDateTime: data.startDateTime,
-    endDateTime: data.endDateTime
+    startDateTime: moment(data.startDateTime).toISOString(),
+    endDateTime: moment(data.endDateTime).toISOString()
   };
 
   try {
