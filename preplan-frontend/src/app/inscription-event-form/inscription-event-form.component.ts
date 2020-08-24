@@ -247,28 +247,28 @@ export class InscriptionEventFormComponent implements OnInit {
     switch (value) {
       case 0:
         newAvailability = new Availability();
-        newAvailability.startDate = (date.clone().startOf('day')).toDate();
-        newAvailability.endDate = (date.clone().set('hour', 8).set('minute', 0)).toDate();
+        newAvailability.startDateTime = (date.clone().startOf('day')).toDate();
+        newAvailability.endDateTime = (date.clone().set('hour', 8).set('minute', 0)).toDate();
         break;
       case 1:
         newAvailability = new Availability();
-        newAvailability.startDate = (date.clone().set('hour', 8).set('minute', 0)).toDate();
-        newAvailability.endDate = (date.clone().set('hour', 12).set('minute', 0)).toDate();
+        newAvailability.startDateTime = (date.clone().set('hour', 8).set('minute', 0)).toDate();
+        newAvailability.endDateTime = (date.clone().set('hour', 12).set('minute', 0)).toDate();
         break;
       case 2:
         newAvailability = new Availability();
-        newAvailability.startDate = (date.clone().set('hour', 12).set('minute', 0)).toDate();
-        newAvailability.endDate = (date.clone().set('hour', 16).set('minute', 0)).toDate();
+        newAvailability.startDateTime = (date.clone().set('hour', 12).set('minute', 0)).toDate();
+        newAvailability.endDateTime = (date.clone().set('hour', 16).set('minute', 0)).toDate();
         break;
       case 3:
         newAvailability = new Availability();
-        newAvailability.startDate = (date.clone().set('hour', 16).set('minute', 0)).toDate();
-        newAvailability.endDate = (date.clone().set('hour', 20).set('minute', 0)).toDate();
+        newAvailability.startDateTime = (date.clone().set('hour', 16).set('minute', 0)).toDate();
+        newAvailability.endDateTime = (date.clone().set('hour', 20).set('minute', 0)).toDate();
         break;
       case 4:
         newAvailability = new Availability();
-        newAvailability.startDate = (date.clone().set('hour', 20).set('minute', 0)).toDate();
-        newAvailability.endDate = (date.clone().endOf('day')).toDate();
+        newAvailability.startDateTime = (date.clone().set('hour', 20).set('minute', 0)).toDate();
+        newAvailability.endDateTime = (date.clone().endOf('day')).toDate();
         break;
     }
     newAvailability.state = state;

@@ -3,8 +3,8 @@ import { Profile } from './user';
 
 export class Availability {
     id?: string;
-    startDate: Date;
-    endDate: Date;
+    startDateTime: Date;
+    endDateTime: Date;
     state: string;
 
     tenantId?: number;

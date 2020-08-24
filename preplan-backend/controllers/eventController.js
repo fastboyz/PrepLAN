@@ -843,8 +843,8 @@ router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, re
             const createdShift = await createShiftInScheduler(element);
             if (createdShift) {
                 await new Shift({
-                    startDate: element.startDate,
-                    endDate: element.endDate,
+                    startDateTime: element.startDateTime,
+                    endDateTime: element.endDateTime,
                     edition: element.edition.id,
                     position: element.position.id,
                     shiftId: createdShift.id
@@ -852,7 +852,7 @@ router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, re
                     if (err) {
                         throw err;
                     }
-                    const picked = (({ startDate, endDate, shiftId }) => ({ startDate, endDate, shiftId }))(shift);
+                    const picked = (({ startDateTime, endDate, shiftId }) => ({ startDateTime, endDate, shiftId }))(shift);
                     picked['id'] = shift['_id'];
                     picked['edition'] = element.edition;
                     picked['position'] = element.position;
@@ -893,7 +893,7 @@ router.get('/shift/get/:id', [authJwt.verifyToken, authJwt.isOrganizer], async (
                     throw err;
                 }
                 for (var i = 0; i < datas.length; i++) {
-                    const picked = (({ startDate, endDate, spotId, shiftId }) => ({ startDate, endDate, spotId, shiftId }))(datas[i]);
+                    const picked = (({ startDateTime, endDateTime, spotId, shiftId }) => ({ startDateTime, endDateTime, spotId, shiftId }))(datas[i]);
                     picked['id'] = datas[i]['_id'];
                     picked['edition'] = sanitizeEdition(datas[i].edition);
                     picked['position'] = sanitizePosition(datas[i].position, picked.edition);
@@ -917,8 +917,8 @@ router.put('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res
                 if (err) {
                     throw err
                 }
-                data.startDate = element.startDate;
-                data.endDate = element.endDate;
+                data.startDateTime = element.startDateTime;
+                data.endDateTime = element.endDateTime;
                 data.edition = element.edition.id;
                 data.position = element.position.id;
                 data.shiftId = updatedShift.id;
@@ -927,7 +927,7 @@ router.put('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res
                     if (err) {
                         throw err;
                     }
-                    const picked = (({ startDate, endDate, shiftId, volunteerId }) => ({ startDate, endDate, shiftId, volunteerId }))(shift);
+                    const picked = (({ startDateTime, endDateTime, shiftId, volunteerId }) => ({ startDateTime, endDateTime, shiftId, volunteerId }))(shift);
                     picked['id'] = shift['_id'];
                     picked['edition'] = element.edition;
                     picked['position'] = element.position;
@@ -991,7 +991,7 @@ const sanitizeEdition = (edition) => {
 const sanitizeAvailibilities = (availabilities) => {
     var pickedAvailabilities = [];
     availabilities.forEach(element => {
-        const picked = (({ startDate, endDate, state, tenantId, availabilityId, volunteerId }) => ({ startDate, endDate, state, tenantId, availabilityId, volunteerId }))(element);
+        const picked = (({ startDateTime, endDateTime, state, tenantId, availabilityId, volunteerId }) => ({ startDateTime, endDateTime, state, tenantId, availabilityId, volunteerId }))(element);
         picked['id'] = element._id;
         pickedAvailabilities.push(picked);
     });
