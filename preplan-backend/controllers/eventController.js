@@ -664,13 +664,12 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
         for (i = 0; i < vols.length; i++) {
             var found = await Volunteer.findById(vols[i].id);
             var response;
-            var msg;
             if (vols[i].status === inscriptionStatus.APPROVED) {
                 response = await addVolunteerInScheduler(vols[i]);
                 if (response) {
                     found.volunteerId = response.id;
                 } else {
-                    msg = "Could Not complete the approbation"
+                    throw "Could Not complete the approbation";
                 }
                 for (var j = 0; i < vols[i].availabilities.length; i++) {
                     const createdAv = await addAvailabilityInScheduler(vols[i].availabilities[j], response.id, vols[i].edition.tenantId);
@@ -680,7 +679,7 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                         foundAv.availabilityId = createdAv.id;
                         foundAv.volunteerId = createdAv.employeeId;
                     } else {
-                        throw "Could not update availabilities during approbation process"
+                        throw "Could not update availabilities during approbation process";
                     }
                 }
             }
@@ -689,7 +688,7 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                 if (response) {
                     found.volunteerId = null;
                 } else {
-                    msg = "Could Not complete Remove the approbation"
+                    throw "Could Not complete Remove the approbation";
                 }
                 for (var j = 0; i < vols[i].availabilities.length; i++) {
                     const isDeleted = await deleteAvailabilityInScheduler(vols[i].availabilities[j]);
@@ -720,7 +719,7 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
     }
 });
 
-router.get('/contracts/get/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/contracts/get/:id', [authJwt.verifyToken], (req, res) => {
     var id = req.params.id;
     Contract.find({ edition: id }).populate([
         {
@@ -844,8 +843,8 @@ router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, re
             const createdShift = await createShiftInScheduler(element);
             if (createdShift) {
                 await new Shift({
-                    startDate: element.startDateTime,
-                    endDate: element.endDateTime,
+                    startDate: element.startDate,
+                    endDate: element.endDate,
                     edition: element.edition.id,
                     position: element.position.id,
                     shiftId: createdShift.id
@@ -992,7 +991,7 @@ const sanitizeEdition = (edition) => {
 const sanitizeAvailibilities = (availabilities) => {
     var pickedAvailabilities = [];
     availabilities.forEach(element => {
-        const picked = (({ startDate, endDate, state }) => ({ startDate, endDate, state }))(element);
+        const picked = (({ startDate, endDate, state, tenantId, availabilityId, volunteerId }) => ({ startDate, endDate, state, tenantId, availabilityId, volunteerId }))(element);
         picked['id'] = element._id;
         pickedAvailabilities.push(picked);
     });
@@ -1008,14 +1007,14 @@ const sanitizePositions = (positions, edition) => {
 }
 
 const sanitizePosition = (position, edition) => {
-    const picked = (({ title, description }) => ({ title, description }))(position);
+    const picked = (({ title, description, skillId, spotId }) => ({ title, description, skillId, spotId }))(position);
     picked['id'] = position['_id'];;
     picked['edition'] = edition;
     return picked
 }
 
 const sanitizeContract = (data) => {
-    const picked = (({ maximumMinutesPerDay, edition, contractId }) => ({ maximumMinutesPerDay, edition, contractId }))(data);
+    const picked = (({ maximumMinutesPerDay, edition, contractId, name, tenantId }) => ({ maximumMinutesPerDay, edition, contractId, name, tenantId }))(data);
     picked['id'] = data['_id'];
     return picked;
 }

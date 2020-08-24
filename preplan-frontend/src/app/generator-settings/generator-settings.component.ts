@@ -96,7 +96,7 @@ export class GeneratorSettingsComponent implements OnInit {
     ) {
       this.newShift.edition = this.edition;
       this.eventService.addShift(this.newShift).subscribe(data => {
-        this.shifts.push(data);
+        this.loadShifts(this.edition.id);
         this.newShift = new Shift();
       })
       console.log("Add Shift :\n Start: " + this.newShift.startDate + " . End: " + this.newShift.endDate + "Position: " + this.newShift.position);

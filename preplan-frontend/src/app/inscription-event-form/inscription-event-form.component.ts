@@ -66,9 +66,7 @@ export class InscriptionEventFormComponent implements OnInit {
       this.eventService.getEditionById(editionId).subscribe(edition => {
         this.edition = edition;
         this.getEditionDays();
-        this.eventService.getPositionsbyEditionId(this.edition.id).subscribe(data => {
-          this.positions = data;
-        });
+        this.getPositions(this.edition);
         this.eventService.getAllContracts(this.edition.id).subscribe(data=>{
           this.contracts= data;
         });
@@ -92,7 +90,7 @@ export class InscriptionEventFormComponent implements OnInit {
         profile: this.profileData,
         availabilities: this.selectedAvailabilities,
         positions: this.getSelectedPositions(),
-        contract: this.getSelectedContract(),
+        contract: this.selectedContract,
         status: "PENDING",
         inscriptionDate: moment().toDate(),
         lastUpdated: moment().toDate()
@@ -185,9 +183,7 @@ export class InscriptionEventFormComponent implements OnInit {
     });
     this.edition = this.inscriptionEvent.edition;
 
-    this.eventService.getPositionsbyEditionId(this.edition.id).subscribe(data => {
-      this.positions = data;
-    });
+    this.getPositions(this.edition);
     this.eventService.getAllContracts(this.edition.id).subscribe(data=>{
       this.contracts= data;
     });
@@ -200,28 +196,29 @@ export class InscriptionEventFormComponent implements OnInit {
   getPositions(edition: Edition) {
     this.eventService.getPositionsbyEditionId(edition.id).subscribe(data => {
       this.positions = data;
+      let position: Position = {
+        id: this.anyDeptId,
+        title: "Any Departments",
+        edition: edition,
+        description: "All and any the departments"
+      }
+      this.positions.unshift(position);
     });
-    let position: Position = {
-      id: this.anyDeptId,
-      title: "Any Departments",
-      edition: edition,
-      description: "All and any the departments"
-    }
-    this.positions.unshift(position);
   }
+
   getSelectedPositions() {
-    if (this.firstPreference.value == this.anyDeptId ||
-      this.secondPreference.value == this.anyDeptId ||
-      this.thirdPreference.value == this.anyDeptId) {
-        return this.positions;
+    if (this.firstPosition.id == this.anyDeptId ||
+      this.secondPosition.id == this.anyDeptId ||
+      this.thirdPosition.id == this.anyDeptId) {
+        return this.positions.slice(1, this.positions.length);
     }
 
     let selectedPositions: Position[] = this.positions
       .filter(pos =>
-        pos.id == this.firstPreference.value ||
-        pos.id == this.secondPreference.value ||
-        pos.id == this.thirdPreference.value
-      )
+        pos.id == this.firstPosition.id||
+        pos.id == this.secondPosition.id ||
+        pos.id == this.thirdPosition.id
+      ) 
     return selectedPositions;
   }
 

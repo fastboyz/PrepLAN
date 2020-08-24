@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const contractSchema = mongoose.Schema({
   maximumMinutesPerDay: {
-    type: String,
+    type: Number,
     required: true,
   },
   tenantId: {
@@ -13,7 +13,7 @@ const contractSchema = mongoose.Schema({
     ref: "Edition"
   },
   contractId: {
-    type: String
+    type: Number
   },
   name: {
     type: String,

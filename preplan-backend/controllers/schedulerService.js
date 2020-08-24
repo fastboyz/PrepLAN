@@ -42,7 +42,6 @@ const createTenantInScheduler = async (edition) => {
   tenant["firstDraftDate"] = startDate.toISOString();
   var lastHistoricDate = startDate.subtract(1, "days");
   tenant["lastHistoricDate"] = lastHistoricDate.toISOString();
-  console.log(JSON.stringify(tenant));
 
   try {
     const response = await axios.post(`${SCHEDULER}/tenant/add`, tenant);
@@ -205,7 +204,6 @@ const deleteContract = async (data) => {
 };
 
 const createShiftInScheduler = async (data) => {
-  console.log(data);
   var shift = {
     tenantId: null,
     pinnedByUser: false,
@@ -228,7 +226,6 @@ const createShiftInScheduler = async (data) => {
       ({ id, tenantId, spotId, employeeId, startDateTime, endDateTime }))(response.data);
     return picked;
   } catch (error) {
-    console.log(error);
     return false;
   }
 };
@@ -254,6 +251,7 @@ const updateShiftInScheduler = async (data) => {
     picked['volunteerId'] = response.data.employeeId;
     return picked;
   } catch (error) {
+    console.log(error);
     return false;
   }
 };
@@ -273,7 +271,7 @@ const addVolunteerInScheduler = async (data) => {
     skillProficiencySet: [],
     color: `#${randomColor}`,
     name: `${data.profile.user.firstName} ${data.profile.user.lastName}`,
-    shortId: `${data.profile.user.firstName.charAt(0)}${data.profile.user.lastName}`,
+    shortId: `${data.profile.user.firstName.charAt(0)}${data.profile.user.lastName.charAt(0)}`,
     contract: {
       id: data.contract.contractId,
       tenantId: data.edition.tenantId,
@@ -284,7 +282,8 @@ const addVolunteerInScheduler = async (data) => {
       maximumMinutesPerMonth: null,
       maximumMinutesPerYear: null
     },
-    tenantId: data.edition.tenantId
+    tenantId: data.edition.tenantId,
+    version: 0
   }
   data.positions.forEach(element => {
     var skill = {
@@ -297,9 +296,10 @@ const addVolunteerInScheduler = async (data) => {
   });
 
   try {
-    const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/employee/add`);
+    const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/employee/add`,volunteer);
     return response.data;
   } catch (error) {
+    console.log(error)
     return false;
   }
 };
@@ -316,14 +316,18 @@ const deleteVolunteerInScheduler = async (data) => {
 const updateVolunteerInScheduler = async (data) => { };
 
 const addAvailabilityInScheduler = async (data, volunteerId, tenantId) => {
+  console.log(JSON.stringify(data));
+  console.log(volunteerId);
+  console.log(tenantId);
   var availability = data;
-  data['tenantId'] = tenantId;
-  data['employeeId'] = volunteerId;
-
+  availability['tenantId'] = tenantId;
+  availability['employeeId'] = volunteerId;
+  console.log(JSON.stringify(availability));
   try {
     const response = await axios.post(`${SCHEDULER}/tenant/${tenantId}/employee/availability/add`, availability);
     return response.data;
   } catch (error) {
+    console.log(error);
     return false;
   }
 };
