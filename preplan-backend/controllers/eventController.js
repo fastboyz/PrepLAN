@@ -682,12 +682,6 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                 }
             }
             else if (vols[i].status !== inscriptionStatus.APPROVED && found.status === inscriptionStatus.APPROVED) {
-                response = await deleteVolunteerInScheduler(vols[i]);
-                if (response) {
-                    found.volunteerId = null;
-                } else {
-                    throw "Could Not complete Remove the approbation";
-                }
                 for (var j = 0; j < vols[i].availabilities.length; j++) {
                     const isDeleted = await deleteAvailabilityInScheduler(vols[i].availabilities[j]);
                     if (isDeleted) {
@@ -700,6 +694,13 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                         throw "Could not update availabilities during approbation process"
                     }
                 }
+                response = await deleteVolunteerInScheduler(vols[i]);
+                if (response) {
+                    found.volunteerId = null;
+                } else {
+                    throw "Could Not complete Remove the approbation";
+                }
+                
             }
             found.status = vols[i].status;
             await found.save();
@@ -847,7 +848,7 @@ router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, re
                     if (err) {
                         throw err;
                     }
-                    const picked = (({ startDateTime, endDate, shiftId }) => ({ startDateTime, endDate, shiftId }))(shift);
+                    const picked = (({ startDateTime, endDateTime, shiftId }) => ({ startDateTime, endDateTime, shiftId }))(shift);
                     picked['id'] = shift['_id'];
                     picked['edition'] = element.edition;
                     picked['position'] = element.position;

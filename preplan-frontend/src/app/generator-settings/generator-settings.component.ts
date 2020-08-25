@@ -89,8 +89,8 @@ export class GeneratorSettingsComponent implements OnInit {
 
   addShift() {
     if (
-      this.newShift.startDate != null &&
-      this.newShift.endDate != null &&
+      this.newShift.startDateTime != null &&
+      this.newShift.endDateTime != null &&
       this.newShift.position != null &&
       this.newShift.numberVolunteers > 0
     ) {
@@ -99,13 +99,13 @@ export class GeneratorSettingsComponent implements OnInit {
         this.loadShifts(this.edition.id);
         this.newShift = new Shift();
       })
-      console.log("Add Shift :\n Start: " + this.newShift.startDate + " . End: " + this.newShift.endDate + "Position: " + this.newShift.position);
+      console.log("Add Shift :\n Start: " + this.newShift.startDateTime + " . End: " + this.newShift.endDateTime + "Position: " + this.newShift.position);
     }
   }
   deleteShift(shift: Shift) {
     this.eventService.deleteShift(shift).subscribe(data => {
       this.loadShifts(this.edition.id);
     })
-    console.log("Delete Shift :\n Start: " + shift.startDate + " . End: " + shift.endDate + "Position: " + shift.position);
+    console.log("Delete Shift :\n Start: " + shift.startDateTime + " . End: " + shift.endDateTime + "Position: " + shift.position);
   }
 }

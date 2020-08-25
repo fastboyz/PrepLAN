@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
 const shiftSchema = mongoose.Schema({
-  startDate: {
+  startDateTime: {
     type: Date,
     required: true,
   },
-  endDate: {
+  endDateTime: {
     type: Date,
     required: true,
   },

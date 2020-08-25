@@ -240,8 +240,8 @@ const updateShiftInScheduler = async (data) => {
     employeeId: data.volunteerId,
     originalEmployeeId: null,
     rotationEmployeeId: null,
-    startDateTime: moment(data.startDateTime).format('YYYY-MM-DDTHH:mm'),
-    endDateTime: moment(data.endDateTime).format('YYYY-MM-DDTHH:mm')
+    startDateTime: data.startDateTime,
+    endDateTime: data.endDateTime
   }
 
   try {
@@ -251,7 +251,6 @@ const updateShiftInScheduler = async (data) => {
     picked['volunteerId'] = response.data.employeeId;
     return picked;
   } catch (error) {
-    console.log(error);
     return false;
   }
 };
@@ -299,7 +298,6 @@ const addVolunteerInScheduler = async (data) => {
     const response = await axios.post(`${SCHEDULER}/tenant/${data.edition.tenantId}/employee/add`, volunteer);
     return response.data;
   } catch (error) {
-    console.log(error)
     return false;
   }
 };
@@ -322,11 +320,9 @@ const addAvailabilityInScheduler = async (data, volunteerId, tenantId) => {
   picked['tenantId'] = tenantId;
   picked['employeeId'] = volunteerId;
   try {
-    console.log(picked);
     const response = await axios.post(`${SCHEDULER}/tenant/${tenantId}/employee/availability/add`, picked);
     return response.data;
   } catch (error) {
-    console.log(error);
     return false;
   }
 };

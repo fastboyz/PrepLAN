@@ -58,9 +58,9 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let s of shifts">
-                        <td>{{getDateName(s.startDate)}}</td>
-                        <td>{{getTime(s.startDate)}}</td>
-                        <td>{{getTime(s.endDate)}}</td>
+                        <td>{{getDateName(s.startDateTime)}}</td>
+                        <td>{{getTime(s.startDateTime)}}</td>
+                        <td>{{getTime(s.endDateTime)}}</td>
                         <td>{{s.position.title}}</td>
                         <td>
                             <button class="btn" type="button" (click)="deleteShift(s)"><i
@@ -74,12 +74,12 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">Start Date Time</span>
                 <input type="datetime-local" class="form-control" placeholder="Start Date"
-                    [(ngModel)]="newShift.startDate">
+                    [(ngModel)]="newShift.startDateTime">
             </div>
 
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">End Date Time</span>
-                <input type="datetime-local" class="form-control" placeholder="End Date" [(ngModel)]="newShift.endDate">
+                <input type="datetime-local" class="form-control" placeholder="End Date" [(ngModel)]="newShift.endDateTime">
             </div>
         </div>
 
