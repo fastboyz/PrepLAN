@@ -28,6 +28,7 @@ import { ProfileInscriptionComponent } from './profile/profile-inscription/profi
 import { ProfileComponent } from './profile/profile.component';
 import { VolunteerListComponent } from './volunteer-list/volunteer-list.component';
 import { GeneratorSettingsComponent } from './generator-settings/generator-settings.component';
+import { ScheduleGeneratorComponent } from './schedule-generator/schedule-generator.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { GeneratorSettingsComponent } from './generator-settings/generator-setti
     ProfileInscriptionComponent,
     VolunteerListComponent,
     GeneratorSettingsComponent,
+    ScheduleGeneratorComponent,
   ],
   imports: [
     UserModule,
