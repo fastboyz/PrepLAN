@@ -1,7 +1,14 @@
-<div class="btn-section">
-    <button class="btn btn-primary" (click)="approveSelected()">Approve Selected</button>
-    <button class="btn btn-danger" (click)="disapproveSelected()">Disapprove Selected</button>
-    
+<div class="btn-section ">
+        <button class="btn btn-primary" (click)="approveSelected()"> <i class="far fa-thumbs-up"></i> Approve
+            Selected</button>
+        <button class="btn btn-danger" (click)="disapproveSelected()"> <i class="far fa-thumbs-down"></i> Disapprove
+            Selected</button>
+    <div class="dropdown right ">
+        <select id="volunteer-filter" class="form-control" [(ngModel)]="selectedFilter" (change)="onFilterChange($event)">
+            <option value="ALL" selected> ALL STATUS </option>
+            <option *ngFor="let key of statusOptions" [ngValue]="key" [label]="status[key]"></option>
+        </select>
+    </div>
 </div>
 <div class="table-responsive">
     <table class="table table-striped table-hover table-dark">
