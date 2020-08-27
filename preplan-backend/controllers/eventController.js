@@ -2,7 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import { authJwt } from '../middlewares'
 import { Event, Edition, Position, Volunteer, Availability, Shift } from '../models';
-import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler } from '.';
+import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler, startSolving, stopSolving, getExcel } from '.';
 import { Contract } from '../models/contract';
 import { createShiftInScheduler, updateShiftInScheduler } from './schedulerService';
 
@@ -127,8 +127,8 @@ router.get('/editions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) =
         });
 });
 
-router.get('/editions/isActive', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
-    Edition.find({isActive: true})
+router.get('/editions/isActive', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    Edition.find({ isActive: true })
         .populate('event')
         .exec((err, edts) => {
             if (err) {
@@ -150,6 +150,46 @@ router.get('/editions/isActive', [authJwt.verifyToken, authJwt.isVolunteer], (re
             res.status(200).json(editions);
         });
 });
+
+router.post('/edition/startSolving/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var editionId = req.params.editionId;
+    const edition = await Edition.findById(editionId);
+    if (await startSolving(edition.tenantId)) {
+        res.status(200).send();
+    } else {
+        res.status(503).send({ message: "Could not start solving" })
+    }
+});
+
+router.post('/edition/stopSolving/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var editionId = req.params.editionId;
+    const edition = await Edition.findById(editionId);
+    if (await startSolving(edition.tenantId)) {
+        res.status(200).send();
+    } else {
+        res.status(503).send({ message: "Could not start solving" })
+    }
+});
+
+router.post('/edition/solver/getExcel/:editonId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var editionId = req.params.editionId;
+    const edition = await Edition.findById(editionId);
+    const spotsObjs = await Position.find({ edition: editionId })
+    var spots = '';
+    for (var i = 0; i < spotsObjs.length; i++) {
+        if (i == spotsObjs.length - 1) {
+            spots += spotsObjs[i].title;
+        } else {
+            spots += `${spotsObjs[i].title},`;
+        }
+    }
+    if (await getExcel(edition.tenantId, edition.startDate, edition.endDate, spots)) {
+        res.status(200).send();
+    } else {
+        res.status(503).send({ message: "Could not start solving" })
+    }
+});
+
 
 router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     const edition = req.body;

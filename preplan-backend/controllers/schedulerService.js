@@ -336,7 +336,7 @@ const deleteAvailabilityInScheduler = async (data) => {
   }
 };
 
-const updateAvailabilityInScheduler = async (data,) => {
+const updateAvailabilityInScheduler = async (data) => {
   var availability = {
     tenantId: data.tenantId,
     state: data.state,
@@ -352,6 +352,34 @@ const updateAvailabilityInScheduler = async (data,) => {
     return false;
   }
 };
+
+const startSolving = async (tenantId) => {
+  try {
+    await axios.put(`${SCHEDULER}/tenant/${tenantId}/roster/solve`);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+const stopSolving = async (tenantId) => {
+  try {
+    await axios.put(`${SCHEDULER}/tenant/${tenantId}/roster/terminate`);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+const getExcel = async (tenantId, startDate, endDate, spotList) => {
+  try {
+    const response = await axios.put(`${SCHEDULER}/tenant/${tenantId}/roster/shiftRosterView/excel?endDate=${endDate}&spotList=${spotList}&startDate=${startDate}`);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+}
+
 
 export {
   addAvailabilityInScheduler,
@@ -371,4 +399,7 @@ export {
   createShiftInScheduler,
   updateShiftInScheduler,
   deleteShiftInScheduler,
+  startSolving, 
+  stopSolving, 
+  getExcel,
 };

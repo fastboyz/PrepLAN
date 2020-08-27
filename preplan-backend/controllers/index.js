@@ -18,7 +18,10 @@ import {
     updateVolunteerInScheduler,
     createShiftInScheduler,
     deleteShiftInScheduler,
-    updateShiftInScheduler
+    updateShiftInScheduler,
+    startSolving,
+    stopSolving,
+    getExcel
 } from "./schedulerService";
 
 export {
@@ -41,5 +44,8 @@ export {
     updateVolunteerInScheduler,
     createShiftInScheduler,
     deleteShiftInScheduler,
-    updateShiftInScheduler
+    updateShiftInScheduler,
+    startSolving,
+    stopSolving,
+    getExcel
 };
