@@ -127,6 +127,30 @@ router.get('/editions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) =
         });
 });
 
+router.get('/editions/isActive', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
+    Edition.find({isActive: true})
+        .populate('event')
+        .exec((err, edts) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var editions = [];
+            edts.forEach((edt) => {
+                const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }))(edt);
+                picked['id'] = edt['_id'];
+
+                var evt = picked.event;
+                const event = (({ title, description }) => ({ title, description }))(evt);
+                event['id'] = evt['_id'];
+
+                picked.event = event;
+                editions.push(picked);
+            });
+            res.status(200).json(editions);
+        });
+});
+
 router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     const edition = req.body;
     Edition.findById(edition.id).exec((err, edt) => {
@@ -479,6 +503,135 @@ router.get('/edition/:id/inscriptions', [authJwt.verifyToken, authJwt.isOrganize
         })
 });
 
+router.get('/edition/:id/inscriptions/:status', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    const editionId = req.params.id;
+    const status = req.params.status;
+    Volunteer.find({ edition: editionId, status: status })
+        .populate([
+            {
+                path: 'profile',
+                model: 'Profile',
+                populate: [
+                    {
+                        path: 'user',
+                        model: 'User',
+                        populate: {
+                            path: 'account',
+                            model: 'Account'
+                        }
+                    },
+                    {
+                        path: 'emergencyContact',
+                        model: 'EmergencyContact'
+                    }
+                ]
+            },
+            {
+                path: 'edition',
+                model: 'Edition',
+                populate: {
+                    path: 'event',
+                    model: 'Event'
+                }
+            },
+            {
+                path: 'availabilities',
+                model: 'Availability'
+            },
+            {
+                path: 'contract',
+                model: 'Contract'
+            },
+            {
+                path: 'positions',
+                model: 'Position'
+            },
+        ])
+        .exec((err, vols) => {
+
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var volunteerList = [];
+            vols.forEach(vol => {
+                const picked = (({ inscriptionDate, status, lastUpdated, volunteerId }) => ({ inscriptionDate, status, lastUpdated, volunteerId }))(vol);
+                picked['profile'] = sanitizeProfile(vol.profile);
+                picked['edition'] = sanitizeEdition(vol.edition);
+                picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
+                picked['contract'] = sanitizeContract(vol.contract);
+                picked['positions'] = sanitizePositions(vol.positions, picked.edition);
+                picked['id'] = vol['_id'];
+                volunteerList.push(picked);
+            })
+            res.status(200).json(volunteerList);
+        })
+});
+
+router.get('/profile/:id/inscriptions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    const profileId = req.params.id;
+    Volunteer.find({ profile: profileId })
+        .populate([
+            {
+                path: 'profile',
+                model: 'Profile',
+                populate: [
+                    {
+                        path: 'user',
+                        model: 'User',
+                        populate: {
+                            path: 'account',
+                            model: 'Account'
+                        }
+                    },
+                    {
+                        path: 'emergencyContact',
+                        model: 'EmergencyContact'
+                    }
+                ]
+            },
+            {
+                path: 'edition',
+                model: 'Edition',
+                populate: {
+                    path: 'event',
+                    model: 'Event'
+                }
+            },
+            {
+                path: 'availabilities',
+                model: 'Availability'
+            },
+            {
+                path: 'contract',
+                model: 'Contract'
+            },
+            {
+                path: 'positions',
+                model: 'Position'
+            },
+        ])
+        .exec((err, vols) => {
+
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var volunteerList = [];
+            vols.forEach(vol => {
+                const picked = (({ inscriptionDate, status, lastUpdated, volunteerId }) => ({ inscriptionDate, status, lastUpdated, volunteerId }))(vol);
+                picked['profile'] = sanitizeProfile(vol.profile);
+                picked['edition'] = sanitizeEdition(vol.edition);
+                picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
+                picked['contract'] = sanitizeContract(vol.contract);
+                picked['positions'] = sanitizePositions(vol.positions, picked.edition);
+                picked['id'] = vol['_id'];
+                volunteerList.push(picked);
+            })
+            res.status(200).json(volunteerList);
+        })
+});
+
 router.get('/profile/incriptions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     const id = req.body.profile.id;
     Volunteer.find({ profile: id })
@@ -700,7 +853,7 @@ router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, re
                 } else {
                     throw "Could Not complete Remove the approbation";
                 }
-                
+
             }
             found.status = vols[i].status;
             await found.save();
