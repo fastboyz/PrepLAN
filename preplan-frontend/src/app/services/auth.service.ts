@@ -24,6 +24,7 @@ export class AuthService {
         return this.http.post<any>(`${environment.apiUrl}/api/auth/signin`, { username, password }
         ).pipe(map(response => {
             localStorage.setItem('currentUser', JSON.stringify(response));
+            this.setRefreshedValue("0");
             this.currentUserSubject.next(response);
             return response
         }));
@@ -32,6 +33,7 @@ export class AuthService {
     logout() {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('refreshed');
         this.currentUserSubject.next(null);
     }
 
@@ -67,5 +69,14 @@ export class AuthService {
     getCurrentUserId() {
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         return currentUser['id'];
+    }
+
+    setRefreshedValue(value: string) {
+        localStorage.setItem('refreshed', value);
+    }
+
+    getRefreshedValue() {
+        let value: number = JSON.parse(localStorage.getItem('refreshed'));
+        return value;
     }
 }

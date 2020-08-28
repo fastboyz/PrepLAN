@@ -31,4 +31,12 @@ export class DashboardSidebarComponent implements OnInit {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  async redirectTo(uri: string) {
+    await this.router.navigate([uri]);
+    if (this.authService.getRefreshedValue() == 0) {
+      this.authService.setRefreshedValue("1");
+      window.location.reload();
+    }
+  }
 }

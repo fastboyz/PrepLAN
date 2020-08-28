@@ -31,16 +31,14 @@ export class ScheduleGeneratorComponent implements OnInit {
       wb.SheetNames.forEach(wsname => {
         const ws: XLSX.WorkSheet = wb.Sheets[wsname];
         let data: AOA = <AOA>(XLSX.utils.sheet_to_json(ws, { header: 1 }));
-        let newAOA:AOA = <AOA>[];
+        let newAOA: AOA = <AOA>[];
         let i;
 
-        if(data[0][2] == "Employee"){
-          data[0][2]= "Volunteer";
-        }
+        data[0][2] = "Volunteer";
         newAOA.push(data[0]);
 
-        for (i = 1; i < data.length - 1; i +=2) {
-          data[i].push(data[i+1][2]);
+        for (i = 1; i < data.length - 1; i += 2) {
+          data[i].push(data[i + 1][2]);
           newAOA.push(data[i]);
         }
 

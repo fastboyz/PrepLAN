@@ -25,7 +25,6 @@ const routes: Routes = [
       expectedRole: 'organizer'
     }
   },
-  { path: 'test', component: InscriptionEventFormComponent, canActivate: [AuthGuard] },
   {path: 'inscription/:id', component: InscriptionEventFormComponent, canActivate: [AuthGuard]},
   {path: 'edition/:id', component: EditionManagerComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: '' }

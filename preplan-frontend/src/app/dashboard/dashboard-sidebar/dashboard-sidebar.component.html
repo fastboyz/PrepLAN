@@ -5,13 +5,13 @@
     <div class="sidebar-content">
         <ul class="list-unstyled">
             <li *ngIf="isOrganizer">
-                <a [routerLink]="['event-manager']" >Event Manager</a>
+                <a (click)="redirectTo('event-manager')">Event Manager</a>
             </li>
             <li>
-                <a [routerLink]="['profile']">Profile</a>
+                <a (click)="redirectTo('profile')">Profile</a>
             </li>
             <li>
-                <a [routerLink]="['event-list']" >Event List</a>
+                <a (click)="redirectTo('event-list')" >Event List</a>
             </li>
         </ul>
         <ul class="list-unstyled">
