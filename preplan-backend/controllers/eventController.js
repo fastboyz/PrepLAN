@@ -611,6 +611,7 @@ router.get('/edition/:id/inscriptions/:status', [authJwt.verifyToken, authJwt.is
 router.get('/profile/:id/inscriptions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     const profileId = req.params.id;
     Volunteer.find({ profile: profileId })
+    .where('status').ne(inscriptionStatus.CANCELLED)
         .populate([
             {
                 path: 'profile',
