@@ -22,7 +22,7 @@ const availabilitySchema = mongoose.Schema({
   volunteerId: {
     type: Number
   }
-});
+}, { autoCreate: true});
 
 const Availability = mongoose.model('Availability', availabilitySchema);
 export { Availability }

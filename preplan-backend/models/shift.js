@@ -23,7 +23,7 @@ const shiftSchema = mongoose.Schema({
   volunteerId: {
     type: Number
   }, 
-});
+}, { autoCreate: true});
 
 const Shift = mongoose.model('Shift', shiftSchema);
 

@@ -20,6 +20,6 @@ const positionSchema = mongoose.Schema({
     type: Number
   }
 
-});
+}, { autoCreate: true});
 const Position = mongoose.model('Position', positionSchema);
 export { Position };

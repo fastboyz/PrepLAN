@@ -36,7 +36,7 @@ const volunteerSchema = mongoose.Schema({
   volunteerId: {
     type: Number,
   }
-});
+}, { autoCreate: true });
 
 const Volunteer = mongoose.model('Volunteer', volunteerSchema);
 export { Volunteer }
