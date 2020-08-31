@@ -188,9 +188,9 @@ router.post('/edition/solver/getExcel/:editonId', [authJwt.verifyToken, authJwt.
     var spots = '';
     for (var i = 0; i < spotsObjs.length; i++) {
         if (i == spotsObjs.length - 1) {
-            spots += spotsObjs[i].title;
+            spots += spotsObjs[i].spotId;
         } else {
-            spots += `${spotsObjs[i].title},`;
+            spots += `${spotsObjs[i].spotId},`;
         }
     }
     if (await getExcel(edition.tenantId, edition.startDate, edition.endDate, spots)) {
