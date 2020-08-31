@@ -9,7 +9,7 @@ import { createShiftInScheduler, updateShiftInScheduler } from './schedulerServi
 const router = Router();
 
 const inscriptionStatus = {
-    PENDING: 'PENDING ',
+    PENDING: 'PENDING',
     CANCELLED: 'CANCELLED',
     APPROVED: 'APPROVED',
     DISAPPROVED: 'DISAPPROVED'
