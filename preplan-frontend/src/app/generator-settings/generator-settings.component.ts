@@ -53,14 +53,14 @@ export class GeneratorSettingsComponent implements OnInit {
   }
 
   getDate(date: Date) {
-    return moment(date).format('YYYY-MM-DDTHH:mm');
+    return moment.utc(date).format('YYYY-MM-DDTHH:mm');
   }
   getDateName(date: Date) {
-    return moment(date).format("MMM Do YYYY");
+    return moment.utc(date).format("MMM Do YYYY");
   }
 
   getTime(date: Date) {
-    return moment(date).format("HH:mm");
+    return moment.utc(date).format("HH:mm");
   }
 
   addContract() {
