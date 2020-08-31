@@ -21,7 +21,8 @@ import {
     updateShiftInScheduler,
     startSolving,
     stopSolving,
-    getExcel
+    getExcel,
+    getStatus
 } from "./schedulerService";
 
 export {
@@ -47,5 +48,6 @@ export {
     updateShiftInScheduler,
     startSolving,
     stopSolving,
-    getExcel
+    getExcel,
+    getStatus
 };

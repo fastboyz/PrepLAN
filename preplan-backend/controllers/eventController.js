@@ -2,7 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import { authJwt } from '../middlewares'
 import { Event, Edition, Position, Volunteer, Availability, Shift } from '../models';
-import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler, startSolving, stopSolving, getExcel } from '.';
+import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler, startSolving, stopSolving, getExcel, getStatus } from '.';
 import { Contract } from '../models/contract';
 import { createShiftInScheduler, updateShiftInScheduler } from './schedulerService';
 
@@ -164,10 +164,20 @@ router.post('/edition/startSolving/:editionId', [authJwt.verifyToken, authJwt.is
 router.post('/edition/stopSolving/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var editionId = req.params.editionId;
     const edition = await Edition.findById(editionId);
-    if (await startSolving(edition.tenantId)) {
+    if (await stopSolving(edition.tenantId)) {
         res.status(200).send();
     } else {
         res.status(503).send({ message: "Could not start solving" })
+    }
+});
+
+router.get('/edition/status/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var editionId = req.params.editionId;
+    const edition = await Edition.findById(editionId);
+    if (await getStatus(edition.tenantId)) {
+        res.status(200).send();
+    } else {
+        res.status(503).send({ message: "Could not get the status" })
     }
 });
 

@@ -380,6 +380,15 @@ const getExcel = async (tenantId, startDate, endDate, spotList) => {
   }
 }
 
+const getStatus = async (tenantId) => {
+  try {
+    const response = await axios.get(`${SCHEDULER}/tenant/${tenantId}/roster/status`);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+}
+
 
 export {
   addAvailabilityInScheduler,
@@ -402,4 +411,5 @@ export {
   startSolving, 
   stopSolving, 
   getExcel,
+  getStatus
 };
