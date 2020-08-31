@@ -19,7 +19,7 @@ const contractSchema = mongoose.Schema({
     type: String,
     required: true,
   }
-});
+}, { autoCreate: true});
 
 const Contract = mongoose.model('Contract', contractSchema);
 export { Contract }

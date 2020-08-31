@@ -33,7 +33,7 @@ const editionSchema = mongoose.Schema({
   tenantId: {
     type: Number
   }
-});
+}, { autoCreate: true});
 
 const Edition = mongoose.model('Edition', editionSchema);
 export { Edition };

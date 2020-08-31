@@ -10,7 +10,7 @@ import { AccountController, UserController, EventController } from './controller
 import { dbConfig } from './config';
 
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://preplan:preplan@localhost:27017,localhost:27020,localhost:27023/preplan?replicaSet=rs0';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://preplan:preplan@preplan-cluster0.dqdfh.mongodb.net/preplan?retryWrites=true&w=majority';
 
 const indexRouter = require('./routes/index');
 

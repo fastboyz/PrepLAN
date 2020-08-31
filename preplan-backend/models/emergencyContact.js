@@ -27,7 +27,7 @@ const EmergencyContact = mongoose.model(
       required: true,
       trim: true
     },
-  })
+  }, { autoCreate: true })
 );
 
 export { EmergencyContact };

@@ -29,7 +29,7 @@ const Profile = mongoose.model(
       type: mongoose.Schema.Types.ObjectId,
       ref: "EmergencyContact"
     }
-  })
+  }, { autoCreate: true})
 );
 
 export { Profile }
