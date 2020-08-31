@@ -98,8 +98,7 @@ export class InscriptionEventFormComponent implements OnInit {
 
       this.eventService.createInscriptionEvent(newInscription).subscribe(data => {
         if (data.message.includes('success')) {
-          let navigationExtras = { state: { successs: true } };
-          this.router.navigate(['profile'], navigationExtras)
+          this.router.navigate(['event-list']);
         }
       });
 

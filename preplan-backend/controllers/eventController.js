@@ -786,7 +786,7 @@ router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
 
         await session.commitTransaction();
         session.endSession();
-        res.status(200).send({ message: "Registration sucessful" });
+        res.status(200).send({ message: "Registration successful" });
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
