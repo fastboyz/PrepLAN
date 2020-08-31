@@ -163,11 +163,20 @@ export class EventService {
     }
 
     getInscriptionByUserId(id: string) {
-        return null;
+        return this.http.get<any>(`${environment.apiUrl}/api/dashboard/profile/${id}/inscriptions`, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            console.log(response);
+            return response;
+        }));
     }
 
     updateInscriptionStatus(inscription: InscriptionEvent) {
-        return this.http.put<any>(`${environment.apiUrl}/api/dashboard/inscription/updateStatus`, inscription, {
+        let inscriptionList : InscriptionEvent[] = [];
+        inscriptionList.push(inscription);
+        return this.http.put<any>(`${environment.apiUrl}/api/dashboard/inscription/updateAllStatus`, inscriptionList, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -226,7 +235,7 @@ export class EventService {
             return response;
         }));
     }
-    
+
     addShift(shift: Shift) {
         return this.http.post<Shift>(`${environment.apiUrl}/api/dashboard/shift`, shift, {
             headers: {

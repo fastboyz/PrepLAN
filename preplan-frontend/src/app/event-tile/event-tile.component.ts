@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Edition } from '../shared/models/event';
 import { Router } from '@angular/router';
+import { EventService } from '../services/event.service';
+import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
+import { InscriptionEvent } from '../shared/models/inscriptionEvent';
 
 @Component({
   selector: 'event-tile',
@@ -9,10 +13,14 @@ import { Router } from '@angular/router';
 })
 export class EventTileComponent implements OnInit {
   @Input() edition: Edition;
+  @Input() inscription:InscriptionEvent;
   @Input() isEnrollable:boolean;
   @Input() isEnrolled: boolean;
   @Output() onClick = new EventEmitter <Edition>();
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+    private eventService: EventService,
+    private authService: AuthService,
+    private userService: UserService) { }
 
   ngOnInit(): void {
   }
@@ -27,8 +35,11 @@ export class EventTileComponent implements OnInit {
   }
 
   withdrawInscription(){
-    // TODO: remove Inscription of this user for this edition.
+    this.inscription.status="CANCELLED";
+    this.eventService.updateInscriptionStatus(this.inscription).subscribe(d=>{
+      document.getElementById('withdraw-confirmation-no').click();
+    });
     console.log("User Removed inscription from " + this.edition.event.title + " - " + this.edition.name );
-    document.getElementById('withdraw-confirmation-no').click();
+    
   }
 }

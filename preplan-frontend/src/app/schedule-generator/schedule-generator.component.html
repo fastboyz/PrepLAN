@@ -1,5 +1,9 @@
 <div class="container">
     <div class="section">
+        <button class="btn btn-primary" (click)="startGenerator()">Start Generator</button>
+        <button class="btn btn-danger" (click)="stopGenerator()">Stop Generator</button>
+    </div>
+    <div class="section">
         <input type="file" multiple="false" (change)="onFileChanged($event)">
     </div>
     <div class="section" *ngFor="let table of excelData">

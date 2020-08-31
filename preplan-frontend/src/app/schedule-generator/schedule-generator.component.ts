@@ -52,6 +52,14 @@ export class ScheduleGeneratorComponent implements OnInit {
     };
     reader.readAsBinaryString(target.files[0]);
   }
+
+  startGenerator(){
+
+  }
+
+  stopGenerator(){
+    
+  }
 }
 
 export class ExcelData {

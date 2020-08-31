@@ -4,6 +4,7 @@ import { EventService } from 'src/app/services/event.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { EventListComponent } from 'src/app/event-list/event-list.component';
 import { InscriptionEvent } from 'src/app/shared/models/inscriptionEvent';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'profile-inscription',
@@ -19,15 +20,17 @@ export class ProfileInscriptionComponent implements OnInit {
   
   constructor(
     private eventService: EventService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
-    // TODO:  Get editions of events of which the user signed up for
-
-    this.eventService.getInscriptionByUserId(this.authService.getCurrentUserId()).subscribe(data => {
-      this.inscriptions = data;
+    this.userService.getUserProfile(this.authService.getCurrentUserId()).subscribe(user => {
+      this.eventService.getInscriptionByUserId(user.id).subscribe(data => {
+        this.inscriptions = data;
+      });
     });
+ 
   }
   
   openDetails(data: Edition) {

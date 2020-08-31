@@ -3,7 +3,7 @@
 <div class="">
     <ul class="list-unstyled" >
         <li class="media" *ngFor="let inscription of inscriptions">     
-            <event-tile [edition]="inscription.edition" (onClick)="openDetails(inscription.edition)" [isEnrollable]="false" [isEnrolled]="true"></event-tile>
+            <event-tile [edition]="inscription.edition" (onClick)="openDetails(inscription.edition)" [isEnrollable]="false" [isEnrolled]="true" [inscription]="inscription"></event-tile>
         </li>
     </ul>
 </div>

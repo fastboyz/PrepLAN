@@ -608,7 +608,7 @@ router.get('/edition/:id/inscriptions/:status', [authJwt.verifyToken, authJwt.is
         })
 });
 
-router.get('/profile/:id/inscriptions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/profile/:id/inscriptions', [authJwt.verifyToken], (req, res) => {
     const profileId = req.params.id;
     Volunteer.find({ profile: profileId })
     .where('status').ne(inscriptionStatus.CANCELLED)
@@ -668,7 +668,7 @@ router.get('/profile/:id/inscriptions', [authJwt.verifyToken, authJwt.isOrganize
                 picked['positions'] = sanitizePositions(vol.positions, picked.edition);
                 picked['id'] = vol['_id'];
                 volunteerList.push(picked);
-            })
+            });
             res.status(200).json(volunteerList);
         })
 });
