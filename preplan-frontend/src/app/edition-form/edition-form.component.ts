@@ -21,7 +21,7 @@ export class EditionFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private eventService: EventService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.editionForm = this.formBuilder.group({
@@ -65,7 +65,7 @@ export class EditionFormComponent implements OnInit {
         },
       ],
       edition_Positions: this.formBuilder.array([
-        this.formBuilder.group({ title: '', description: '', id: '' }),
+        this.formBuilder.group({ title: '', description: '', id: '', spotId: 0, skillId: 0 }),
       ]),
     });
 
@@ -85,6 +85,7 @@ export class EditionFormComponent implements OnInit {
       });
 
       if (this.positionList && this.positionList.length > 0) {
+        console.log(this.positionList);
         this.editionPositions.clear();
         this.positionList.forEach((position) => {
           this.editionPositions.push(
@@ -92,6 +93,8 @@ export class EditionFormComponent implements OnInit {
               title: position.title,
               description: position.description,
               id: position.id,
+              spotId: position.spotId,
+              skillId: position.skillId,
             })
           );
         });
@@ -101,7 +104,7 @@ export class EditionFormComponent implements OnInit {
 
   createEdition(event: any) {
     let selectedEvent = this.eventList.find(
-      (evt) => evt.id == this.event.value.id
+      (evt) => evt.id === this.event.value.id
     );
     let newEdition: Edition = {
       name: this.editionName.value,
@@ -127,7 +130,7 @@ export class EditionFormComponent implements OnInit {
             edition: editionData,
           };
           this.eventService.createPosition(position).subscribe(
-            (positionData) => {},
+            (positionData) => { },
             (error) => {
               this.error = error;
               //TODO add logger

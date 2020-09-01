@@ -2,7 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import { authJwt } from '../middlewares'
 import { Event, Edition, Position, Volunteer, Availability, Shift } from '../models';
-import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler, startSolving, stopSolving, getExcel, getStatus } from '.';
+import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, updateSkillAndSpot, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler, startSolving, stopSolving, getExcel, getStatus } from '.';
 import { Contract } from '../models/contract';
 import { createShiftInScheduler, updateShiftInScheduler } from './schedulerService';
 
@@ -320,37 +320,24 @@ router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req,
         var i;
         for (i = 0; i < elements.length; i++) {
             const updatedSkillAndSpot = await updateSkillAndSpot(elements[i]);
+            console.log(updatedSkillAndSpot);
             if (updatedSkillAndSpot) {
-                Position.findById(elements[i].id).exec((err, pos) => {
-                    if (err) {
-                        res.status(500).send({ message: err });
-                        throw err;
-                    }
-                    pos.title = elements[i].title;
-                    pos.description = elements[i].description;
-                    pos.save((err, saved) => {
-                        if (err) {
-                            throw err
-                        }
-                        const picked = (({ title, description, edition, skillId, spotId }) => ({ title, description, edition, skillId, spotId }))(saved);
-                        picked['id'] = pos['_id'];
-                        Edition.findById(saved.edition).exec((err, edt) => {
-                            if (err) {
-                                throw err;
-                            }
-                            const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
-                            pickedEdt['id'] = edt['_id'];
-
-                            var evt = pickedEdt.event;
-                            const event = (({ title, description }) => ({ title, description }))(evt);
-                            event['id'] = evt['_id'];
-
-                            pickedEdt.event = event;
-                            picked.edition = pickedEdt;
-                            data.push(picked);
-                        });
-                    });
-                });
+                // Todo find a way to do a transaction here
+                var pos = await  Position.findById(elements[i].id);
+                pos.title = elements[i].title;
+                pos.description = elements[i].description;
+                var saved = await pos.save();
+                const picked = (({ title, description, edition, skillId, spotId }) => ({ title, description, edition, skillId, spotId }))(saved);
+                picked['id'] = pos['_id'];
+                var edt = await Edition.findById(saved.edition);
+                const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
+                pickedEdt['id'] = edt['_id'];
+                var evt = pickedEdt.event;
+                const event = (({ title, description }) => ({ title, description }))(evt);
+                event['id'] = evt['_id'];
+                pickedEdt.event = event;
+                picked.edition = pickedEdt;
+                data.push(picked);
             } else {
                 throw `Could not Update Position ${elements[i].title}`;
             }

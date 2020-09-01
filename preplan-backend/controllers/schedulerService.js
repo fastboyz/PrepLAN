@@ -98,7 +98,6 @@ const updateSkillAndSpot = async (position) => {
   var skill = {};
   var spot = {};
   var tenantId = position.edition.tenantId;
-
   skill["name"] = position.title;
   skill["tenantId"] = tenantId;
   skill["id"] = position.skillId;
@@ -124,7 +123,7 @@ const updateSkillAndSpot = async (position) => {
       skill: updatedSKill,
       spot: updatedSpot.data,
     };
-  } catch (error_1) {
+  } catch (error) {
     return false;
   }
 };

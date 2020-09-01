@@ -35,7 +35,7 @@ export class EditionDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.isEditable = false;
     this.authService.getRole().subscribe((data) => {
-      if (data.name == 'organizer') {
+      if (data.name === 'organizer') {
         this.isOrganizer = true;
       } else {
         this.isOrganizer = false;
