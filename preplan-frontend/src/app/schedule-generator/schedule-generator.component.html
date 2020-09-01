@@ -2,10 +2,8 @@
     <div class="section">
         <button class="btn btn-primary" (click)="startGenerator()">Start Generator</button>
         <button class="btn btn-danger" (click)="stopGenerator()">Stop Generator</button>
-        <button class="btn btn-primary" (click)="getExcel()">Get Excel</button>
-    </div>
-    <div class="section">
-        <input type="file" multiple="false" (change)="onFileChanged($event)">
+        <button class="btn btn-primary" (click)="getExcel()">Display Schedule</button>
+        <button class="btn btn-primary" (click)="downloadExcel()">Download Schedule</button>
     </div>
     <div class="section" *ngFor="let table of excelData">
         <h4>{{table.worksheetName}}</h4>

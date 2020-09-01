@@ -47,3 +47,7 @@ export class InscriptionEvent {
 
     volunteerId?: number;
 }
+
+export class Url {
+  url: string;
+}
