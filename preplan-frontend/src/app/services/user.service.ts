@@ -79,7 +79,6 @@ export class UserService {
 
 
   updateAccount(account: Account) {
-    console.log("Updated Account");
     return this.http
       .put<Account>(`${environment.apiUrl}/api/users/account`, account, {
         headers: {
@@ -88,14 +87,12 @@ export class UserService {
       })
       .pipe(
         map((response) => {
-          console.log("response :" + response);
           return response;
         })
       );
   }
 
   updateUserProfile(profile: Profile) {
-    console.log("Updated User Profile");
     return this.http
       .put<Profile>(`${environment.apiUrl}/api/users/profile`, profile, {
         headers: {
@@ -111,7 +108,6 @@ export class UserService {
   }
 
   updateEmergencyContact(contact: EmergencyContact) {
-    console.log("Updated Contact");
     return this.http
       .put<EmergencyContact>(`${environment.apiUrl}/api/users/contact`, contact, {
         headers: {

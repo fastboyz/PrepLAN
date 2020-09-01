@@ -44,13 +44,7 @@ export class EditionDetailsComponent implements OnInit {
   }
 
   onEnrollClick(event: any) {
-    console.log(
-      'Enroll at edition ' +
-      this.edition.name +
-      ' of event ' +
-      this.edition.event.title +
-      ' from detail modal'
-    );
+    document.getElementById('close-event-list-modal').click();
     this.router.navigate(['/inscription', this.edition.id]);
   }
 

@@ -168,7 +168,6 @@ export class EventService {
                 "x-access-token": this.authService.getToken()
             }
         }).pipe(map(response => {
-            console.log(response);
             return response;
         }));
     }
@@ -248,6 +247,36 @@ export class EventService {
 
     deleteShift(shift: Shift) {
         return this.http.post<Shift>(`${environment.apiUrl}/api/dashboard/shift/delete`, shift, {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    getExcelByEditionId(id:string){
+        return this.http.get<any>(`${environment.apiUrl}/api/dashboard/edition/solver/getExcel/${id}`,  {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+
+    startGenerator(id:string){
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/edition/startSolving/${id}`,  {
+            headers: {
+                "x-access-token": this.authService.getToken()
+            }
+        }).pipe(map(response => {
+            return response;
+        }));
+    }
+    
+    stopGenerator(id:string){
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/edition/stopSolving/${id}`,  {
             headers: {
                 "x-access-token": this.authService.getToken()
             }

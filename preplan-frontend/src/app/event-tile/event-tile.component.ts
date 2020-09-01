@@ -30,7 +30,6 @@ export class EventTileComponent implements OnInit {
   }
 
   onEnrollClick(event:Event){
-    console.log('Enroll at edition '+ this.edition.name + " of event "+ this.edition.event.title);
     this.router.navigate(['/inscription', this.edition.id]);
   }
 
@@ -39,7 +38,6 @@ export class EventTileComponent implements OnInit {
     this.eventService.updateInscriptionStatus(this.inscription).subscribe(d=>{
       document.getElementById('withdraw-confirmation-no').click();
     });
-    console.log("User Removed inscription from " + this.edition.event.title + " - " + this.edition.name );
     
   }
 }

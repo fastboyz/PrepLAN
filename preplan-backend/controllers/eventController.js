@@ -181,7 +181,7 @@ router.get('/edition/status/:editionId', [authJwt.verifyToken, authJwt.isOrganiz
     }
 });
 
-router.post('/edition/solver/getExcel/:editonId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+router.get('/edition/solver/getExcel/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var editionId = req.params.editionId;
     const edition = await Edition.findById(editionId);
     const spotsObjs = await Position.find({ edition: editionId })
@@ -196,7 +196,7 @@ router.post('/edition/solver/getExcel/:editonId', [authJwt.verifyToken, authJwt.
     if (await getExcel(edition.tenantId, edition.startDate, edition.endDate, spots)) {
         res.status(200).send();
     } else {
-        res.status(503).send({ message: "Could not start solving" })
+        res.status(503).send({ message: "Could not get excel" })
     }
 });
 

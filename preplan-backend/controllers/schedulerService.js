@@ -355,7 +355,7 @@ const updateAvailabilityInScheduler = async (data) => {
 
 const startSolving = async (tenantId) => {
   try {
-    await axios.put(`${SCHEDULER}/tenant/${tenantId}/roster/solve`);
+    await axios.post(`${SCHEDULER}/tenant/${tenantId}/roster/solve`);
     return true;
   } catch (error) {
     return false;
@@ -364,7 +364,7 @@ const startSolving = async (tenantId) => {
 
 const stopSolving = async (tenantId) => {
   try {
-    await axios.put(`${SCHEDULER}/tenant/${tenantId}/roster/terminate`);
+    await axios.post(`${SCHEDULER}/tenant/${tenantId}/roster/terminate`);
     return true;
   } catch (error) {
     return false;
@@ -372,10 +372,13 @@ const stopSolving = async (tenantId) => {
 }
 
 const getExcel = async (tenantId, startDate, endDate, spotList) => {
+  var startDateTime = moment(startDate).format('YYYY-MM-DD');
+  var endDateTime = moment(endDate).format('YYYY-MM-DD');
   try {
-    const response = await axios.put(`${SCHEDULER}/tenant/${tenantId}/roster/shiftRosterView/excel?endDate=${endDate}&spotList=${spotList}&startDate=${startDate}`);
+    const response = await axios.get(`${SCHEDULER}/tenant/${tenantId}/roster/shiftRosterView/excel?endDate=${endDateTime}&spotList=${spotList}&startDate=${startDateTime}`);
     return response.data;
   } catch (error) {
+    console.log(error);
     return false;
   }
 }

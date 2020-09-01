@@ -59,7 +59,6 @@ export class VolunteerListComponent implements OnInit {
     const approvedStatus = "APPROVED"
     let selected: InscriptionEvent[] = await this.getSelectedOptions();
     selected.forEach(opt => opt.status = approvedStatus);
-    console.log("Approving: " + JSON.stringify(selected));
     this.eventService.updateAllInscriptionStatus(selected).subscribe();
     this.clearSelection();
   }
@@ -68,7 +67,6 @@ export class VolunteerListComponent implements OnInit {
     const disapprovedStatus = "DISAPPROVED";
     let selected: InscriptionEvent[] = await this.getSelectedOptions();
     selected.forEach(opt => opt.status = disapprovedStatus);
-    console.log("Disapproving: " + JSON.stringify(selected));
     this.eventService.updateAllInscriptionStatus(selected).subscribe();
     this.clearSelection();
   }

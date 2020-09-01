@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as XLSX from 'xlsx';
+import { EventService } from '../services/event.service';
+import { ActivatedRoute } from '@angular/router';
 
 type AOA = any[][];
 
@@ -13,7 +15,9 @@ export class ScheduleGeneratorComponent implements OnInit {
   data: AOA;
   excelData: ExcelData[];
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+    private eventService: EventService) { }
 
   ngOnInit(): void {
     this.excelData = [];
@@ -53,12 +57,18 @@ export class ScheduleGeneratorComponent implements OnInit {
     reader.readAsBinaryString(target.files[0]);
   }
 
-  startGenerator(){
-
+  startGenerator() {
+    this.eventService.startGenerator(this.route.snapshot.paramMap.get('id')).subscribe();
   }
 
-  stopGenerator(){
-    
+  stopGenerator() {
+    this.eventService.stopGenerator(this.route.snapshot.paramMap.get('id')).subscribe();
+  }
+
+  getExcel() {
+    this.eventService.getExcelByEditionId(this.route.snapshot.paramMap.get('id')).subscribe(excel => {
+      console.log(excel);
+    });
   }
 }
 

@@ -72,7 +72,6 @@ export class GeneratorSettingsComponent implements OnInit {
         this.loadContracts(this.edition.id);
         this.newContract = new Contract();
       });
-      console.log("Added Contract:\nName: " + this.newContract.name + " . Max Min per Day: " + this.newContract.maximumMinutesPerDay)
     }
   }
 
@@ -84,7 +83,6 @@ export class GeneratorSettingsComponent implements OnInit {
         this.loadContracts(contract.edition.id);
       }
     });
-    console.log("Delete Contract:\nName: " + contract.name + " . Max Min per Day: " + contract.maximumMinutesPerDay)
   }
 
   addShift() {
@@ -98,14 +96,12 @@ export class GeneratorSettingsComponent implements OnInit {
       this.eventService.addShift(this.newShift).subscribe(data => {
         this.loadShifts(this.edition.id);
         this.newShift = new Shift();
-      })
-      console.log("Add Shift :\n Start: " + this.newShift.startDateTime + " . End: " + this.newShift.endDateTime + "Position: " + this.newShift.position);
+      });
     }
   }
   deleteShift(shift: Shift) {
     this.eventService.deleteShift(shift).subscribe(data => {
       this.loadShifts(this.edition.id);
-    })
-    console.log("Delete Shift :\n Start: " + shift.startDateTime + " . End: " + shift.endDateTime + "Position: " + shift.position);
+    });
   }
 }
