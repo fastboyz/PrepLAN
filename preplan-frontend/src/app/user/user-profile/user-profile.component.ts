@@ -24,70 +24,70 @@ export class UserProfileComponent implements OnInit {
   contactData: EmergencyContact;
   accountData: Account;
   constructor(private userService: UserService,
-    private authService: AuthService) { }
+              private authService: AuthService) { }
 
   ngOnInit(): void {
     if (this.authService.currentUserValue) {
       this.userService.getUserProfile(this.authService.currentUserValue.id).subscribe(user => {
         this.profileData = user;
-        this.accountData= this.profileData.user.account;
+        this.accountData = this.profileData.user.account;
         this.contactData = this.profileData.emergencyContact;
       });
     }
   }
 
   updateAccount() {
-    let accountForm = this.accountFormComponent.accountForm;
+    const accountForm = this.accountFormComponent.accountForm;
     if (accountForm.valid && (accountForm.touched || accountForm.dirty)) {
-      let account: Account = {
-        username: accountForm.get("username").value,
-        password: accountForm.get("password").value,
-        email: accountForm.get("email").value,
-        role: accountForm.get("role").value,
+      const account: Account = {
+        username: accountForm.get('username').value,
+        password: accountForm.get('password').value,
+        email: accountForm.get('email').value,
+        role: accountForm.get('role').value,
         id: this.accountData.id
-      }
+      };
 
       this.userService.updateAccount(account).subscribe();
     }
   }
 
   updateUserProfile() {
-    let userForm = this.userFormComponent.userForm;
+    const userForm = this.userFormComponent.userForm;
     if (userForm.valid && (userForm.touched || userForm.dirty)) {
-      let userInfo: User = {
+      const userInfo: User = {
         id: this.profileData.user.id,
         account: this.accountData,
-        firstName: userForm.get("firstName").value,
-        lastName: userForm.get("lastName").value,
-        pronoun: userForm.get("pronoun").value,
-        birthday: userForm.get("birthday").value,
-        discord: userForm.get("discord").value,
-        phoneNumber: userForm.get("phoneNumber").value
+        firstName: userForm.get('firstName').value,
+        lastName: userForm.get('lastName').value,
+        pronoun: userForm.get('pronoun').value,
+        birthday: userForm.get('birthday').value,
+        discord: userForm.get('discord').value,
+        phoneNumber: userForm.get('phoneNumber').value
       };
 
-      let userProfile: Profile = {
+      const userProfile: Profile = {
         id: this.profileData.id,
         user: userInfo,
-        tshirtSize: userForm.get("tshirtSize").value,
-        allergy: userForm.get("allergy").value,
-        certification: userForm.get("certification").value,
+        tshirtSize: userForm.get('tshirtSize').value,
+        allergy: userForm.get('allergy').value,
+        certification: userForm.get('certification').value,
         emergencyContact: this.contactData
-      }
+      };
 
       this.userService.updateUserProfile(userProfile).subscribe();
     }
   }
 
   updateContact() {
-    let contactForm = this.contactFormComponent.contactForm;
+    const contactForm = this.contactFormComponent.contactForm;
     if (contactForm.valid && (contactForm.touched || contactForm.dirty)) {
-      let emergencyContact: EmergencyContact = {
+      const emergencyContact: EmergencyContact = {
         id: this.contactData.id,
-        firstName: contactForm.get("firstName").value,
-        lastName: contactForm.get("lastName").value,
-        relationship: contactForm.get("relationship").value,
-        phoneNumber: contactForm.get("phoneNumber").value
-      }
+        firstName: contactForm.get('firstName').value,
+        lastName: contactForm.get('lastName').value,
+        relationship: contactForm.get('relationship').value,
+        phoneNumber: contactForm.get('phoneNumber').value
+      };
 
       this.userService.updateEmergencyContact(emergencyContact).subscribe();
     }

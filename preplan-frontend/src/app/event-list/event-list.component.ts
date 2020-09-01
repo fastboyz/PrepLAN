@@ -15,7 +15,7 @@ export class EventListComponent implements OnInit {
   positionList: Position[];
 
   constructor(private router: Router,
-    private eventService: EventService) { }
+              private eventService: EventService) { }
 
   ngOnInit(): void {
     if (this.preparedData == null) {

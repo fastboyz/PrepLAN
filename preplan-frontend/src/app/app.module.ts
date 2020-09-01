@@ -59,7 +59,6 @@ import { ScheduleGeneratorComponent } from './schedule-generator/schedule-genera
     HttpClientModule,
     RouterModule,
     jqxSchedulerModule,
-    
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

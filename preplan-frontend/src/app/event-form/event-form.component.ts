@@ -22,7 +22,7 @@ export class EventFormComponent implements OnInit {
 
 
   constructor(private formBuilder: FormBuilder,
-    private eventService: EventService) { }
+              private eventService: EventService) { }
 
   ngOnInit(): void {
     this.eventForm = this.formBuilder.group({
@@ -40,16 +40,16 @@ export class EventFormComponent implements OnInit {
 
   createEvent(event: Event) {
     if (this.eventForm.valid) {
-      let newEvent: Event = {
+      const newEvent: Event = {
         title: this.eventTitle.value,
         description: this.eventDescription.value
       };
 
       this.eventService.createEvent(newEvent).subscribe(
         data => {
-          let editionForm = this.editionFormComponent.editionForm;
+          const editionForm = this.editionFormComponent.editionForm;
           if ((editionForm.touched || editionForm.dirty) /* && editionForm.valid*/) {
-            let newEdition: Edition = {
+            const newEdition: Edition = {
               name: editionForm.get('editionName').value,
               startDate: editionForm.get('editionStartDate').value,
               endDate: editionForm.get('editionEndDate').value,
@@ -57,36 +57,49 @@ export class EventFormComponent implements OnInit {
               event: data,
               isActive: false,
               isRegistering: false
-            }
+            };
             this.eventService.createEdition(newEdition).subscribe(
               editionData => {
-                let editionPositions = this.editionFormComponent.editionForm.get('edition_Positions') as FormArray;
-                for (let index = 0; index < editionPositions.value.length; index++) {
-                  let position: Position = {
-                    title: editionPositions.value[index].title,
-                    description: editionPositions.value[index].description,
+                const editionPositions = this.editionFormComponent.editionForm.get('edition_Positions') as FormArray;
+                for (const element of editionPositions.value) {
+                  const position: Position = {
+                    title: element.title,
+                    description: element.description,
                     edition: editionData
                   };
                   this.eventService.createPosition(position).subscribe(positionData => {
                   },
                     error => {
                       this.error = error;
-                      //TODO add logger
+                      // TODO add logger
                     });
                 }
+                // for (let index = 0; index < editionPositions.value.length; index++) {
+                //   const position: Position = {
+                //     title: editionPositions.value[index].title,
+                //     description: editionPositions.value[index].description,
+                //     edition: editionData
+                //   };
+                //   this.eventService.createPosition(position).subscribe(positionData => {
+                //   },
+                //     error => {
+                //       this.error = error;
+                //       // TODO add logger
+                //     });
+                // }
                 document.getElementById('event-close').click();
                 this.onEventCreated.emit(true);
               },
               error => {
                 this.error = error;
-                //TODO add logger
+                // TODO add logger
 
               });
           }
         },
         error => {
           this.error = error;
-          //TODO add logger
+          // TODO add logger
         });
     }
   }

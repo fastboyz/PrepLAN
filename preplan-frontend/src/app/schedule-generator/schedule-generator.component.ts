@@ -38,8 +38,7 @@ export class ScheduleGeneratorComponent implements OnInit {
       console.log(excel);
       this.eventService.downloadFile('roster', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', excel).subscribe(
         success => {
-          this.loadExcel(success)
-          // saveAs(success, 'fileName');
+          this.loadExcel(success);
         },
         err => {
           alert('Server error while downloading file.');

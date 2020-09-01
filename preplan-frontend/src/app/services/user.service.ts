@@ -37,7 +37,7 @@ export class UserService {
       })
       .pipe(
         map((response) => {
-          let cUser: CombinedUser = new CombinedUser();
+          const cUser: CombinedUser = new CombinedUser();
           cUser.idAccount = response.user.account.id;
           cUser.idEmergencyContact = response.emergencyContact.id;
           cUser.idProfile = response.id;

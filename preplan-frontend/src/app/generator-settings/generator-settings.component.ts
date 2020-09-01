@@ -25,7 +25,7 @@ export class GeneratorSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
     this.loadData(id);
     this.newContract = new Contract();
     this.newShift = new Shift();
@@ -49,24 +49,24 @@ export class GeneratorSettingsComponent implements OnInit {
   async loadShifts(id: string) {
     this.eventService.getAllShifts(id).subscribe(data => {
       this.shifts = data;
-    })
+    });
   }
 
   getDate(date: Date) {
     return moment(date).format('YYYY-MM-DDTHH:mm');
   }
   getDateName(date: Date) {
-    return moment(date).format("MMM Do YYYY");
+    return moment(date).format('MMM Do YYYY');
   }
 
   getTime(date: Date) {
-    return moment(date).format("HH:mm");
+    return moment(date).format('HH:mm');
   }
 
   addContract() {
     if (this.newContract.name != null && this.newContract.maximumMinutesPerDay != null) {
       this.newContract.edition = this.edition;
-      let newContracts: Contract[] = [];
+      const newContracts: Contract[] = [];
       newContracts.push(this.newContract);
       this.eventService.createContract(newContracts).subscribe(data => {
         this.loadContracts(this.edition.id);
@@ -76,7 +76,7 @@ export class GeneratorSettingsComponent implements OnInit {
   }
 
   deleteContract(contract: Contract) {
-    let deletedContracts: Contract[] = [];
+    const deletedContracts: Contract[] = [];
     deletedContracts.push(contract);
     this.eventService.deleteContract(deletedContracts).subscribe(data => {
       if (true) {

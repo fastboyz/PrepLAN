@@ -30,12 +30,12 @@ export class InscriptionEventFormComponent implements OnInit {
   secondPosition: Position;
   thirdPosition: Position;
   selectedContract: Contract;
-  anyDeptId: string = "any-departements-id";
+  anyDeptId = 'any-departements-id';
   preferencesForm: FormGroup;
   step: number;
   availabilities: any = [];
   selectedAvailabilities: Availability[] = [];
-  errorNoChecked: boolean = false;
+  errorNoChecked = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,7 +46,7 @@ export class InscriptionEventFormComponent implements OnInit {
     private eventService: EventService) { }
 
   ngOnInit(): void {
-    let editionId = this.route.snapshot.paramMap.get('id');
+    const editionId = this.route.snapshot.paramMap.get('id');
     this.step = 1;
     this.preferencesForm = this.formBuilder.group({
       hoursPreference: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
@@ -67,8 +67,8 @@ export class InscriptionEventFormComponent implements OnInit {
         this.edition = edition;
         this.getEditionDays();
         this.getPositions(this.edition);
-        this.eventService.getAllContracts(this.edition.id).subscribe(data=>{
-          this.contracts= data;
+        this.eventService.getAllContracts(this.edition.id).subscribe(data => {
+          this.contracts = data;
         });
       });
     } else {
@@ -85,16 +85,16 @@ export class InscriptionEventFormComponent implements OnInit {
 
       await this.getSelectedOptions();
 
-      let newInscription: InscriptionEvent = {
+      const newInscription: InscriptionEvent = {
         edition: this.edition,
         profile: this.profileData,
         availabilities: this.selectedAvailabilities,
         positions: this.getSelectedPositions(),
         contract: this.selectedContract,
-        status: "PENDING",
+        status: 'PENDING',
         inscriptionDate: moment().toDate(),
         lastUpdated: moment().toDate()
-      }
+      };
 
       this.eventService.createInscriptionEvent(newInscription).subscribe(data => {
         if (data.message.includes('success')) {
@@ -106,27 +106,27 @@ export class InscriptionEventFormComponent implements OnInit {
   }
 
   async updateUserProfile() {
-    let userForm = this.userFormComponent.userForm;
+    const userForm = this.userFormComponent.userForm;
     if (userForm.valid && (userForm.touched || userForm.dirty)) {
-      let userInfo: User = {
+      const userInfo: User = {
         id: this.profileData.user.id,
         account: this.profileData.user.account,
-        firstName: userForm.get("firstName").value,
-        lastName: userForm.get("lastName").value,
-        pronoun: userForm.get("pronoun").value,
-        birthday: userForm.get("birthday").value,
-        discord: userForm.get("discord").value,
-        phoneNumber: userForm.get("phoneNumber").value
+        firstName: userForm.get('firstName').value,
+        lastName: userForm.get('lastName').value,
+        pronoun: userForm.get('pronoun').value,
+        birthday: userForm.get('birthday').value,
+        discord: userForm.get('discord').value,
+        phoneNumber: userForm.get('phoneNumber').value
       };
 
-      let userProfile: Profile = {
+      const userProfile: Profile = {
         id: this.profileData.id,
         user: userInfo,
-        tshirtSize: userForm.get("tshirtSize").value,
-        allergy: userForm.get("allergy").value,
-        certification: userForm.get("certification").value,
+        tshirtSize: userForm.get('tshirtSize').value,
+        allergy: userForm.get('allergy').value,
+        certification: userForm.get('certification').value,
         emergencyContact: this.contactData
-      }
+      };
 
       this.userService.updateUserProfile(userProfile).subscribe(profile => {
         this.profileData = profile;
@@ -135,15 +135,15 @@ export class InscriptionEventFormComponent implements OnInit {
   }
 
   async updateContact() {
-    let contactForm = this.contactFormComponent.contactForm;
+    const contactForm = this.contactFormComponent.contactForm;
     if (contactForm.valid && (contactForm.touched || contactForm.dirty)) {
-      let emergencyContact: EmergencyContact = {
+      const emergencyContact: EmergencyContact = {
         id: this.contactData.id,
-        firstName: contactForm.get("firstName").value,
-        lastName: contactForm.get("lastName").value,
-        relationship: contactForm.get("relationship").value,
-        phoneNumber: contactForm.get("phoneNumber").value
-      }
+        firstName: contactForm.get('firstName').value,
+        lastName: contactForm.get('lastName').value,
+        relationship: contactForm.get('relationship').value,
+        phoneNumber: contactForm.get('phoneNumber').value
+      };
 
       this.userService.updateEmergencyContact(emergencyContact).subscribe(contact => {
         this.contactData = contact;
@@ -156,9 +156,9 @@ export class InscriptionEventFormComponent implements OnInit {
   }
 
   goToNextStep() {
-    if (this.step == 2) {
-      var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-      var checkedOne = Array.prototype.slice.call(checkboxes).some(x => x.checked);
+    if (this.step === 2) {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      const checkedOne = Array.prototype.slice.call(checkboxes).some(x => x.checked);
       if (!checkedOne) {
         this.errorNoChecked = true;
         return;
@@ -183,8 +183,8 @@ export class InscriptionEventFormComponent implements OnInit {
     this.edition = this.inscriptionEvent.edition;
 
     this.getPositions(this.edition);
-    this.eventService.getAllContracts(this.edition.id).subscribe(data=>{
-      this.contracts= data;
+    this.eventService.getAllContracts(this.edition.id).subscribe(data => {
+      this.contracts = data;
     });
 
     this.availabilities = [];
@@ -195,47 +195,47 @@ export class InscriptionEventFormComponent implements OnInit {
   getPositions(edition: Edition) {
     this.eventService.getPositionsbyEditionId(edition.id).subscribe(data => {
       this.positions = data;
-      let position: Position = {
+      const position: Position = {
         id: this.anyDeptId,
-        title: "Any Departments",
-        edition: edition,
-        description: "All and any the departments"
-      }
+        title: 'Any Departments',
+        edition,
+        description: 'All and any the departments'
+      };
       this.positions.unshift(position);
     });
   }
 
   getSelectedPositions() {
-    if (this.firstPosition.id == this.anyDeptId ||
-      this.secondPosition.id == this.anyDeptId ||
-      this.thirdPosition.id == this.anyDeptId) {
-        return this.positions.slice(1, this.positions.length);
+    if (this.firstPosition.id === this.anyDeptId ||
+      this.secondPosition.id === this.anyDeptId ||
+      this.thirdPosition.id === this.anyDeptId) {
+      return this.positions.slice(1, this.positions.length);
     }
 
-    let selectedPositions: Position[] = this.positions
+    const selectedPositions: Position[] = this.positions
       .filter(pos =>
-        pos.id == this.firstPosition.id||
-        pos.id == this.secondPosition.id ||
-        pos.id == this.thirdPosition.id
-      )
+        pos.id === this.firstPosition.id ||
+        pos.id === this.secondPosition.id ||
+        pos.id === this.thirdPosition.id
+      );
     return selectedPositions;
   }
 
   getSelectedContract() {
-    let selectedContract: Contract = this.contracts.find(contract => {
-      contract.name == this.hoursPreference.value
-    })
+    const selectedContract: Contract = this.contracts.find(contract => {
+      contract.name === this.hoursPreference.value;
+    });
     return selectedContract;
   }
 
   async getSelectedOptions() {
-    this.selectedAvailabilities = []
+    this.selectedAvailabilities = [];
     this.availabilities.forEach(element => {
       element.shiftsInDay.forEach(shift => {
         if (shift.checked) {
-          this.selectedAvailabilities.push(this.getAvailability(element.date, shift.value, "DESIRED"));
+          this.selectedAvailabilities.push(this.getAvailability(element.date, shift.value, 'DESIRED'));
         } else {
-          this.selectedAvailabilities.push(this.getAvailability(element.date, shift.value, "UNAVAILABLE"));
+          this.selectedAvailabilities.push(this.getAvailability(element.date, shift.value, 'UNAVAILABLE'));
         }
       });
     });
@@ -275,12 +275,13 @@ export class InscriptionEventFormComponent implements OnInit {
   }
 
   setAvailability() {
-    let sameSize = this.inscriptionEvent.availabilities.length == (this.availabilities.length * this.availabilities[0].shiftsInDay.length);
+    const sameSize = this.inscriptionEvent.availabilities.length ===
+      (this.availabilities.length * this.availabilities[0].shiftsInDay.length);
     if (sameSize) {
       let index = 0;
       for (let day = 0; day < this.availabilities.length; day++) {
         for (let shift = 0; shift < this.availabilities[day].shiftsInDay.length; shift++) {
-          let isDesired = this.inscriptionEvent.availabilities[index].state == "DESIRED";
+          const isDesired = this.inscriptionEvent.availabilities[index].state === 'DESIRED';
           this.availabilities[day].shiftsInDay[shift].checked = isDesired;
           index++;
         }
@@ -289,10 +290,10 @@ export class InscriptionEventFormComponent implements OnInit {
   }
 
   async getEditionDays() {
-    let startDate: moment.Moment = moment(this.edition.startDate);
-    let endDate: moment.Moment = moment(this.edition.endDate);
+    const startDate: moment.Moment = moment(this.edition.startDate);
+    const endDate: moment.Moment = moment(this.edition.endDate);
 
-    for (var d = startDate; d <= endDate; d = d.add(1, 'd')) {
+    for (let d = startDate; d <= endDate; d = d.add(1, 'd')) {
       this.availabilities.push({
         date: d.clone(),
         shiftsInDay: [

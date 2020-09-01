@@ -18,14 +18,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LoginFormComponent,
     UserFormComponent,
     UserProfileComponent,
-    UserRegistrationComponent, 
+    UserRegistrationComponent,
     AccountFormComponent,
-    EmergencyContactFormComponent 
+    EmergencyContactFormComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule,   
+    FormsModule,
     ReactiveFormsModule,
   ],
   exports: [UserFormComponent, EmergencyContactFormComponent, UserProfileComponent],

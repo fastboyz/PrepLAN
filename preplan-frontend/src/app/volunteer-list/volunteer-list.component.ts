@@ -14,7 +14,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class VolunteerListComponent implements OnInit {
   @ViewChild(InscriptionEventFormComponent) inscriptionEventFormComponent: InscriptionEventFormComponent;
   @Input() edition: Edition;
-  viewOnly: boolean = true;
+  viewOnly = true;
 
   selectedFilter: any;
   status = Status;
@@ -31,15 +31,15 @@ export class VolunteerListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('id');
-    if (id != null || id != undefined) {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id != null || id !== undefined) {
       this.eventService.getAllInscriptionByEditionId(id).subscribe(async (data) => {
         await this.createData(data);
         this.inscriptionCheckboxes = JSON.parse(JSON.stringify(this.allInscriptionCheckboxes));
       });
     }
     this.statusOptions = Object.keys(this.status);
-    this.selectedFilter = "ALL";
+    this.selectedFilter = 'ALL';
   }
 
   loadModal(inscription: InscriptionEvent) {
@@ -48,24 +48,24 @@ export class VolunteerListComponent implements OnInit {
 
   async createData(data: InscriptionEvent[]) {
     data.forEach(element => {
-      let newEntry: InscriptionCheckbox = {
+      const newEntry: InscriptionCheckbox = {
         inscriptionEvent: element,
         checked: false
-      }
+      };
       this.allInscriptionCheckboxes.push(newEntry);
-    })
+    });
   }
   async approveSelected() {
-    const approvedStatus = "APPROVED"
-    let selected: InscriptionEvent[] = await this.getSelectedOptions();
+    const approvedStatus = 'APPROVED';
+    const selected: InscriptionEvent[] = await this.getSelectedOptions();
     selected.forEach(opt => opt.status = approvedStatus);
     this.eventService.updateAllInscriptionStatus(selected).subscribe();
     this.clearSelection();
   }
 
   async disapproveSelected() {
-    const disapprovedStatus = "DISAPPROVED";
-    let selected: InscriptionEvent[] = await this.getSelectedOptions();
+    const disapprovedStatus = 'DISAPPROVED';
+    const selected: InscriptionEvent[] = await this.getSelectedOptions();
     selected.forEach(opt => opt.status = disapprovedStatus);
     this.eventService.updateAllInscriptionStatus(selected).subscribe();
     this.clearSelection();
@@ -119,7 +119,7 @@ export class VolunteerListComponent implements OnInit {
   }
 
   getShiftCount(availability: Availability[]) {
-    return availability.filter(a => a.state == "DESIRED").length;
+    return availability.filter(a => a.state === 'DESIRED').length;
   }
 }
 
@@ -133,8 +133,8 @@ class InscriptionStatus {
 }
 
 enum Status {
-  PENDING = "PENDING",
-  APPROVED = "APPROVED",
-  DISAPPROVED = "DISAPPROVED",
-  CANCELLED = "CANCELLED"
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  DISAPPROVED = 'DISAPPROVED',
+  CANCELLED = 'CANCELLED'
 }

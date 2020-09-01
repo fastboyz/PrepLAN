@@ -18,15 +18,15 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'event-list', component: EventListComponent, canActivate: [AuthGuard] },
   {
-    path: 'event-manager', 
-    component: EventManagerComponent, 
+    path: 'event-manager',
+    component: EventManagerComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: 'organizer'
     }
   },
-  {path: 'inscription/:id', component: InscriptionEventFormComponent, canActivate: [AuthGuard]},
-  {path: 'edition/:id', component: EditionManagerComponent, canActivate: [AuthGuard]},
+  { path: 'inscription/:id', component: InscriptionEventFormComponent, canActivate: [AuthGuard] },
+  { path: 'edition/:id', component: EditionManagerComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];
 

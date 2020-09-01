@@ -14,7 +14,7 @@ import { first } from 'rxjs/operators';
 export class LoginFormComponent implements OnInit {
   error: string;
   loginForm: FormGroup;
-  submitted: boolean = false;
+  submitted = false;
 
   constructor(
     private router: Router,
@@ -32,7 +32,7 @@ export class LoginFormComponent implements OnInit {
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
-    })
+    });
   }
 
   ngOnDestroy(): void {
@@ -40,7 +40,7 @@ export class LoginFormComponent implements OnInit {
   }
 
   redirect() {
-    document.body.className = document.body.className.replace('body-login-form', "");
+    document.body.className = document.body.className.replace('body-login-form', '');
     this.router.navigate(['register']);
   }
 
@@ -48,15 +48,15 @@ export class LoginFormComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    if (this.loginForm.invalid) return;
-    //login
+    if (this.loginForm.invalid) { return; }
+    // login
     this.authService.login(this.f.username.value, this.f.password.value).pipe(first()).subscribe(
-      data =>{
+      data => {
         this.router.navigate(['/']);
-      }, 
+      },
       error => {
         this.error = error;
       }
-    )
+    );
   }
 }

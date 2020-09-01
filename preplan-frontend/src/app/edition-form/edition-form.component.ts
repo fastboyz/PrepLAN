@@ -103,10 +103,10 @@ export class EditionFormComponent implements OnInit {
   }
 
   createEdition(event: any) {
-    let selectedEvent = this.eventList.find(
+    const selectedEvent = this.eventList.find(
       (evt) => evt.id === this.event.value.id
     );
-    let newEdition: Edition = {
+    const newEdition: Edition = {
       name: this.editionName.value,
       startDate: this.editionStartDate.value,
       endDate: this.editionEndDate.value,
@@ -119,30 +119,41 @@ export class EditionFormComponent implements OnInit {
     this.eventService.createEdition(newEdition).subscribe(
       (editionData) => {
 
-        for (
-          let index = 0;
-          index < this.editionPositions.value.length;
-          index++
-        ) {
-          let position: Position = {
-            title: this.editionPositions.value[index].title,
-            description: this.editionPositions.value[index].description,
+        for (const element of this.editionPositions.value) {
+          const position: Position = {
+            title: element.title,
+            description: element.description,
             edition: editionData,
           };
           this.eventService.createPosition(position).subscribe(
             (positionData) => { },
             (error) => {
               this.error = error;
-              //TODO add logger
+              // TODO add logger
             }
           );
         }
+
+        // for (let index = 0; index < this.editionPositions.value.length; index++) {
+        //   const position: Position = {
+        //     title: this.editionPositions.value[index].title,
+        //     description: this.editionPositions.value[index].description,
+        //     edition: editionData,
+        //   };
+        //   this.eventService.createPosition(position).subscribe(
+        //     (positionData) => { },
+        //     (error) => {
+        //       this.error = error;
+        //       // TODO add logger
+        //     }
+        //   );
+        // }
         document.getElementById('edition-close').click();
         this.onEventCreated.emit(true);
       },
       (error) => {
         this.error = error;
-        //TODO add logger
+        // TODO add logger
       }
     );
   }
@@ -173,7 +184,7 @@ export class EditionFormComponent implements OnInit {
     );
   }
 
-  deletePosition(index) {
+  deletePosition(index: number) {
     this.editionPositions.removeAt(index);
     this.editionForm.markAsDirty();
     this.editionForm.get('edition_Positions').markAsTouched();

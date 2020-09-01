@@ -11,13 +11,13 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./account-form.component.scss']
 })
 export class AccountFormComponent implements OnInit {
-  @Input("accountData") accountData: Account;
+  @Input('accountData') accountData: Account;
   accountForm: FormGroup;
   roleOption: any = ['admin', 'volunteer', 'organizer'];
 
   constructor(private formBuilder: FormBuilder,
-    private userService: UserService,
-    private authService: AuthService) { }
+              private userService: UserService,
+              private authService: AuthService) { }
 
   ngOnInit(): void {
     this.accountForm = this.formBuilder.group({
@@ -25,7 +25,7 @@ export class AccountFormComponent implements OnInit {
       password: ['', { validators: [Validators.required, Validators.minLength(6), FormValidators.trimValue], updateOn: 'blur' }],
       email: ['', { validators: [Validators.required, Validators.pattern(FormValidators.emailPattern)], updateOn: 'blur' }],
       role: ['', { validators: [Validators.required], updateOn: 'blur' }],
-    })
+    });
 
     if (this.authService.currentUserValue) {
       this.userService.getProfile(this.authService.currentUserValue.id).subscribe(profile => {

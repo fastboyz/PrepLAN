@@ -14,10 +14,10 @@ export class EditionManagerComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private eventService:EventService) { }
+    private eventService: EventService) { }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
     if (id !== null) {
       this.eventService.getEditionById(id).subscribe(data => {
         this.edition = data;
@@ -29,8 +29,8 @@ export class EditionManagerComponent implements OnInit {
   }
 
 
-  onUpdate(isUpdated:boolean){
-    if(isUpdated){
+  onUpdate(isUpdated: boolean) {
+    if (isUpdated) {
       location.reload();
     }
   }

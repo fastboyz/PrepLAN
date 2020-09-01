@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { FormValidators } from '../../shared/validators/formValidators'
+import { FormValidators } from '../../shared/validators/formValidators';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -13,13 +13,13 @@ import * as moment from 'moment';
   styleUrls: ['./user-form.component.scss']
 })
 export class UserFormComponent implements OnInit {
-  @Input("profileData") profileData: Profile;
+  @Input('profileData') profileData: Profile;
   @Output() onSubmit = new EventEmitter();
   @Output() onCancel = new EventEmitter();
   @Input() viewOnly: boolean;
   userForm: FormGroup;
-  namePattern = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
-  submitted: boolean = false;
+  namePattern = '^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$';
+  submitted = false;
   userProfile: Profile;
   user: CombinedUser;
 
@@ -28,22 +28,31 @@ export class UserFormComponent implements OnInit {
   roleOption: any = ['admin', 'volunteer', 'organizer'];
 
   constructor(private router: Router,
-    private userService: UserService,
-    private authService: AuthService,
-    private formBuilder: FormBuilder) { }
+              private userService: UserService,
+              private authService: AuthService,
+              private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     this.userForm = this.formBuilder.group({
-      firstName: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-      lastName: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
-      pronoun: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
-      birthday: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.pattern(FormValidators.datePattern)], updateOn: 'blur' }],
-      phoneNumber: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
-      discord: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.pattern(FormValidators.discordPattern)], updateOn: 'blur' }],
-      tshirtSize: [{ value: '', disabled: this.viewOnly }, { validators: [Validators.required], updateOn: 'blur' }],
-      allergy: [{ value: '', disabled: this.viewOnly }, { validators: [FormValidators.trimValue], updateOn: 'blur' }],
-      certification: [{ value: '', disabled: this.viewOnly }, { validators: [FormValidators.trimValue], updateOn: 'blur' }],
-    })
+      firstName: [{ value: '', disabled: this.viewOnly },
+      { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      lastName: [{ value: '', disabled: this.viewOnly },
+      { validators: [Validators.required, Validators.minLength(1), FormValidators.trimValue], updateOn: 'blur' }],
+      pronoun: [{ value: '', disabled: this.viewOnly },
+      { validators: [Validators.required], updateOn: 'blur' }],
+      birthday: [{ value: '', disabled: this.viewOnly },
+      { validators: [Validators.required, Validators.pattern(FormValidators.datePattern)], updateOn: 'blur' }],
+      phoneNumber: [{ value: '', disabled: this.viewOnly },
+      { validators: [Validators.required, Validators.pattern(FormValidators.phoneNumberPattern)], updateOn: 'blur' }],
+      discord: [{ value: '', disabled: this.viewOnly },
+      { validators: [Validators.pattern(FormValidators.discordPattern)], updateOn: 'blur' }],
+      tshirtSize: [{ value: '', disabled: this.viewOnly },
+      { validators: [Validators.required], updateOn: 'blur' }],
+      allergy: [{ value: '', disabled: this.viewOnly },
+      { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+      certification: [{ value: '', disabled: this.viewOnly },
+      { validators: [FormValidators.trimValue], updateOn: 'blur' }],
+    });
 
     if (this.viewOnly) {
       if (this.profileData) {
@@ -76,14 +85,14 @@ export class UserFormComponent implements OnInit {
   }
   onSubmitForm() {
     this.submitted = true;
-    if (this.userForm.invalid) return;
+    if (this.userForm.invalid) { return; }
 
-    let formData = (this.userForm.value as FormData);
+    const formData = (this.userForm.value as FormData);
     // formData['idAccount'] =  this.user?.idAccount;
     // formData['idUser'] = this.user?.idUser;
     // formData['idProfile'] = this.user?.idProfile;
     // formData['idEmergencyContact'] = this.user?.idEmergencyContact;
-    let newUser: User = {
+    const newUser: User = {
       id: this.userProfile.user.id,
       firstName: this.firstName.value,
       lastName: this.lastName.value,
@@ -92,16 +101,16 @@ export class UserFormComponent implements OnInit {
       phoneNumber: this.phoneNumber.value,
       discord: this.discord.value,
       account: this.userProfile.user.account
-    }
+    };
 
-    let newUserProfile: Profile = {
+    const newUserProfile: Profile = {
       id: this.userProfile.id,
       user: newUser,
       allergy: this.allergy.value,
       certification: this.certification.value,
       tshirtSize: this.tshirtSize.value,
       emergencyContact: this.userProfile.emergencyContact
-    }
+    };
 
     // this.onSubmit.emit(formData);
     this.onSubmit.emit(newUserProfile);

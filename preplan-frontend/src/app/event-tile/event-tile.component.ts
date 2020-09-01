@@ -13,31 +13,28 @@ import { InscriptionEvent } from '../shared/models/inscriptionEvent';
 })
 export class EventTileComponent implements OnInit {
   @Input() edition: Edition;
-  @Input() inscription:InscriptionEvent;
-  @Input() isEnrollable:boolean;
+  @Input() inscription: InscriptionEvent;
+  @Input() isEnrollable: boolean;
   @Input() isEnrolled: boolean;
-  @Output() onClick = new EventEmitter <Edition>();
-  constructor(private router: Router,
-    private eventService: EventService,
-    private authService: AuthService,
-    private userService: UserService) { }
+  @Output() onClick = new EventEmitter<Edition>();
+  constructor(private router: Router, private eventService: EventService) { }
 
   ngOnInit(): void {
   }
-  
-  onButtonClick(event:Event){
+
+  onButtonClick(event: Event) {
     this.onClick.emit(this.edition);
   }
 
-  onEnrollClick(event:Event){
+  onEnrollClick(event: Event) {
     this.router.navigate(['/inscription', this.edition.id]);
   }
 
-  withdrawInscription(){
-    this.inscription.status="CANCELLED";
-    this.eventService.updateInscriptionStatus(this.inscription).subscribe(d=>{
+  withdrawInscription() {
+    this.inscription.status = 'CANCELLED';
+    this.eventService.updateInscriptionStatus(this.inscription).subscribe(d => {
       document.getElementById('withdraw-confirmation-no').click();
     });
-    
+
   }
 }

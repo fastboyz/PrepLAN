@@ -32,41 +32,41 @@ export class UserRegistrationComponent implements OnInit {
     if (this.accountFormComponent.accountForm.valid &&
       this.userFormComponent.userForm.valid &&
       this.contactFormComponent.contactForm.valid) {
-        let accountForm = this.accountFormComponent.accountForm;
-        let userForm =  this.userFormComponent.userForm;
-        let contactForm =  this.contactFormComponent.contactForm;
+      const accountForm = this.accountFormComponent.accountForm;
+      const userForm = this.userFormComponent.userForm;
+      const contactForm = this.contactFormComponent.contactForm;
 
-      var userAccount: Account = {
-        username: accountForm.get("username").value,
-        password: accountForm.get("password").value,
-        email: accountForm.get("email").value,
-        role: accountForm.get("role").value
+      const userAccount: Account = {
+        username: accountForm.get('username').value,
+        password: accountForm.get('password').value,
+        email: accountForm.get('email').value,
+        role: accountForm.get('role').value
       };
 
-      var userInfo: User = {
+      const userInfo: User = {
         account: userAccount,
-        firstName: userForm.get("firstName").value,
-        lastName: userForm.get("lastName").value,
-        pronoun: userForm.get("pronoun").value,
-        birthday: userForm.get("birthday").value,
-        discord: userForm.get("discord").value,
-        phoneNumber: userForm.get("phoneNumber").value
+        firstName: userForm.get('firstName').value,
+        lastName: userForm.get('lastName').value,
+        pronoun: userForm.get('pronoun').value,
+        birthday: userForm.get('birthday').value,
+        discord: userForm.get('discord').value,
+        phoneNumber: userForm.get('phoneNumber').value
       };
 
-      var emergencyContactInfo: EmergencyContact = {
-        firstName: contactForm.get("firstName").value,
-        lastName: contactForm.get("lastName").value,
-        relationship: contactForm.get("relationship").value,
-        phoneNumber: contactForm.get("phoneNumber").value
-      }
+      const emergencyContactInfo: EmergencyContact = {
+        firstName: contactForm.get('firstName').value,
+        lastName: contactForm.get('lastName').value,
+        relationship: contactForm.get('relationship').value,
+        phoneNumber: contactForm.get('phoneNumber').value
+      };
 
-      var profile: Profile = {
+      const profile: Profile = {
         user: userInfo,
-        tshirtSize:userForm.get("tshirtSize").value,
-        allergy: userForm.get("allergy").value,
-        certification: userForm.get("certification").value,
+        tshirtSize: userForm.get('tshirtSize').value,
+        allergy: userForm.get('allergy').value,
+        certification: userForm.get('certification').value,
         emergencyContact: emergencyContactInfo
-      }
+      };
 
       this.authService.signUp(profile).subscribe(
         data => {
@@ -74,9 +74,9 @@ export class UserRegistrationComponent implements OnInit {
         },
         error => {
           this.error = error;
-          //TODO add logger
+          // TODO add logger
         }
-      )
+      );
     }
   }
 
