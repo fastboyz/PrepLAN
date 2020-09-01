@@ -53,14 +53,14 @@ export class GeneratorSettingsComponent implements OnInit {
   }
 
   getDate(date: Date) {
-    return moment.utc(date).format('YYYY-MM-DDTHH:mm');
+    return moment(date).format('YYYY-MM-DDTHH:mm');
   }
   getDateName(date: Date) {
-    return moment.utc(date).format("MMM Do YYYY");
+    return moment(date).format("MMM Do YYYY");
   }
 
   getTime(date: Date) {
-    return moment.utc(date).format("HH:mm");
+    return moment(date).format("HH:mm");
   }
 
   addContract() {
@@ -92,6 +92,8 @@ export class GeneratorSettingsComponent implements OnInit {
       this.newShift.position != null &&
       this.newShift.numberVolunteers > 0
     ) {
+      this.newShift.endDateTime = moment(this.newShift.endDateTime).toDate();
+      this.newShift.startDateTime = moment(this.newShift.startDateTime).toDate();
       this.newShift.edition = this.edition;
       this.eventService.addShift(this.newShift).subscribe(data => {
         this.loadShifts(this.edition.id);

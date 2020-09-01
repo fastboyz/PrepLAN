@@ -261,12 +261,13 @@ export class EventService {
                 "x-access-token": this.authService.getToken()
             }
         }).pipe(map(response => {
+          console.log(response);
             return response;
         }));
     }
 
     startGenerator(id:string){
-        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/edition/startSolving/${id}`,  {
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/edition/startSolving/${id}`, {},  {
             headers: {
                 "x-access-token": this.authService.getToken()
             }
@@ -274,9 +275,9 @@ export class EventService {
             return response;
         }));
     }
-    
+
     stopGenerator(id:string){
-        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/edition/stopSolving/${id}`,  {
+        return this.http.post<any>(`${environment.apiUrl}/api/dashboard/edition/stopSolving/${id}`, {}, {
             headers: {
                 "x-access-token": this.authService.getToken()
             }

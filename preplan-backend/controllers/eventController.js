@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
+import moment from "moment-timezone";
 import { authJwt } from '../middlewares'
 import { Event, Edition, Position, Volunteer, Availability, Shift } from '../models';
 import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, updateSkillAndSpot, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler, startSolving, stopSolving, getExcel, getStatus } from '.';
 import { Contract } from '../models/contract';
 import { createShiftInScheduler, updateShiftInScheduler } from './schedulerService';
+import { SCHEDULER } from "../config";
 
 const router = Router();
 
@@ -193,11 +195,10 @@ router.get('/edition/solver/getExcel/:editionId', [authJwt.verifyToken, authJwt.
             spots += `${spotsObjs[i].spotId},`;
         }
     }
-    if (await getExcel(edition.tenantId, edition.startDate, edition.endDate, spots)) {
-        res.status(200).send();
-    } else {
-        res.status(503).send({ message: "Could not get excel" })
-    }
+
+    var startDateTime = moment(edition.startDate).format('YYYY-MM-DD');
+    var endDateTime = moment(edition.endDate).format('YYYY-MM-DD');
+    res.status(200).send({url: `${SCHEDULER}/tenant/${edition.tenantId}/roster/shiftRosterView/excel?endDate=${endDateTime}&spotList=${spots}&startDate=${startDateTime}`});
 });
 
 
@@ -738,7 +739,7 @@ router.get('/profile/incriptions', [authJwt.verifyToken, authJwt.isOrganizer], (
 router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
     var vol = req.body;
     var { edition, profile, availabilities, contract, positions } = vol;
-    delete vol.edition;
+    delete vol.edition; 
     delete vol.profile;
     delete vol.availabilities;
     delete vol.contract;
@@ -1030,8 +1031,8 @@ router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, re
             const createdShift = await createShiftInScheduler(element);
             if (createdShift) {
                 await new Shift({
-                    startDateTime: element.startDateTime,
-                    endDateTime: element.endDateTime,
+                    startDateTime: moment(element.startDateTime).toISOString(),
+                    endDateTime: moment(element.endDateTime).toISOString(),
                     edition: element.edition.id,
                     position: element.position.id,
                     shiftId: createdShift.id

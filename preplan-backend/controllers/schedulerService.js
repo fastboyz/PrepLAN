@@ -340,8 +340,8 @@ const updateAvailabilityInScheduler = async (data) => {
     tenantId: data.tenantId,
     state: data.state,
     employeeId: data.volunteerId,
-    startDateTime: moment(data.startDateTime).format('YYYY-MM-DDTHH:mm'),
-    endDateTime: moment(data.endDateTime).format('YYYY-MM-DDTHH:mm')
+    startDateTime: moment(data.startDateTime).utc().format('YYYY-MM-DDTHH:mm'),
+    endDateTime: moment(data.endDateTime).utc().format('YYYY-MM-DDTHH:mm')
   };
 
   try {
