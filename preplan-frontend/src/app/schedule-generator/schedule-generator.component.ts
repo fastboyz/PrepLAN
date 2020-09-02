@@ -76,13 +76,20 @@ export class ScheduleGeneratorComponent implements OnInit {
         const data: AOA = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as AOA;
         const newAOA: AOA = [] as AOA;
         let i: number;
+        let j:number;
+        let value:any;
 
         data[0][2] = 'Volunteer';
         newAOA.push(data[0]);
 
-        for (i = 1; i < data.length - 1; i += 2) {
-          data[i].push(data[i + 1][2]);
-          newAOA.push(data[i]);
+        for (i = 1; i < data.length; i ++) {
+          if(data[i][0] !== undefined && data[i][1] !== undefined){
+             value = data[i];
+            
+          } else {
+            value[2] = data[i][2];
+            newAOA.push(value);
+          }
         }
 
         const newData: ExcelData = {
