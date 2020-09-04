@@ -1,0 +1,108 @@
+<!-- <div class="container" *ngIf="!contracts.length"> -->
+<div class="section">
+    <h4>Contracts</h4>
+    <div class="contracts container">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">Name</span>
+                <input type="text" class="form-control" placeholder="Contract Name" [(ngModel)]="newContract.name">
+            </div>
+
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">Max Minutes per Days</span>
+                <input type="text" class="form-control" placeholder="Max Minutes per Days"
+                    [(ngModel)]="newContract.maximumMinutesPerDay">
+            </div>
+
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" (click)="addContract()">Add Contract</button>
+            </div>
+        </div>
+        <div class="">
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Max Minutes Per Days</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of contracts">
+                        <td>{{c.name}}</td>
+                        <td>{{c.maximumMinutesPerDay}}</td>
+                        <td>
+                            <button class="btn" type="button" (click)="deleteContract(c)"><i
+                                    class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="section">
+    <h4>Shifts</h4>
+    <div class="shifts container">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">Start Date Time</span>
+                <input type="datetime-local" class="form-control" placeholder="Start Date"
+                    [(ngModel)]="newShift.startDateTime">
+            </div>
+
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">End Date Time</span>
+                <input type="datetime-local" class="form-control" placeholder="End Date"
+                    [(ngModel)]="newShift.endDateTime">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">Position</span>
+                <select class="form-control" [(ngModel)]="newShift.position">
+                    <option *ngFor="let pos of positions" [ngValue]="pos">{{pos.title}}</option>
+                </select>
+            </div>
+
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">Number of volunteers</span>
+                <input type="number" class="form-control" placeholder="Number of volunteers"
+                    [(ngModel)]="newShift.numberVolunteers">
+            </div>
+
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" (click)="addShift()">Add Shift</button>
+            </div>
+        </div>
+
+        <div class="">
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Start Time</th>
+                        <th scope="col">End Time</th>
+                        <th scope="col">Position</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of shifts">
+                        <td>{{getDateName(s.startDateTime)}}</td>
+                        <td>{{getTime(s.startDateTime)}}</td>
+                        <td>{{getTime(s.endDateTime)}}</td>
+                        <td>{{s.position.title}}</td>
+                        <td>
+                            <button class="btn" type="button" (click)="deleteShift(s)"><i
+                                    class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

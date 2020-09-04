@@ -21,7 +21,7 @@ export class EditionFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private eventService: EventService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.editionForm = this.formBuilder.group({
@@ -65,7 +65,7 @@ export class EditionFormComponent implements OnInit {
         },
       ],
       edition_Positions: this.formBuilder.array([
-        this.formBuilder.group({ title: '', description: '', id: '' }),
+        this.formBuilder.group({ title: '', description: '', id: '', spotId: 0, skillId: 0 }),
       ]),
     });
 
@@ -85,6 +85,7 @@ export class EditionFormComponent implements OnInit {
       });
 
       if (this.positionList && this.positionList.length > 0) {
+        console.log(this.positionList);
         this.editionPositions.clear();
         this.positionList.forEach((position) => {
           this.editionPositions.push(
@@ -92,6 +93,8 @@ export class EditionFormComponent implements OnInit {
               title: position.title,
               description: position.description,
               id: position.id,
+              spotId: position.spotId,
+              skillId: position.skillId,
             })
           );
         });
@@ -100,10 +103,10 @@ export class EditionFormComponent implements OnInit {
   }
 
   createEdition(event: any) {
-    let selectedEvent = this.eventList.find(
-      (evt) => evt.id == this.event.value.id
+    const selectedEvent = this.eventList.find(
+      (evt) => evt.id === this.event.value.id
     );
-    let newEdition: Edition = {
+    const newEdition: Edition = {
       name: this.editionName.value,
       startDate: this.editionStartDate.value,
       endDate: this.editionEndDate.value,
@@ -116,30 +119,41 @@ export class EditionFormComponent implements OnInit {
     this.eventService.createEdition(newEdition).subscribe(
       (editionData) => {
 
-        for (
-          let index = 0;
-          index < this.editionPositions.value.length;
-          index++
-        ) {
-          let position: Position = {
-            title: this.editionPositions.value[index].title,
-            description: this.editionPositions.value[index].description,
+        for (const element of this.editionPositions.value) {
+          const position: Position = {
+            title: element.title,
+            description: element.description,
             edition: editionData,
           };
           this.eventService.createPosition(position).subscribe(
-            (positionData) => {},
+            (positionData) => { },
             (error) => {
               this.error = error;
-              //TODO add logger
+              // TODO add logger
             }
           );
         }
+
+        // for (let index = 0; index < this.editionPositions.value.length; index++) {
+        //   const position: Position = {
+        //     title: this.editionPositions.value[index].title,
+        //     description: this.editionPositions.value[index].description,
+        //     edition: editionData,
+        //   };
+        //   this.eventService.createPosition(position).subscribe(
+        //     (positionData) => { },
+        //     (error) => {
+        //       this.error = error;
+        //       // TODO add logger
+        //     }
+        //   );
+        // }
         document.getElementById('edition-close').click();
         this.onEventCreated.emit(true);
       },
       (error) => {
         this.error = error;
-        //TODO add logger
+        // TODO add logger
       }
     );
   }
@@ -170,7 +184,7 @@ export class EditionFormComponent implements OnInit {
     );
   }
 
-  deletePosition(index) {
+  deletePosition(index: number) {
     this.editionPositions.removeAt(index);
     this.editionForm.markAsDirty();
     this.editionForm.get('edition_Positions').markAsTouched();

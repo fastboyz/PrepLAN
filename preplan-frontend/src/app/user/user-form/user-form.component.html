@@ -2,69 +2,10 @@
     <div [hidden]="formDir.submitted">
         <div class="cross-validation"
             [class.cross-validation-error]="userForm.errors?.identityRevealed && (userForm.touched || userForm.dirty)">
-
+            <h4>Personal Informations</h4>
             <div class="form-group">
-                <label for="username">Username*</label>
-                <input id="username" class="form-control" formControlName="username" required>
-
-                <div *ngIf="username.invalid && (username.dirty || username.touched)" class="alert alert-danger">
-                    <div *ngIf="username.errors.required">
-                        Username is required.
-                    </div>
-                    <div *ngIf="username.errors.minlength">
-                        Username must be at least 6 characters long.
-                    </div>
-                    <div *ngIf="username.errors.shouldNotHaveSpaces">
-                        Username cannot contain invalid characters.
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email*</label>
-                <input id="email" class="form-control" formControlName="email" type="email" required
-                    placeholder="your@email.com">
-
-                <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
-                    <div *ngIf="email.errors.required">
-                        Email is required.
-                    </div>
-                    <div *ngIf="email.errors.pattern">
-                        Email is invalid. Please refer to the format.
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password*</label>
-                <input id="password" class="form-control" formControlName="password" type="password" required>
-
-                <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
-                    <div *ngIf="password.errors.required">
-                        Password is required.
-                    </div>
-                    <div *ngIf="password.errors.minlength">
-                        Password must be at least 6 characters long.
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-              <label for="role">Role</label>
-              <select id="role" class="form-control" formControlName="role">
-                  <option value="" disabled> Choose your role (For testing purpose) </option>
-                  <option *ngFor="let rol of roleOption" [ngValue]="rol">{{rol}}</option>
-              </select>
-              <div *ngIf="role.invalid && (role.dirty || role.touched)" class="alert alert-danger">
-                  <div *ngIf="role.errors.required">
-                      Role is required.
-                  </div>
-              </div>
-          </div>
-
-            <div class="form-group">
-                <label for="firstName">First Name*</label>
-                <input id="firstName" class="form-control" formControlName="firstName" required>
+                <label>First Name*</label>
+                <input class="form-control" formControlName="firstName" required>
 
                 <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
 
@@ -81,8 +22,8 @@
             </div>
 
             <div class="form-group">
-                <label for="lastName">Last name*</label>
-                <input id="lastName" class="form-control" formControlName="lastName" type="text" required>
+                <label>Last name*</label>
+                <input class="form-control" formControlName="lastName" type="text" required>
 
                 <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
                     <div *ngIf="lastName.errors.required">
@@ -98,8 +39,8 @@
             </div>
 
             <div class="form-group">
-                <label for="pronoun">Preferred Pronoun*</label>
-                <select id="pronoun" class="form-control" formControlName="pronoun">
+                <label>Preferred Pronoun*</label>
+                <select class="form-control" formControlName="pronoun">
                     <option value="" disabled> Choose Your Preffered Pronoun </option>
                     <option *ngFor="let pro of pronounOptions" [ngValue]="pro">{{pro}}</option>
                 </select>
@@ -111,9 +52,8 @@
             </div>
 
             <div class="form-group">
-                <label for="birthday">Birthday*</label>
-                <input id="birthday" class="form-control" formControlName="birthday" type="date" required
-                    placeholder="dd/MM/yyyy">
+                <label>Birthday*</label>
+                <input class="form-control" formControlName="birthday" type="date" required placeholder="YYYY-MM-DD">
 
                 <div *ngIf="birthday.invalid && (birthday.dirty || birthday.touched)" class="alert alert-danger">
                     <div *ngIf="birthday.errors.required">
@@ -126,8 +66,8 @@
             </div>
 
             <div class="form-group">
-                <label for="phoneNumber">Phone Number*</label>
-                <input id="phoneNumber" class="form-control" formControlName="phoneNumber" type="tel" required
+                <label>Phone Number*</label>
+                <input class="form-control" formControlName="phoneNumber" type="tel" required
                     placeholder="###-###-####">
 
                 <div *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)"
@@ -142,9 +82,8 @@
             </div>
 
             <div class="form-group">
-                <label for="discord">Discord Username</label>
-                <input id="discord" class="form-control" formControlName="discord" type="text"
-                    placeholder="Username#9999">
+                <label>Discord Username</label>
+                <input class="form-control" formControlName="discord" type="text" placeholder="Username#9999">
 
                 <div *ngIf="discord.invalid && (discord.dirty || discord.touched)" class="alert alert-danger">
                     <div *ngIf="discord.errors.pattern">
@@ -154,102 +93,26 @@
             </div>
 
             <div class="form-group">
-                <label for="tshirtSize">T-Shirt Size</label>
-                <select id="tshirtSize" class="form-control" formControlName="tshirtSize">
+                <label>T-Shirt Size</label>
+                <select class="form-control" formControlName="tshirtSize">
                     <option value="" disabled> Choose your T-Shirt Size </option>
                     <option *ngFor="let size of tshirtSizeOptions" [ngValue]="size">{{size}}</option>
                 </select>
                 <div *ngIf="tshirtSize.invalid && (tshirtSize.dirty || tshirtSize.touched)" class="alert alert-danger">
                     <div *ngIf="tshirtSize.errors.required">
                         T-shirt size is required.
-                    </div>
+                    </div>z
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="allergy">Allergies</label>
-                <input id="allergy" class="form-control" formControlName="allergy" type="text">
+                <label>Allergies</label>
+                <input class="form-control" formControlName="allergy" type="text">
             </div>
             <div class="form-group">
-                <label for="certification">Certifications</label>
-                <input id="certification" class="form-control" formControlName="certification" type="text">
+                <label>Certifications</label>
+                <input class="form-control" formControlName="certification" type="text">
             </div>
-
-            <h4>Emergency Contact</h4>
-            <div class="form-group">
-                <label for="firstNameEmergency">First Name*</label>
-                <input id="firstNameEmergency" class="form-control" formControlName="firstNameEmergency" required>
-
-                <div *ngIf="firstNameEmergency.invalid && (firstNameEmergency.dirty || firstNameEmergency.touched)"
-                    class="alert alert-danger">
-
-                    <div *ngIf="firstNameEmergency.errors.required">
-                        First name is required.
-                    </div>
-                    <div *ngIf="firstNameEmergency.errors.minlength">
-                        First name must be at least 3 characters long.
-                    </div>
-                    <div *ngIf="firstNameEmergency.errors.shouldNotHaveSpaces">
-                        First Name cannot be empty.
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="lastNameEmergency">Last name*</label>
-                <input id="lastNameEmergency" class="form-control" formControlName="lastNameEmergency" type="text"
-                    required>
-
-                <div *ngIf="lastNameEmergency.invalid && (lastNameEmergency.dirty || lastNameEmergency.touched)"
-                    class="alert alert-danger">
-                    <div *ngIf="lastNameEmergency.errors.required">
-                        Last name is required.
-                    </div>
-                    <div *ngIf="lastNameEmergency.errors.minlength">
-                        Last name must be at least 3 characters long.
-                    </div>
-                    <div *ngIf="lastNameEmergency.errors.shouldNotHaveSpaces">
-                        Last name cannot be empty.
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="relationshipEmergency">Relationship with contact*</label>
-                <input id="relationshipEmergency" class="form-control" formControlName="relationshipEmergency"
-                    type="text" required>
-
-                <div *ngIf="relationshipEmergency.invalid && (relationshipEmergency.dirty || relationshipEmergency.touched)"
-                    class="alert alert-danger">
-                    <div *ngIf="relationshipEmergency.errors.required">
-                        Relationship is required.
-                    </div>
-                    <div *ngIf="relationshipEmergency.errors.shouldNotHaveSpaces">
-                        Relationship cannot be empty.
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="emergencyNumber">Contact Phone Number*</label>
-                <input id="emergencyNumber" class="form-control" formControlName="emergencyNumber" type="tel" required
-                    placeholder="###-###-####">
-
-                <div *ngIf="emergencyNumber.invalid && (emergencyNumber.dirty || emergencyNumber.touched)"
-                    class="alert alert-danger">
-                    <div *ngIf="emergencyNumber.errors.required">
-                        Phone Number is required.
-                    </div>
-                    <div *ngIf="emergencyNumber.errors.pattern">
-                        Phone number is invalid. Format : 123-123-1234
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-lg btn-primary btn-create" [disabled]="userForm.invalid"
-                (click)="onSubmitForm()">Submit</button>
-
-            <button class="btn btn-lg btn-primary btn-create" (click)="onCancelForm()">Cancel</button>
         </div>
     </div>
 </form>

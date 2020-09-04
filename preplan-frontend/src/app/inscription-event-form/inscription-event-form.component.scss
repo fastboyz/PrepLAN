@@ -1,0 +1,25 @@
+input[type="checkbox"] {
+    transform: scale(2.5);
+}
+.form-check {
+    padding: 1rem 1rem 0px 1rem;
+}
+.form-check-label {
+    padding: 0px 1rem;
+}
+
+.days {
+    padding: 2rem 2rem 2rem 0px;
+    border-bottom: thin solid #282828;
+}
+
+.btn-primary {
+    margin-left: 1rem;
+    float: right;
+    padding: 0.5rem 2rem;
+}
+
+.error{
+    color: red;
+    font-size: 20px;
+}

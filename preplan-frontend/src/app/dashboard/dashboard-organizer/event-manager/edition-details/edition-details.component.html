@@ -1,5 +1,5 @@
 <div *ngIf="edition !==null && edition?.event !== null">
-    <button *ngIf="!isEnrollable && isOrganizer" class="btn btn-primary " (click)="toggleIsEditable()">Edit</button>
+    <button *ngIf="isEditableOption && isOrganizer" class="btn btn-primary " (click)="toggleIsEditable()">Edit</button>
     <div class="container" *ngIf="!isEditable">
         <h1>{{edition.event.title}}</h1>
         <h1>{{edition.name}}</h1>

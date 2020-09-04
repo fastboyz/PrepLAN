@@ -10,12 +10,12 @@ import { AuthService } from '../../services/auth.service';
 export class DashboardSidebarComponent implements OnInit {
   isOrganizer: boolean;
   constructor(private router: Router,
-    private authService: AuthService
+              private authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.authService.getRole().subscribe(data => {
-      if (data.name == 'organizer') {
+      if (data.name === 'organizer') {
         this.isOrganizer = true;
       } else {
         this.isOrganizer = false;
@@ -30,5 +30,13 @@ export class DashboardSidebarComponent implements OnInit {
   logOut() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  async redirectTo(uri: string) {
+    await this.router.navigate([uri]);
+    if (this.authService.getRefreshedValue() === 0) {
+      this.authService.setRefreshedValue('1');
+      window.location.reload();
+    }
   }
 }

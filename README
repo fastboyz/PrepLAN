@@ -1,12 +1,13 @@
 [Instruction]
 1. Installer docker (et docker-compose sur linux).
 2. Se deplacer dans le dossiser du projet.
-3. Executer `docker-compose up --build database`.
+3. Executer `docker-compose up -d --build database replica1 replica2`.
 4. Ouvrir le terminal et Executer `docker ps`
-5. Recuperer le nom du container (Il sera surement preplan_database_1)
+5. Recuperer le nom du container (Il sera surement preplan_database)
 6. Executer `docker exec -it <nom du container> sh`
 7. Une fois connecter au caintainer, executer les commandes suivante:
-    - `mongo --username root --password example`
+    - `mongo`
+    - `rs.initiate({_id:'rs0', members:[{_id : 0, host : "host.docker.internal:27017"},{_id : 1, host : "host.docker.internal:27020"},{_id : 2, host : "host.docker.internal:27023"}]});`
     - `use preplan`
     - `db.createUser({user: "preplan",pwd: "preplan",roles: ["readWrite"]})`
     - `quit()`
@@ -23,3 +24,5 @@
 - Creer et modifier evenement
 - Creer et modifier edition
 - voir la liste des evenements disponible
+
+'mongodb://preplan:preplan@localhost:27017/preplan,localhost:27020,localhost:27023/?authSource=admin&replicaSet=rs0'

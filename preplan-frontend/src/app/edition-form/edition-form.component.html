@@ -96,12 +96,12 @@
                         <div *ngFor="let item of editionPositions.controls; let pointIndex=index">
                             <div class="row" [formGroupName]="pointIndex">
                                 <div class="col-md-4">
-                                    <label for="editionPositionName">Position Name</label>
-                                    <input id="editionPositionName" class="form-control" formControlName="title">
+                                    <label >Position Name</label>
+                                    <input class="form-control" formControlName="title">
                                 </div>
                                 <div class="col-md-7">
-                                    <label for="editionPositionDescription">Position Description</label>
-                                    <textarea id="editionPositionDescription" class="form-control"
+                                    <label>Position Description</label>
+                                    <textarea  class="form-control"
                                         formControlName="description">
                                         </textarea>
 

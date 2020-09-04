@@ -19,6 +19,8 @@ export class EditionDetailsComponent implements OnInit {
   @Input() edition: Edition;
   @Input() positionList: Position[];
   @Input() isEnrollable: boolean;
+  @Input() isEnrolled: boolean;
+  @Input() isEditableOption: boolean;
   @Output() onUpdate = new EventEmitter<boolean>();
   isEditable: boolean;
   isOrganizer: boolean;
@@ -28,37 +30,33 @@ export class EditionDetailsComponent implements OnInit {
     private router: Router,
     private eventService: EventService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.isEditable = false;
     this.authService.getRole().subscribe((data) => {
-      if (data.name == 'organizer') {
+      if (data.name === 'organizer') {
         this.isOrganizer = true;
       } else {
         this.isOrganizer = false;
       }
     });
   }
+
   onEnrollClick(event: any) {
-    console.log(
-      'Enroll at edition ' +
-        this.edition.name +
-        ' of event ' +
-        this.edition.event.title +
-        ' from detail modal'
-    );
+    document.getElementById('close-event-list-modal').click();
+    this.router.navigate(['/inscription', this.edition.id]);
   }
 
   updateEdition(event: any) {
-    let editionForm = this.editionFormComponent.editionForm;
-    let eventForm = this.eventFormComponent.eventForm;
-    let newEvent: Event = {
+    const editionForm = this.editionFormComponent.editionForm;
+    const eventForm = this.eventFormComponent.eventForm;
+    const newEvent: Event = {
       id: this.edition.event.id,
       title: eventForm.get('eventTitle').value,
       description: eventForm.get('eventDescription').value,
     };
-    let newEdition: Edition = {
+    const newEdition: Edition = {
       id: this.edition.id,
       name: editionForm.get('editionName').value,
       startDate: editionForm.get('editionStartDate').value,
@@ -66,6 +64,7 @@ export class EditionDetailsComponent implements OnInit {
       location: editionForm.get('editionLocation').value,
       event: newEvent,
       isActive: false,
+      tenantId: this.edition.tenantId,
       isRegistering: false,
     };
 
@@ -75,21 +74,21 @@ export class EditionDetailsComponent implements OnInit {
       });
     }
     if (editionForm.touched || editionForm.dirty) {
-      let editionPositionForm = editionForm.get('edition_Positions');
+      const editionPositionForm = editionForm.get('edition_Positions');
 
       this.eventService.updateEdition(newEdition).subscribe((data) => {
         this.edition = data;
       });
 
       if (editionPositionForm.touched || editionPositionForm.dirty) {
-        let deleted = this.positionList.filter(
+        const deleted = this.positionList.filter(
           this.editionListCompare(editionPositionForm.value)
         );
-        let added = editionPositionForm.value.filter(
+        const added = editionPositionForm.value.filter(
           this.editionListCompare(this.positionList)
         );
-        let toUpdate = JSON.parse(JSON.stringify(editionPositionForm.value));
-        let filtered = JSON.parse(JSON.stringify(deleted));
+        const toUpdate = JSON.parse(JSON.stringify(editionPositionForm.value));
+        const filtered = JSON.parse(JSON.stringify(deleted));
         _.remove(toUpdate, (el: any) => {
           return !el.id;
         });
@@ -124,7 +123,7 @@ export class EditionDetailsComponent implements OnInit {
       return (
         list.filter((other: { id: any }) => {
           return other.id && current.id && other.id === current.id;
-        }).length == 0
+        }).length === 0
       );
     };
   }
@@ -134,14 +133,14 @@ export class EditionDetailsComponent implements OnInit {
       return (
         list.filter((other: { id: any }) => {
           return other.id && current.id && other.id !== current.id;
-        }).length == 0
+        }).length === 0
       );
     };
   }
 
   addEditionToPosition(positions: any, edition: Edition) {
     positions.forEach((e: { [x: string]: Edition }) => {
-      e['edition'] = edition;
+      e.edition = edition;
     });
   }
 }

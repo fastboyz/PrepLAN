@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 export class EventManagerComponent implements OnInit {
   editionList: Edition[];
   editionDetails: Edition;
-  positionList:Position[];
+  positionList: Position[];
   constructor(
     private router: Router,
     private eventService: EventService) { }
@@ -20,27 +20,28 @@ export class EventManagerComponent implements OnInit {
     this.loadAllEditions();
   }
 
-  loadAllEditions(){
+  loadAllEditions() {
     this.eventService.getAllEditions().subscribe(data => {
       this.editionList = data;
     });
   }
-  openDetails(data: Edition){
-    this.editionDetails = data;
-    this.eventService.getPositionsbyEditionId(this.editionDetails.id).subscribe(data => {
-      this.positionList = data;
-    });
-    // this.router.navigate(['/edition', data.id]);
+
+  openDetails(data: Edition) {
+    // this.editionDetails = data;
+    // this.eventService.getPositionsbyEditionId(this.editionDetails.id).subscribe(data => {
+    //   this.positionList = data;
+    // });
+    this.router.navigate(['/edition', data.id]);
   }
 
-  onEventCreated(isCreated :boolean){
-    if(isCreated){
+  onEventCreated(isCreated: boolean) {
+    if (isCreated) {
       this.loadAllEditions();
     }
   }
 
-  onUpdate(isUpdated:boolean){
-    if(isUpdated){
+  onUpdate(isUpdated: boolean) {
+    if (isUpdated) {
       this.loadAllEditions();
     }
   }
