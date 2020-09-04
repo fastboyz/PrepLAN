@@ -3,62 +3,80 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Account } from '../shared/models/user';
+import { Account, Profile } from '../shared/models/user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private currentUserSubject: BehaviorSubject<Account>;
-    public currentUser: Observable<Account>;
-    private token: string;
+  private currentUserSubject: BehaviorSubject<Account>;
+  public currentUser: Observable<Account>;
+  private token: string;
 
-    constructor(private http: HttpClient) {
-        this.currentUserSubject = new BehaviorSubject<Account>(JSON.parse(localStorage.getItem('currentUser')));
-        this.currentUser = this.currentUserSubject.asObservable();
-    }
+  constructor(private http: HttpClient) {
+    this.currentUserSubject = new BehaviorSubject<Account>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUser = this.currentUserSubject.asObservable();
+  }
 
-    public get currentUserValue(): Account {
-        return this.currentUserSubject.value;
-    }
+  public get currentUserValue(): Account {
+    return this.currentUserSubject.value;
+  }
 
-    login(username: string, password: string) {
-        return this.http.post<any>(`${environment.apiUrl}/api/auth/signin`, { username, password }
-        ).pipe(map(response => {
-            localStorage.setItem('currentUser', JSON.stringify(response));
-            this.currentUserSubject.next(response);
-            return response
-        }));
-    }
+  login(username: string, password: string) {
+    return this.http.post<any>(`${environment.apiUrl}/api/auth/signin`, { username, password }
+    ).pipe(map(response => {
+      localStorage.setItem('currentUser', JSON.stringify(response));
+      this.setRefreshedValue('0');
+      this.currentUserSubject.next(response);
+      return response;
+    }));
+  }
 
-    logout() {
-        // remove user from local storage to log user out
-        localStorage.removeItem('currentUser');
-        this.currentUserSubject.next(null);
-    }
+  logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('refreshed');
+    this.currentUserSubject.next(null);
+  }
 
-    signup(userRegistration: FormData) {
-        return this.http.post<any>(`${environment.apiUrl}/api/auth/signup`, userRegistration)
-            .pipe(map(response => {
-                return response
-            }));
-    }
+  signup(userRegistration: FormData) {
+    return this.http.post<any>(`${environment.apiUrl}/api/auth/signup`, userRegistration)
+      .pipe(map(response => {
+        return response;
+      }));
+  }
 
-    getRole() {
-        let id = this.getCurrentUserId();
-        return this.http.get<any>(`${environment.apiUrl}/api/auth/role/${id}`).pipe(map(response => {
-            return response;
-        }));
-    }
+  signUp(userProfile: Profile) {
+    return this.http.post<any>(`${environment.apiUrl}/api/auth/signup`, userProfile)
+      .pipe(map(response => {
+        return response;
+      }));
+  }
 
-    getToken() {
-        if (!this.token) {
-            var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            this.token = currentUser['token'];
-        }
-        return this.token;
-    }
+  getRole() {
+    const id = this.getCurrentUserId();
+    return this.http.get<any>(`${environment.apiUrl}/api/auth/role/${id}`).pipe(map(response => {
+      return response;
+    }));
+  }
 
-    getCurrentUserId() {
-        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        return currentUser['id'];
+  getToken() {
+    if (!this.token) {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.token = currentUser.token;
     }
+    return this.token;
+  }
+
+  getCurrentUserId() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    return currentUser.id;
+  }
+
+  setRefreshedValue(value: string) {
+    localStorage.setItem('refreshed', value);
+  }
+
+  getRefreshedValue() {
+    const value: number = JSON.parse(localStorage.getItem('refreshed'));
+    return value;
+  }
 }

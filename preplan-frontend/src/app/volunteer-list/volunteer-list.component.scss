@@ -1,0 +1,39 @@
+.table th,
+.table td {
+    vertical-align: middle;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.75);
+}
+
+.selection {
+    text-align: center;
+}
+
+.icon {
+    display: block;
+    margin: auto;
+}
+
+.btn-section {
+    margin: 2rem 0px;
+
+    button {
+        margin-right: 1rem;
+    }
+}
+
+.btn-section {
+    button {
+        i {
+            color: black;
+        }
+    }
+}
+
+.dropdown {
+    label {
+        margin-right: 1rem;
+    }
+}

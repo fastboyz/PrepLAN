@@ -1,26 +1,95 @@
-import { Component, OnInit } from '@angular/core';
-import { Profile } from 'src/app/shared/models/user';
+import { Component, OnInit, ViewChild } from '@angular/core';
+
 import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
+
+import { Profile, EmergencyContact, Account, User } from 'src/app/shared/models/user';
+
+import { UserFormComponent } from '../user-form/user-form.component';
+import { AccountFormComponent } from '../account-form/account-form.component';
+import { EmergencyContactFormComponent } from '../emergency-contact-form/emergency-contact-form.component';
+
 
 @Component({
-  selector: 'profile',
+  selector: 'user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-  public formData: FormData;
-  constructor(private userService: UserService) { }
+  @ViewChild(AccountFormComponent) accountFormComponent: AccountFormComponent;
+  @ViewChild(UserFormComponent) userFormComponent: UserFormComponent;
+  @ViewChild(EmergencyContactFormComponent) contactFormComponent: EmergencyContactFormComponent;
+
+  profileData: Profile;
+  contactData: EmergencyContact;
+  accountData: Account;
+  constructor(private userService: UserService,
+              private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.formData = new FormData();
+    if (this.authService.currentUserValue) {
+      this.userService.getUserProfile(this.authService.currentUserValue.id).subscribe(user => {
+        this.profileData = user;
+        this.accountData = this.profileData.user.account;
+        this.contactData = this.profileData.emergencyContact;
+      });
+    }
   }
 
-  editUser(event: any) {
-    this.userService.updateProfile(event).subscribe();
-    location.reload();
+  updateAccount() {
+    const accountForm = this.accountFormComponent.accountForm;
+    if (accountForm.valid && (accountForm.touched || accountForm.dirty)) {
+      const account: Account = {
+        username: accountForm.get('username').value,
+        password: accountForm.get('password').value,
+        email: accountForm.get('email').value,
+        role: accountForm.get('role').value,
+        id: this.accountData.id
+      };
+
+      this.userService.updateAccount(account).subscribe();
+    }
   }
 
-  cancel() {
+  updateUserProfile() {
+    const userForm = this.userFormComponent.userForm;
+    if (userForm.valid && (userForm.touched || userForm.dirty)) {
+      const userInfo: User = {
+        id: this.profileData.user.id,
+        account: this.accountData,
+        firstName: userForm.get('firstName').value,
+        lastName: userForm.get('lastName').value,
+        pronoun: userForm.get('pronoun').value,
+        birthday: userForm.get('birthday').value,
+        discord: userForm.get('discord').value,
+        phoneNumber: userForm.get('phoneNumber').value
+      };
 
+      const userProfile: Profile = {
+        id: this.profileData.id,
+        user: userInfo,
+        tshirtSize: userForm.get('tshirtSize').value,
+        allergy: userForm.get('allergy').value,
+        certification: userForm.get('certification').value,
+        emergencyContact: this.contactData
+      };
+
+      this.userService.updateUserProfile(userProfile).subscribe();
+    }
+  }
+
+  updateContact() {
+    const contactForm = this.contactFormComponent.contactForm;
+    if (contactForm.valid && (contactForm.touched || contactForm.dirty)) {
+      const emergencyContact: EmergencyContact = {
+        id: this.contactData.id,
+        firstName: contactForm.get('firstName').value,
+        lastName: contactForm.get('lastName').value,
+        relationship: contactForm.get('relationship').value,
+        phoneNumber: contactForm.get('phoneNumber').value
+      };
+
+      this.userService.updateEmergencyContact(emergencyContact).subscribe();
+    }
   }
 }

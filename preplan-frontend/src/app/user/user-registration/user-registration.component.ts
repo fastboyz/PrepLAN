@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Account, User, Profile, EmergencyContact } from 'src/app/shared/models/user';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserFormComponent } from '../user-form/user-form.component';
+import { AccountFormComponent } from '../account-form/account-form.component';
+import { EmergencyContactFormComponent } from '../emergency-contact-form/emergency-contact-form.component';
 
 @Component({
   selector: 'user-registration',
@@ -10,63 +13,74 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./user-registration.component.scss']
 })
 export class UserRegistrationComponent implements OnInit {
+  @ViewChild(AccountFormComponent) accountFormComponent: AccountFormComponent;
+  @ViewChild(UserFormComponent) userFormComponent: UserFormComponent;
+  @ViewChild(EmergencyContactFormComponent) contactFormComponent: EmergencyContactFormComponent;
+
   error: string;
-  formData: FormData;
-  constructor(private router:Router,
+  profileData: Profile;
+  contactData: EmergencyContact;
+  accountData: Account;
+
+  constructor(private router: Router,
     private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.formData = null;
   }
 
-  addUser(data: FormData){
-    /*var userAccount:Account = {
-      username: data.get("username").value,
-      password: data.get("password").value,
-      email: data.get("email").value
-    };
+  onSubmitForm() {
+    if (this.accountFormComponent.accountForm.valid &&
+      this.userFormComponent.userForm.valid &&
+      this.contactFormComponent.contactForm.valid) {
+      const accountForm = this.accountFormComponent.accountForm;
+      const userForm = this.userFormComponent.userForm;
+      const contactForm = this.contactFormComponent.contactForm;
 
-    var userInfo: User = {
-      account: userAccount,
-      firstName: data.get("firstName").value,
-      lastName: data.get("lastName").value,
-      pronoun: data.get("pronoun").value,
-      birthday: data.get("birthday").value,
-      discord: data.get("discord").value,
-      phoneNumber: data.get("phoneNumber").value
-    };
+      const userAccount: Account = {
+        username: accountForm.get('username').value,
+        password: accountForm.get('password').value,
+        email: accountForm.get('email').value,
+        role: accountForm.get('role').value
+      };
 
-    var emergencyContactInfo: EmergencyContact = {
-      firstName: data.get("firstNameEmergency").value,
-      lastName: data.get("lastNameEmergency").value,
-      relationship: data.get("relationshipEmergency").value,
-      phoneNumber: data.get("emergencyNumber").value
+      const userInfo: User = {
+        account: userAccount,
+        firstName: userForm.get('firstName').value,
+        lastName: userForm.get('lastName').value,
+        pronoun: userForm.get('pronoun').value,
+        birthday: userForm.get('birthday').value,
+        discord: userForm.get('discord').value,
+        phoneNumber: userForm.get('phoneNumber').value
+      };
+
+      const emergencyContactInfo: EmergencyContact = {
+        firstName: contactForm.get('firstName').value,
+        lastName: contactForm.get('lastName').value,
+        relationship: contactForm.get('relationship').value,
+        phoneNumber: contactForm.get('phoneNumber').value
+      };
+
+      const profile: Profile = {
+        user: userInfo,
+        tshirtSize: userForm.get('tshirtSize').value,
+        allergy: userForm.get('allergy').value,
+        certification: userForm.get('certification').value,
+        emergencyContact: emergencyContactInfo
+      };
+
+      this.authService.signUp(profile).subscribe(
+        data => {
+          this.router.navigate(['login']);
+        },
+        error => {
+          this.error = error;
+          // TODO add logger
+        }
+      );
     }
-
-    var profile: Profile = {
-      user: userInfo,
-      tshirtSize: null,
-      allergy: data.get("allergy").value,
-      certification: data.get("certification").value,
-      emergencyContact: emergencyContactInfo
-    }
-
-    var profileJson = JSON.stringify(profile);
-    console.log(profileJson);*/
-
-    this.authService.signup(data).subscribe(
-      data =>{
-        this.router.navigate(['login']);
-      },
-      error => {
-        this.error = error;
-        //TODO add logger
-      }
-    )
-
   }
 
-  cancel(){
+  onCancelForm() {
     this.router.navigate(['login']);
   }
 }

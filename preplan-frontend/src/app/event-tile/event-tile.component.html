@@ -7,7 +7,7 @@
             <div class="col">
                 <h3 class="mt-0 mb-1">{{edition.event.title}}</h3>
                 <h6>Date: {{edition.startDate| date:'mediumDate'}} - {{edition.endDate| date:'mediumDate'}} </h6>
-               
+
             </div>
             <div class="col-md-auto align-right">
                 <h4 class="mt-0 mb-1">Edition: {{edition.name}}</h4>
@@ -17,6 +17,29 @@
         <p><span>Description:</span> {{edition.event.description}}
         </p>
         <button *ngIf="isEnrollable" class="btn btn-primary" (click)="onEnrollClick($event)">Enroll</button>
-        <button class="btn btn-primary" data-toggle="modal" data-target="#edition-details-modal" (click)="onButtonClick($event)">View More details</button>
-          </div>
+        <button *ngIf="isEnrolled" class="btn btn-danger" data-toggle="modal" data-target="#withdraw-confirmation">Withdraw Inscription</button>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#edition-details-modal"
+            (click)="onButtonClick($event)">View More details</button>
+    </div>
 </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="withdraw-confirmation" tabindex="-1" role="dialog" aria-labelledby="withdraw-confirmation-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="withdraw-confirmation-modal">Withdrawal Confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Do you confirm your withdrawal to this event? 
+        </div>
+        <div class="modal-footer">
+          <button id="withdraw-confirmation-no"type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-primary" (click)="withdrawInscription()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>

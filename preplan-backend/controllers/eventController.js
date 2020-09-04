@@ -1,8 +1,21 @@
-import e, { Router } from 'express';
+import { Router } from 'express';
+import mongoose from 'mongoose';
+import moment from "moment-timezone";
 import { authJwt } from '../middlewares'
-import { Event, Edition, Position } from '../models';
+import { Event, Edition, Position, Volunteer, Availability, Shift } from '../models';
+import { createTenantInScheduler, createSkillAndSpot, createContract, updateContract, deleteContract, deleteSkillAndSpot, deleteShiftInScheduler, updateSkillAndSpot, addVolunteerInScheduler, deleteVolunteerInScheduler, addAvailabilityInScheduler, deleteAvailabilityInScheduler, startSolving, stopSolving, getExcel, getStatus } from '.';
+import { Contract } from '../models/contract';
+import { createShiftInScheduler, updateShiftInScheduler } from './schedulerService';
+import { SCHEDULER } from "../config";
 
 const router = Router();
+
+const inscriptionStatus = {
+    PENDING: 'PENDING',
+    CANCELLED: 'CANCELLED',
+    APPROVED: 'APPROVED',
+    DISAPPROVED: 'DISAPPROVED'
+};
 
 router.post('/event', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     new Event({
@@ -66,24 +79,30 @@ router.get('/event/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
     });
 });
 
-router.post('/edition', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
-    new Edition({
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
-        name: req.body.name,
-        isActive: req.body.isActive,
-        isRegistering: req.body.isRegistering,
-        location: req.body.location,
-        event: req.body.event.id
-    }).save((err, edition) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return
-        }
-        const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edition);
-        picked['id'] = edition['_id'];
-        res.status(200).json(picked);
-    })
+router.post('/edition', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var tenant = await createTenantInScheduler(req.body);
+    if (tenant) {
+        new Edition({
+            startDate: req.body.startDate,
+            endDate: req.body.endDate,
+            name: req.body.name,
+            isActive: req.body.isActive,
+            isRegistering: req.body.isRegistering,
+            location: req.body.location,
+            event: req.body.event.id,
+            tenantId: tenant.id,
+        }).save((err, edition) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }))(edition);
+            picked['id'] = edition['_id'];
+            res.status(200).json(picked);
+        });
+    } else {
+        res.status(500).send({ message: `Error Creating the Edition ${edition.name} for the event  ${edition.event.title}` });
+    }
 });
 
 router.get('/editions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
@@ -96,7 +115,7 @@ router.get('/editions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) =
             }
             var editions = [];
             edts.forEach((edt) => {
-                const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edt);
+                const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }))(edt);
                 picked['id'] = edt['_id'];
 
                 var evt = picked.event;
@@ -109,6 +128,79 @@ router.get('/editions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) =
             res.status(200).json(editions);
         });
 });
+
+router.get('/editions/isActive', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    Edition.find({ isActive: true })
+        .populate('event')
+        .exec((err, edts) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var editions = [];
+            edts.forEach((edt) => {
+                const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }))(edt);
+                picked['id'] = edt['_id'];
+
+                var evt = picked.event;
+                const event = (({ title, description }) => ({ title, description }))(evt);
+                event['id'] = evt['_id'];
+
+                picked.event = event;
+                editions.push(picked);
+            });
+            res.status(200).json(editions);
+        });
+});
+
+router.post('/edition/startSolving/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var editionId = req.params.editionId;
+    const edition = await Edition.findById(editionId);
+    if (await startSolving(edition.tenantId)) {
+        res.status(200).send();
+    } else {
+        res.status(503).send({ message: "Could not start solving" })
+    }
+});
+
+router.post('/edition/stopSolving/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var editionId = req.params.editionId;
+    const edition = await Edition.findById(editionId);
+    if (await stopSolving(edition.tenantId)) {
+        res.status(200).send();
+    } else {
+        res.status(503).send({ message: "Could not start solving" })
+    }
+});
+
+router.get('/edition/status/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var editionId = req.params.editionId;
+    const edition = await Edition.findById(editionId);
+    if (await getStatus(edition.tenantId)) {
+        res.status(200).send();
+    } else {
+        res.status(503).send({ message: "Could not get the status" })
+    }
+});
+
+router.get('/edition/solver/getExcel/:editionId', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var editionId = req.params.editionId;
+    const edition = await Edition.findById(editionId);
+    const spotsObjs = await Position.find({ edition: editionId })
+    var spots = '';
+    for (var i = 0; i < spotsObjs.length; i++) {
+        if (i == spotsObjs.length - 1) {
+            spots += spotsObjs[i].spotId;
+        } else {
+            spots += `${spotsObjs[i].spotId},`;
+        }
+    }
+
+    var startDateTime = moment(edition.startDate).format('YYYY-MM-DD');
+    var endDateTime = moment(edition.endDate).format('YYYY-MM-DD');
+    res.status(200).send({url: `${SCHEDULER}/tenant/${edition.tenantId}/roster/shiftRosterView/excel?endDate=${endDateTime}&spotList=${spots}&startDate=${startDateTime}`});
+});
+
 
 router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     const edition = req.body;
@@ -129,7 +221,7 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
                 res.status(500).send({ message: err });
                 return
             }
-            const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(saved);
+            const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }))(saved);
             picked['id'] = edt['_id'];
             Event.findById(saved.event).exec((err, evt) => {
                 if (err) {
@@ -146,7 +238,7 @@ router.put('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
     });
 });
 
-router.get('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/edition/:id', [authJwt.verifyToken], (req, res) => {
     var id = req.params.id;
     Edition.findById(id)
         .populate('event')
@@ -155,7 +247,7 @@ router.get('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
                 res.status(500).send({ message: err });
                 return
             }
-            const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event }) => ({ startDate, endDate, name, isRegistering, isActive, location, event }))(edt);
+            const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }))(edt);
             picked['id'] = edt['_id'];
 
             var evt = picked.event;
@@ -167,102 +259,115 @@ router.get('/edition/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, res
         });
 });
 
-router.post('/position', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
-    new Position({
-        title: req.body.title,
-        description: req.body.description,
-        edition: req.body.edition.id
-    }).save((err, pos) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return
-        }
-        const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
-        picked['id'] = pos['_id'];
-        res.status(200).json(picked);
-    });
-});
-
-router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
-    var elements = req.body;
-    var data = [];
-    var BreakException = {};
-    try {
-        elements.forEach(element => {
-            new Position({
-                title: element.title,
-                description: element.description,
-                edition: element.edition.id
-            }).save((err, pos) => {
-                if (err) {
-                    res.status(500).send({ message: err });
-                    throw BreakException;
-                }
-                const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
-                picked['id'] = pos['_id'];
-                data.push(picked);
-            });
+router.post('/position', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    const createdSkillAndSpot = await createSkillAndSpot(req.body);
+    if (createdSkillAndSpot) {
+        new Position({
+            title: req.body.title,
+            description: req.body.description,
+            edition: req.body.edition.id,
+            skillId: createdSkillAndSpot.skill.id,
+            spotId: createdSkillAndSpot.spot.id,
+        }).save((err, pos) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            const picked = (({ title, description, edition, skillId, spotId }) => ({ title, description, edition, skillId, spotId }))(pos);
+            picked['id'] = pos['_id'];
+            res.status(200).json(picked);
         });
-    } catch (e) { }
+    } else {
+        res.status(500).send({ message: `Error Creating position` });
+    }
 });
 
-router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.post('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
     var elements = req.body;
     var data = [];
-    var BreakException = {};
     try {
-        elements.forEach(element => {
-            Position.findById(element.id).exec((err, pos) => {
-                if (err) {
-                    res.status(500).send({ message: err });
-                    throw BreakException;
-                }
-                pos.title = element.title;
-                pos.description = element.description;
-                pos.save((err, saved) => {
+        var i;
+        for (i = 0; i < elements.length; i++) {
+            const createdSkillAndSpot = await createSkillAndSpot(elements[i]);
+            if (createdSkillAndSpot) {
+                await new Position({
+                    title: elements[i].title,
+                    description: elements[i].description,
+                    edition: elements[i].edition.id,
+                    skillId: createdSkillAndSpot.skill.id,
+                    spotId: createdSkillAndSpot.spot.id,
+                }).save((err, pos) => {
                     if (err) {
-                        res.status(500).send({ message: err });
+                        throw err;
                     }
-                    const picked = (({ title, description, edition }) => ({ title, description, edition }))(saved);
+                    const picked = (({ title, description, edition, skillId, spotId }) => ({ title, description, edition, skillId, spotId }))(pos);
                     picked['id'] = pos['_id'];
-                    Edition.findById(saved.edition).exec((err, edt) => {
-                        if (err) {
-                            res.status(500).send({ message: err });
-                            throw BreakException;
-                        }
-                        const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
-                        pickedEdt['id'] = edt['_id'];
-
-                        var evt = pickedEdt.event;
-                        const event = (({ title, description }) => ({ title, description }))(evt);
-                        event['id'] = evt['_id'];
-
-                        pickedEdt.event = event;
-                        picked.edition = pickedEdt;
-                        data.push(picked);
-                    });
+                    data.push(picked);
                 });
-            });
-        });
-    } catch (e) { }
+            } else {
+                throw `Could not create Position ${elements[i].title}`;
+            }
+        }
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
 });
 
+router.put('/positions', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var elements = req.body;
+    var data = [];
+    try {
+        var i;
+        for (i = 0; i < elements.length; i++) {
+            const updatedSkillAndSpot = await updateSkillAndSpot(elements[i]);
+            console.log(updatedSkillAndSpot);
+            if (updatedSkillAndSpot) {
+                // Todo find a way to do a transaction here
+                var pos = await  Position.findById(elements[i].id);
+                pos.title = elements[i].title;
+                pos.description = elements[i].description;
+                var saved = await pos.save();
+                const picked = (({ title, description, edition, skillId, spotId }) => ({ title, description, edition, skillId, spotId }))(saved);
+                picked['id'] = pos['_id'];
+                var edt = await Edition.findById(saved.edition);
+                const pickedEdt = (({ startDate, endDate, name, isRegistering, isActive, event }) => ({ startDate, endDate, name, isRegistering, isActive, event }))(edt);
+                pickedEdt['id'] = edt['_id'];
+                var evt = pickedEdt.event;
+                const event = (({ title, description }) => ({ title, description }))(evt);
+                event['id'] = evt['_id'];
+                pickedEdt.event = event;
+                picked.edition = pickedEdt;
+                data.push(picked);
+            } else {
+                throw `Could not Update Position ${elements[i].title}`;
+            }
+        }
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
 
 router.delete('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
     var elements = req.body;
-    var BreakException = {};
     try {
-        elements.forEach(element => {
-            Position.findById(element.id).exec((err, pos) => {
-                if (err) {
-                    res.status(500).send({ message: err });
-                    throw BreakException;
-                }
-                pos.deleteOne();
-
-            })
-        });
-    } catch (error) { }
+        var i;
+        for (i = 0; i < elements.length; i++) {
+            const deleted = deleteSkillAndSpot(elements[i]);
+            if (deleted.skill && deleted.spot) {
+                Position.findById(elements[i].id).exec((err, pos) => {
+                    if (err) {
+                        throw err;
+                    }
+                    pos.deleteOne();
+                })
+            } else {
+                throw `Could not delete Position ${elements[i]}`
+            }
+        }
+    } catch (error) {
+        res.status(500).send({ message: err });
+    }
 
 });
 
@@ -276,7 +381,7 @@ router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
             }
             var poses = [];
             positions.forEach((pos) => {
-                const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+                const picked = (({ title, description, edition, spotId, skillId }) => ({ title, description, edition, spotId, skillId }))(pos);
                 picked['id'] = pos['_id'];
 
                 var edt = picked.edition;
@@ -290,7 +395,6 @@ router.get('/positions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) 
         });
 });
 
-
 router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isVolunteer], (req, res) => {
     var editionId = req.params.editionId;
     Position.find({ edition: editionId })
@@ -302,7 +406,7 @@ router.get('/:editionId/positions', [authJwt.verifyToken, authJwt.isVolunteer], 
             }
             var poses = [];
             positions.forEach((pos) => {
-                const picked = (({ title, description, edition }) => ({ title, description, edition }))(pos);
+                const picked = (({ title, description, edition, spotId, skillId }) => ({ title, description, edition, spotId, skillId }))(pos);
                 picked['id'] = pos['_id'];
 
                 var edt = picked.edition;
@@ -373,9 +477,734 @@ router.get('/position/:id', [authJwt.verifyToken, authJwt.isOrganizer], (req, re
         });
 })
 
-router.post('/create/timeSlot', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+router.get('/edition/:id/inscriptions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    const editionId = req.params.id;
+    Volunteer.find({ edition: editionId })
+        .populate([
+            {
+                path: 'profile',
+                model: 'Profile',
+                populate: [
+                    {
+                        path: 'user',
+                        model: 'User',
+                        populate: {
+                            path: 'account',
+                            model: 'Account'
+                        }
+                    },
+                    {
+                        path: 'emergencyContact',
+                        model: 'EmergencyContact'
+                    }
+                ]
+            },
+            {
+                path: 'edition',
+                model: 'Edition',
+                populate: {
+                    path: 'event',
+                    model: 'Event'
+                }
+            },
+            {
+                path: 'availabilities',
+                model: 'Availability'
+            },
+            {
+                path: 'contract',
+                model: 'Contract'
+            },
+            {
+                path: 'positions',
+                model: 'Position'
+            },
+        ])
+        .exec((err, vols) => {
+
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var volunteerList = [];
+            vols.forEach(vol => {
+                const picked = (({ inscriptionDate, status, lastUpdated, volunteerId }) => ({ inscriptionDate, status, lastUpdated, volunteerId }))(vol);
+                picked['profile'] = sanitizeProfile(vol.profile);
+                picked['edition'] = sanitizeEdition(vol.edition);
+                picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
+                picked['contract'] = sanitizeContract(vol.contract);
+                picked['positions'] = sanitizePositions(vol.positions, picked.edition);
+                picked['id'] = vol['_id'];
+                volunteerList.push(picked);
+            })
+            res.status(200).json(volunteerList);
+        })
+});
+
+router.get('/edition/:id/inscriptions/:status', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    const editionId = req.params.id;
+    const status = req.params.status;
+    Volunteer.find({ edition: editionId, status: status })
+        .populate([
+            {
+                path: 'profile',
+                model: 'Profile',
+                populate: [
+                    {
+                        path: 'user',
+                        model: 'User',
+                        populate: {
+                            path: 'account',
+                            model: 'Account'
+                        }
+                    },
+                    {
+                        path: 'emergencyContact',
+                        model: 'EmergencyContact'
+                    }
+                ]
+            },
+            {
+                path: 'edition',
+                model: 'Edition',
+                populate: {
+                    path: 'event',
+                    model: 'Event'
+                }
+            },
+            {
+                path: 'availabilities',
+                model: 'Availability'
+            },
+            {
+                path: 'contract',
+                model: 'Contract'
+            },
+            {
+                path: 'positions',
+                model: 'Position'
+            },
+        ])
+        .exec((err, vols) => {
+
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var volunteerList = [];
+            vols.forEach(vol => {
+                const picked = (({ inscriptionDate, status, lastUpdated, volunteerId }) => ({ inscriptionDate, status, lastUpdated, volunteerId }))(vol);
+                picked['profile'] = sanitizeProfile(vol.profile);
+                picked['edition'] = sanitizeEdition(vol.edition);
+                picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
+                picked['contract'] = sanitizeContract(vol.contract);
+                picked['positions'] = sanitizePositions(vol.positions, picked.edition);
+                picked['id'] = vol['_id'];
+                volunteerList.push(picked);
+            })
+            res.status(200).json(volunteerList);
+        })
+});
+
+router.get('/profile/:id/inscriptions', [authJwt.verifyToken], (req, res) => {
+    const profileId = req.params.id;
+    Volunteer.find({ profile: profileId })
+    .where('status').ne(inscriptionStatus.CANCELLED)
+        .populate([
+            {
+                path: 'profile',
+                model: 'Profile',
+                populate: [
+                    {
+                        path: 'user',
+                        model: 'User',
+                        populate: {
+                            path: 'account',
+                            model: 'Account'
+                        }
+                    },
+                    {
+                        path: 'emergencyContact',
+                        model: 'EmergencyContact'
+                    }
+                ]
+            },
+            {
+                path: 'edition',
+                model: 'Edition',
+                populate: {
+                    path: 'event',
+                    model: 'Event'
+                }
+            },
+            {
+                path: 'availabilities',
+                model: 'Availability'
+            },
+            {
+                path: 'contract',
+                model: 'Contract'
+            },
+            {
+                path: 'positions',
+                model: 'Position'
+            },
+        ])
+        .exec((err, vols) => {
+
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var volunteerList = [];
+            vols.forEach(vol => {
+                const picked = (({ inscriptionDate, status, lastUpdated, volunteerId }) => ({ inscriptionDate, status, lastUpdated, volunteerId }))(vol);
+                picked['profile'] = sanitizeProfile(vol.profile);
+                picked['edition'] = sanitizeEdition(vol.edition);
+                picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
+                picked['contract'] = sanitizeContract(vol.contract);
+                picked['positions'] = sanitizePositions(vol.positions, picked.edition);
+                picked['id'] = vol['_id'];
+                volunteerList.push(picked);
+            });
+            res.status(200).json(volunteerList);
+        })
+});
+
+router.get('/profile/incriptions', [authJwt.verifyToken, authJwt.isOrganizer], (req, res) => {
+    const id = req.body.profile.id;
+    Volunteer.find({ profile: id })
+        .populate([
+            {
+                path: 'profile',
+                model: 'Profile',
+                populate: [
+                    {
+                        path: 'user',
+                        model: 'User',
+                        populate: {
+                            path: 'account',
+                            model: 'Account'
+                        }
+                    },
+                    {
+                        path: 'emergencyContact',
+                        model: 'EmergencyContact'
+                    }
+                ]
+            },
+            {
+                path: 'edition',
+                model: 'Edition',
+                populate: {
+                    path: 'event',
+                    model: 'Event'
+                }
+            },
+            {
+                path: 'availabilities',
+                model: 'Availability'
+            },
+            {
+                path: 'contract',
+                model: 'Contract'
+            },
+            {
+                path: 'positions',
+                model: 'Position'
+            },
+        ])
+        .exec((err, vols) => {
+
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var volunteerList = [];
+            vols.forEach(vol => {
+                const picked = (({ inscriptionDate, status, lastUpdated, volunteerId }) => ({ inscriptionDate, status, lastUpdated, volunteerId }))(vol);
+                picked['profile'] = sanitizeProfile(vol.profile);
+                picked['edition'] = sanitizeEdition(vol.edition);
+                picked['availabilities'] = sanitizeAvailibilities(vol.availabilities);
+                picked['contract'] = sanitizeContract(vol.contract);
+                picked['positions'] = sanitizePositions(vol.positions, picked.edition);
+                picked['id'] = vol['_id'];
+                volunteerList.push(picked);
+            })
+            res.status(200).json(volunteerList);
+        })
+});
+
+
+router.post('/event/inscription', [authJwt.verifyToken], async (req, res) => {
+    var vol = req.body;
+    var { edition, profile, availabilities, contract, positions } = vol;
+    delete vol.edition; 
+    delete vol.profile;
+    delete vol.availabilities;
+    delete vol.contract;
+    delete vol.positions;
+
+    vol['edition'] = edition.id;
+    vol['profile'] = profile.id;
+    vol['contract'] = contract.id;
+
+    var i;
+    var positionIds = [];
+    for (i = 0; i < positions.length; i++) {
+        positionIds.push(positions[i].id);
+    }
+    vol['positions'] = positionIds;
+
+    const session = await mongoose.startSession();
+
+    session.startTransaction();
+    try {
+        var createdAvs = [];
+        var i;
+        for (i = 0; i < availabilities.length; i++) {
+            var element = availabilities[i];
+            await Availability.create([element], { session: session });
+            const created = await Availability.findOne(element).session(session);
+            createdAvs.push(created._id);
+        }
+
+        vol['availabilities'] = createdAvs;
+        await Volunteer.create([vol], { session: session });
+
+        await session.commitTransaction();
+        session.endSession();
+        res.status(200).send({ message: "Registration successful" });
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).send({ message: error });
+    }
+});
+
+
+router.post('/event/updateStatus', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var vol = req.body;
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        var found = await Volunteer.findById(vol.id);
+        var response;
+        if (vol.status === inscriptionStatus.APPROVED) {
+            response = await addVolunteerInScheduler(vol);
+            if (response) {
+                found.volunteerId = response.id;
+            } else {
+                throw "Could Not complete the approbation";
+            }
+            for (var i = 0; i < vol.availabilities.length; i++) {
+                const createdAv = await addAvailabilityInScheduler(vol.availabilities[i], response.id, vol.edition.tenantId);
+                if (createdAv) {
+                    var foundAv = await Availability.findById(vol.availabilities[i].id);
+                    foundAv.tenantId = createdAv.tenantId;
+                    foundAv.availabilityId = createdAv.id;
+                    foundAv.volunteerId = createdAv.employeeId;
+                    await foundAv.save();
+                } else {
+                    throw "Could not update availabilities during approbation process"
+                }
+            }
+        }
+        if (found.status === inscriptionStatus.APPROVED) {
+            response = await deleteVolunteerInScheduler(vol);
+            if (response) {
+                found.volunteerId = null;
+            } else {
+                throw "Could Not complete Remove the approbation";
+            }
+            for (var i = 0; i < vol.availabilities.length; i++) {
+                const isDeleted = await deleteAvailabilityInScheduler(vol.availabilities[i]);
+                if (isDeleted) {
+                    var foundAv = await Availability.findById(vol.availabilities[i].id);
+                    foundAv.tenantId = null;
+                    foundAv.availabilityId = null;
+                    foundAv.volunteerId = null;
+                    await foundAv.save();
+                } else {
+                    throw "Could not update availabilities during disapprobation process"
+                }
+            }
+        }
+        found.status = vol.status;
+        await found.save();
+        await session.commitTransaction();
+        session.endSession();
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).send({ message: error });
+    }
+});
+
+
+router.put('/inscription/updateAllStatus', [authJwt.verifyToken], async (req, res) => {
+    var vols = req.body;
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        var i;
+        for (i = 0; i < vols.length; i++) {
+            var found = await Volunteer.findById(vols[i].id);
+            var response;
+            if (vols[i].status === inscriptionStatus.APPROVED) {
+                response = await addVolunteerInScheduler(vols[i]);
+                if (response) {
+                    found.volunteerId = response.id;
+                } else {
+                    throw "Could Not complete the approbation";
+                }
+                for (var j = 0; j < vols[i].availabilities.length; j++) {
+                    const createdAv = await addAvailabilityInScheduler(vols[i].availabilities[j], response.id, vols[i].edition.tenantId);
+                    if (createdAv) {
+                        var foundAv = await Availability.findById(vols[i].availabilities[j].id);
+                        foundAv.tenantId = createdAv.tenantId;
+                        foundAv.availabilityId = createdAv.id;
+                        foundAv.volunteerId = createdAv.employeeId;
+                        await foundAv.save();
+                    } else {
+                        throw "Could not update availabilities during approbation process";
+                    }
+                }
+            }
+            else if (vols[i].status !== inscriptionStatus.APPROVED && found.status === inscriptionStatus.APPROVED) {
+                for (var j = 0; j < vols[i].availabilities.length; j++) {
+                    const isDeleted = await deleteAvailabilityInScheduler(vols[i].availabilities[j]);
+                    if (isDeleted) {
+                        var foundAv = await Availability.findById(vols[i].availabilities[j].id);
+                        foundAv.tenantId = null;
+                        foundAv.availabilityId = null;
+                        foundAv.volunteerId = null;
+                        await foundAv.save();
+                    } else {
+                        throw "Could not update availabilities during approbation process"
+                    }
+                }
+                response = await deleteVolunteerInScheduler(vols[i]);
+                if (response) {
+                    found.volunteerId = null;
+                } else {
+                    throw "Could Not complete Remove the approbation";
+                }
+
+            }
+            found.status = vols[i].status;
+            await found.save();
+        }
+        await session.commitTransaction();
+        session.endSession();
+        res.status(200).send({ message: "success" });
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).send({ message: error });
+    }
+});
+
+router.get('/contracts/get/:id', [authJwt.verifyToken], (req, res) => {
+    var id = req.params.id;
+    Contract.find({ edition: id }).populate([
+        {
+            path: 'edition',
+            model: 'Edition',
+            populate: {
+                path: 'event',
+                model: 'Event'
+            }
+        }]).exec((err, contracts) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return
+            }
+            var contractList = [];
+            contracts.forEach(contract => {
+                const picked = (({ maximumMinutesPerDay, tenantId, contractId, name }) => ({ maximumMinutesPerDay, tenantId, contractId, name }))(contract);
+                picked['edition'] = sanitizeEdition(contract.edition);
+                picked['id'] = contract['_id'];
+                contractList.push(picked);
+            });
+            res.status(200).json(contractList);
+        });
+});
+
+router.post('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var elements = req.body;
+    var data = [];
+    try {
+        var i;
+        for (i = 0; i < elements.length; i++) {
+            const createdContract = await createContract(elements[i]);
+            if (createdContract) {
+                await new Contract({
+                    maximumMinutesPerDay: elements[i].maximumMinutesPerDay,
+                    tenantId: createdContract.tenantId,
+                    edition: elements[i].edition.id,
+                    contractId: createdContract.id,
+                    name: elements[i].name,
+                }).save((err, contract) => {
+                    if (err) {
+                        throw err;
+                    }
+                    const picked = (({ maximumMinutesPerDay, edition, tenantId, contractId, name }) =>
+                        ({ maximumMinutesPerDay, edition, tenantId, contractId, name }))(contract);
+                    picked['id'] = contract['_id'];
+                    data.push(picked);
+                });
+            } else {
+                throw "Could not create Contract";
+            }
+        }
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
+router.put('/contracts', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var elements = req.body;
+    var data = [];
+    try {
+        var i;
+        for (i = 0; i < elements.length; i++) {
+            const updated = await updateContract(elements[i]);
+            if (updated) {
+                Contract.findById(elements[i].id).exec((err, contract) => {
+                    if (err) {
+                        res.status(500).send({ message: err });
+                        return;
+                    }
+                    contract.maximumMinutesPerDay = elements[i].maximumMinutesPerDay;
+                    contract.save((err, saved) => {
+                        if (err) {
+                            throw err;
+                        }
+                        const picked = sanitizeContract(saved);
+                        data.push(picked);
+                    });
+                });
+            } else {
+                throw "Error updating contract";
+            }
+        }
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
+router.post('/contracts/delete', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var elements = req.body;
+    try {
+        var i;
+        for (i = 0; i < elements.length; i++) {
+            var isDeleted = await deleteContract(elements[i]);
+            if (isDeleted) {
+                Contract.findById(elements[i].id).exec((err, contract) => {
+                    if (err) {
+                        throw err;
+                    }
+                    contract.deleteOne();
+                })
+            } else {
+                throw "Error deleting some contracts";
+            }
+        }
+        res.status(200).send(true);
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
 
 });
+
+router.post('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var element = req.body;
+    try {
+        var shifts = [];
+        var i;
+        for (i = 0; i < element.numberVolunteers; i++) {
+            const createdShift = await createShiftInScheduler(element);
+            if (createdShift) {
+                await new Shift({
+                    startDateTime: moment(element.startDateTime).toISOString(),
+                    endDateTime: moment(element.endDateTime).toISOString(),
+                    edition: element.edition.id,
+                    position: element.position.id,
+                    shiftId: createdShift.id
+                }).save((err, shift) => {
+                    if (err) {
+                        throw err;
+                    }
+                    const picked = (({ startDateTime, endDateTime, shiftId }) => ({ startDateTime, endDateTime, shiftId }))(shift);
+                    picked['id'] = shift['_id'];
+                    picked['edition'] = element.edition;
+                    picked['position'] = element.position;
+                    shifts.push(picked);
+                });
+            } else {
+                throw "Could not create Shift";
+            }
+        }
+        res.status(200).json(shifts);
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
+router.get('/shift/get/:id', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var id = req.params.id;
+
+    try {
+        var shifts = [];
+        await Shift.find({ edition: id })
+            .populate([
+                {
+                    path: 'edition',
+                    model: 'Edition',
+                    populate: {
+                        path: 'event',
+                        model: 'Event'
+                    }
+                },
+                {
+                    path: 'position',
+                    model: 'Position',
+                },
+            ])
+            .exec((err, datas) => {
+                if (err) {
+                    throw err;
+                }
+                for (var i = 0; i < datas.length; i++) {
+                    const picked = (({ startDateTime, endDateTime, spotId, shiftId }) => ({ startDateTime, endDateTime, spotId, shiftId }))(datas[i]);
+                    picked['id'] = datas[i]['_id'];
+                    picked['edition'] = sanitizeEdition(datas[i].edition);
+                    picked['position'] = sanitizePosition(datas[i].position, picked.edition);
+                    shifts.push(picked);
+                }
+                res.status(200).json(shifts);
+            });
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
+router.put('/shift', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var element = req.body;
+    try {
+        const updatedShift = await updateShiftInScheduler(element);
+
+        if (updatedShift) {
+            Shift.findById(element.id).exec((err, data) => {
+                if (err) {
+                    throw err
+                }
+                data.startDateTime = element.startDateTime;
+                data.endDateTime = element.endDateTime;
+                data.edition = element.edition.id;
+                data.position = element.position.id;
+                data.shiftId = updatedShift.id;
+                data.volunteerId = element.volunteerId;
+                data.save((err, shift) => {
+                    if (err) {
+                        throw err;
+                    }
+                    const picked = (({ startDateTime, endDateTime, shiftId, volunteerId }) => ({ startDateTime, endDateTime, shiftId, volunteerId }))(shift);
+                    picked['id'] = shift['_id'];
+                    picked['edition'] = element.edition;
+                    picked['position'] = element.position;
+                    res.status(200).json(picked);
+                })
+            })
+        } else {
+            throw "Could not update Shift";
+        }
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
+router.post('/shift/delete', [authJwt.verifyToken, authJwt.isOrganizer], async (req, res) => {
+    var element = req.body;
+    try {
+        const isDelete = await deleteShiftInScheduler(element);
+
+        if (isDelete) {
+            Shift.findByIdAndDelete(element.id).exec((err, data) => {
+                if (err) {
+                    throw err
+                }
+                res.status(200).json(data);
+            })
+        } else {
+            throw "Could not delete Shift";
+        }
+    } catch (err) {
+        res.status(500).send({ message: err });
+    }
+});
+
+const sanitizeProfile = (profile) => {
+
+    const picked = (({ tshirtSize, allergy, certification }) => ({ tshirtSize, allergy, certification }))(profile);
+    picked['id'] = profile._id;
+
+    const pickedAccount = (({ email }) => ({ email }))(profile.user.account);
+    pickedAccount['id'] = profile.user.account._id;
+
+    const pickedUser = (({ firstName, lastName, birthday, phoneNumber, discord, pronoun }) => ({ firstName, lastName, birthday, phoneNumber, discord, pronoun }))(profile.user);
+    pickedUser['id'] = profile.user._id;
+    pickedUser['account'] = pickedAccount;
+    picked['user'] = pickedUser;
+
+    const eContactPicked = (({ firstName, lastName, phoneNumber, relationship }) => ({ firstName, lastName, phoneNumber, relationship }))(profile.emergencyContact)
+    eContactPicked['id'] = profile.emergencyContact._id;
+    picked['emergencyContact'] = eContactPicked;
+
+    return picked;
+}
+
+const sanitizeEdition = (edition) => {
+    const picked = (({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }) => ({ startDate, endDate, name, isRegistering, isActive, location, event, tenantId }))(edition);
+    picked['id'] = edition['_id'];
+    return picked;
+}
+
+const sanitizeAvailibilities = (availabilities) => {
+    var pickedAvailabilities = [];
+    availabilities.forEach(element => {
+        const picked = (({ startDateTime, endDateTime, state, tenantId, availabilityId, volunteerId }) => ({ startDateTime, endDateTime, state, tenantId, availabilityId, volunteerId }))(element);
+        picked['id'] = element._id;
+        pickedAvailabilities.push(picked);
+    });
+    return pickedAvailabilities;
+}
+
+const sanitizePositions = (positions, edition) => {
+    var pickedPositions = [];
+    positions.forEach(element => {
+        pickedPositions.push(sanitizePosition(element, edition));
+    });
+    return pickedPositions;
+}
+
+const sanitizePosition = (position, edition) => {
+    const picked = (({ title, description, skillId, spotId }) => ({ title, description, skillId, spotId }))(position);
+    picked['id'] = position['_id'];;
+    picked['edition'] = edition;
+    return picked
+}
+
+const sanitizeContract = (data) => {
+    const picked = (({ maximumMinutesPerDay, edition, contractId, name, tenantId }) => ({ maximumMinutesPerDay, edition, contractId, name, tenantId }))(data);
+    picked['id'] = data['_id'];
+    return picked;
+}
 
 const EventController = router;
 export { EventController };

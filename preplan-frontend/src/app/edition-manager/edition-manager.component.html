@@ -1,0 +1,41 @@
+<h1>Edition Manager</h1>
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="edition-home-tab" data-toggle="pill" href="#edition-home" role="tab"
+            aria-controls="edition-home" aria-selected="true">Edition</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="volunteer-list-tab" data-toggle="pill" href="#volunteer-list" role="tab"
+            aria-controls="volunteer-list" aria-selected="false">Volunteer Lists</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="generator-settings-tab" data-toggle="pill" href="#generator-settings" role="tab"
+            aria-controls="generator-settings" aria-selected="false">Generator Settings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="schedule-generator-tab" data-toggle="pill" href="#schedule-generator" role="tab"
+            aria-controls="schedule-generator" aria-selected="false">Schedule Generator</a>
+    </li>
+</ul>
+
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="edition-home" role="tabpanel" aria-labelledby="edition-home-tab">
+        <div class="">
+            <edition-details [edition]="edition" [positionList]="positionList" [isEnrollable]="false"
+                [isEditableOption]="true" (onUpdate)="onUpdate($event)"></edition-details>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="volunteer-list" role="tabpanel" aria-labelledby="volunteer-list-tab">
+        <div class="">
+            <volunteer-list [edition]="edition"></volunteer-list>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="generator-settings" role="tabpanel" aria-labelledby="generator-settings-tab">
+        <generator-settings [edition]="edition"></generator-settings>
+    </div>
+    <div class="tab-pane fade" id="schedule-generator" role="tabpanel" aria-labelledby="schedule-generator-tab">
+        <schedule-generator></schedule-generator>
+    </div>
+</div>
