@@ -20,7 +20,7 @@
     "moment-timezone": "^0.5.31",
     "mongoose": "^5.10.2",
     "morgan": "~1.9.1",
-    "xlsx": "^0.16.6"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
